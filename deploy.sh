@@ -1,9 +1,25 @@
-#!/bin/bash
-
 # Exit on error
 set -e
 
 echo "🚀 Starting deployment for docs.aporto..."
+
+# Check for git updates
+if [ -d ".git" ]; then
+    echo "🔍 Checking for updates..."
+    git fetch origin
+    
+    LOCAL=$(git rev-parse HEAD)
+    REMOTE=$(git rev-parse @{u})
+    
+    if [ $LOCAL != $REMOTE ]; then
+        echo "⏬ Pulling latest changes..."
+        git pull
+    else
+        echo "✅ Repository is up to date."
+    fi
+else
+    echo "⚠️ Not a git repository, skipping update check."
+fi
 
 # Install dependencies
 echo "📦 Installing dependencies..."
