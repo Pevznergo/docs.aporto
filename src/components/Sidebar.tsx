@@ -38,11 +38,6 @@ const Sidebar = () => {
                 </div>
             </nav>
 
-            <div className={styles.sidebarFooter}>
-                <div className={styles.balance}>
-                    <span>Balance: <strong>$0.00</strong></span>
-                </div>
-            </div>
         </aside>
     );
 };
