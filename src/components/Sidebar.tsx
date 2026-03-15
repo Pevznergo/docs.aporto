@@ -17,8 +17,8 @@ const Sidebar = () => {
         <aside className={styles.sidebar}>
             <div className={styles.sidebarLogo}>
                 <Link href="/" className={styles.logoLink}>
-                    <div style={{ width: 32, height: 32, background: "#00dc82", borderRadius: 6 }}></div>
-                    <span className={styles.logoText}>aporto</span>
+                    <img src="/logo.svg" alt="Aporto Logo" style={{ width: 32, height: 32 }} />
+                    <span className={styles.logoText}>Aporto</span>
                 </Link>
             </div>
 
