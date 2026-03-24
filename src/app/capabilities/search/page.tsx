@@ -12,7 +12,7 @@ const content = `Give your agents real-time information from the web — raw sea
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-// Search with AI-generated answerconst response = await aportoFetch(  "https://linkup.services.aporto.ai/v1/search",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      q: "What are the latest developments in quantum computing?",      depth: "standard",      outputType: "sourcedAnswer",    }),  });
+// Search with AI-generated answerconst response = await aportoFetch(  "https://linkup.services.aporto.tech/v1/search",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      q: "What are the latest developments in quantum computing?",      depth: "standard",      outputType: "sourcedAnswer",    }),  });
 const data = await response.json();console.log(data.answer);console.log("Sources:", data.sources);
 \`\`\`
 
@@ -95,7 +95,7 @@ POST
 
 Get fetch price estimate (free)
 
-**Base URL:** \`https://linkup.services.aporto.ai\`
+**Base URL:** \`https://linkup.services.aporto.tech\`
 
 ### Search
 
@@ -106,17 +106,17 @@ Get fetch price estimate (free)
 *   [Structured](#tab-panel-20)
 
 \`\`\`
-const { data } = await client.post(  "https://linkup.services.aporto.ai/v1/search",  {    q: "TypeScript best practices 2024",    depth: "standard",    outputType: "searchResults",  });
+const { data } = await client.post(  "https://linkup.services.aporto.tech/v1/search",  {    q: "TypeScript best practices 2024",    depth: "standard",    outputType: "searchResults",  });
 for (const result of data.results) {  console.log(\`\${result.title} - \${result.url}\`);}
 \`\`\`
 
 \`\`\`
-const { data } = await client.post(  "https://linkup.services.aporto.ai/v1/search",  {    q: "What are the benefits of TypeScript?",    depth: "standard",    outputType: "sourcedAnswer",  });
+const { data } = await client.post(  "https://linkup.services.aporto.tech/v1/search",  {    q: "What are the benefits of TypeScript?",    depth: "standard",    outputType: "sourcedAnswer",  });
 console.log(data.answer);console.log("Sources:", data.sources);
 \`\`\`
 
 \`\`\`
-const { data } = await client.post(  "https://linkup.services.aporto.ai/v1/search",  {    q: "Top 5 programming languages in 2024",    depth: "deep",    outputType: "structured",    structuredOutputSchema: {      type: "object",      properties: {        languages: {          type: "array",          items: {            type: "object",            properties: {              name: { type: "string" },              rank: { type: "number" },              useCase: { type: "string" },            },          },        },      },    },    includeSources: true,  });
+const { data } = await client.post(  "https://linkup.services.aporto.tech/v1/search",  {    q: "Top 5 programming languages in 2024",    depth: "deep",    outputType: "structured",    structuredOutputSchema: {      type: "object",      properties: {        languages: {          type: "array",          items: {            type: "object",            properties: {              name: { type: "string" },              rank: { type: "number" },              useCase: { type: "string" },            },          },        },      },    },    includeSources: true,  });
 console.log(data.languages);
 \`\`\`
 
@@ -129,7 +129,7 @@ class r extends HTMLElement{static#e=new Map;#t;#n="starlight-synced-tabs\_\_";c
 Fetch and convert a web page to clean markdown:
 
 \`\`\`
-const { data } = await client.post(  "https://linkup.services.aporto.ai/v1/fetch",  {    url: "https://example.com/article",    renderJs: false,  });
+const { data } = await client.post(  "https://linkup.services.aporto.tech/v1/fetch",  {    url: "https://example.com/article",    renderJs: false,  });
 console.log(data.markdown);
 \`\`\`
 
@@ -355,7 +355,7 @@ POST
 
 Get contents price estimate (free)
 
-**Base URL:** \`https://you-com.services.aporto.ai\`
+**Base URL:** \`https://you-com.services.aporto.tech\`
 
 ### Search
 
@@ -365,12 +365,12 @@ Get contents price estimate (free)
 *   [With Live Crawling](#tab-panel-22)
 
 \`\`\`
-const { data } = await client.get(  "https://you-com.services.aporto.ai/v1/search",  {    params: {      query: "Best practices for building AI agents",      count: 10,    },  });
+const { data } = await client.get(  "https://you-com.services.aporto.tech/v1/search",  {    params: {      query: "Best practices for building AI agents",      count: 10,    },  });
 for (const result of data.results.web) {  console.log(\`\${result.title} - \${result.url}\`);}
 \`\`\`
 
 \`\`\`
-const { data } = await client.get(  "https://you-com.services.aporto.ai/v1/search",  {    params: {      query: "TypeScript best practices 2024",      count: 5,      livecrawl: "web",      livecrawl_formats: "markdown",    },  });
+const { data } = await client.get(  "https://you-com.services.aporto.tech/v1/search",  {    params: {      query: "TypeScript best practices 2024",      count: 5,      livecrawl: "web",      livecrawl_formats: "markdown",    },  });
 for (const result of data.results.web) {  console.log(\`Title: \${result.title}\`);  console.log(\`Content: \${result.content}\`); // Full page markdown}
 \`\`\`
 
@@ -381,7 +381,7 @@ for (const result of data.results.web) {  console.log(\`Title: \${result.title}\
 Fetch content from specific URLs:
 
 \`\`\`
-const { data } = await client.post(  "https://you-com.services.aporto.ai/v1/contents",  {    urls: [      "https://example.com/article1",      "https://example.com/article2",    ],    formats: ["markdown"],  });
+const { data } = await client.post(  "https://you-com.services.aporto.tech/v1/contents",  {    urls: [      "https://example.com/article1",      "https://example.com/article2",    ],    formats: ["markdown"],  });
 for (const content of data.contents) {  console.log(content.markdown);}
 \`\`\`
 

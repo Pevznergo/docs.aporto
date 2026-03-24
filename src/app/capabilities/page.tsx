@@ -11,7 +11,7 @@ const content = `Your agents need more than reasoning — they need access. Apor
 
 Aporto acts as your gateway to paid services. When your agent makes a request:
 
-1.  **Your request goes to a Aporto-powered endpoint** — Each service has a gateway URL (like \`prelude.services.aporto.ai\`)
+1.  **Your request goes to a Aporto-powered endpoint** — Each service has a gateway URL (like \`prelude.services.aporto.tech\`)
 2.  **Aporto handles payment automatically** — The SDK negotiates micropayments so you don’t manage vendor accounts
 3.  **You pay only for what you use** — No subscriptions, no minimums, no upfront costs
 
@@ -155,7 +155,7 @@ Crawl sites & extract data
 
 [Section titled “Getting Started”](#getting-started)
 
-1.  **Get your API key** from the [Aporto Dashboard](https://app.aporto.ai)
+1.  **Get your API key** from the [Aporto Dashboard](https://app.aporto.tech)
 2.  **Install the SDK** for your HTTP client
 3.  **Make your first request** — see the [Quick Start](/quick-start) guide
 

@@ -12,7 +12,7 @@ const content = `Provision and use Redis, vector, and full-text search databases
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-const mgmt = "https://upstash.services.aporto.ai";
+const mgmt = "https://upstash.services.aporto.tech";
 // Step 1: Create a Redis databaseconst createRes = await aportoFetch(\`\${mgmt}/v1/redis/databases\`, {  method: "POST",  headers: { "Content-Type": "application/json" },  body: JSON.stringify({    name: "my-cache",    region: "us-east-1",    ttl: "1d",  }),});
 const db = await createRes.json();console.log("Created:", db.id, db.url);
 // Step 2: Use it via the resource URL (pipeline recommended for any real data)await aportoFetch(\`\${db.url}/pipeline\`, {  method: "POST",  headers: { "Content-Type": "application/json" },  body: JSON.stringify([["set", "my-key", "my-value"], ["get", "my-key"]]),});
@@ -24,8 +24,8 @@ const db = await createRes.json();console.log("Created:", db.id, db.url);
 
 Aporto provides a two-plane architecture for data services:
 
-1.  **Provision a resource** — Call the management API at \`upstash.services.aporto.ai\` to create a Redis database, vector index, or search database. You get back a resource URL.
-2.  **Use the resource** — Send commands to the resource URL (e.g., \`https://{id}.redis.data.aporto.ai\`). Aporto proxies requests to the underlying Upstash instance with automatic authentication.
+1.  **Provision a resource** — Call the management API at \`upstash.services.aporto.tech\` to create a Redis database, vector index, or search database. You get back a resource URL.
+2.  **Use the resource** — Send commands to the resource URL (e.g., \`https://{id}.redis.data.aporto.tech\`). Aporto proxies requests to the underlying Upstash instance with automatic authentication.
 
 Resources have optional TTLs (time-to-live). When a TTL expires, the resource transitions to \`expired\` status and is eventually cleaned up. You can extend a resource’s lifetime by updating its \`expiresAt\` field.
 
@@ -45,7 +45,7 @@ Powered by [Upstash](https://upstash.com). Upstash provides serverless Redis, ve
 
 [Section titled “Endpoints”](#endpoints)
 
-**Management plane** (\`https://upstash.services.aporto.ai\`):
+**Management plane** (\`https://upstash.services.aporto.tech\`):
 
 Method
 
@@ -149,15 +149,15 @@ Host Pattern
 
 Description
 
-\`{id}.redis.data.aporto.ai\`
+\`{id}.redis.data.aporto.tech\`
 
 Redis commands (all paths proxied)
 
-\`{id}.vector.data.aporto.ai\`
+\`{id}.vector.data.aporto.tech\`
 
 Vector operations (upsert, query, fetch, etc.)
 
-\`{id}.search.data.aporto.ai\`
+\`{id}.search.data.aporto.tech\`
 
 Search operations (upsert, search, etc.)
 
@@ -171,7 +171,7 @@ Search operations (upsert, search, etc.)
 
 [Section titled “Create Redis Database”](#create-redis-database)
 
-**Endpoint:** \`POST https://upstash.services.aporto.ai/v1/redis/databases\`
+**Endpoint:** \`POST https://upstash.services.aporto.tech/v1/redis/databases\`
 
 Parameter
 
@@ -214,7 +214,7 @@ Time-to-live: \`30m\`, \`1h\`, \`1d\`, etc. Max 30 days
 [Section titled “Response”](#response)
 
 \`\`\`
-{  "id": "res_ab3k9mzxq1wp7rvnlt82",  "type": "redis",  "name": "my-cache",  "status": "provisioning",  "url": "https://res_ab3k9mzxq1wp7rvnlt82.redis.data.aporto.ai",  "region": "us-east-1",  "expiresAt": "2026-02-26T13:45:00.000Z",  "createdAt": "2026-02-25T13:45:00.000Z"}
+{  "id": "res_ab3k9mzxq1wp7rvnlt82",  "type": "redis",  "name": "my-cache",  "status": "provisioning",  "url": "https://res_ab3k9mzxq1wp7rvnlt82.redis.data.aporto.tech",  "region": "us-east-1",  "expiresAt": "2026-02-26T13:45:00.000Z",  "createdAt": "2026-02-25T13:45:00.000Z"}
 \`\`\`
 
 Note
@@ -225,7 +225,7 @@ Resources start in \`provisioning\` status. They transition to \`active\` within
 
 [Section titled “Update Redis Database”](#update-redis-database)
 
-**Endpoint:** \`PATCH https://upstash.services.aporto.ai/v1/redis/databases/:id\`
+**Endpoint:** \`PATCH https://upstash.services.aporto.tech/v1/redis/databases/:id\`
 
 Parameter
 
@@ -255,7 +255,7 @@ New expiry (ISO 8601, must be in the future)
 
 [Section titled “Delete Redis Database”](#delete-redis-database)
 
-**Endpoint:** \`DELETE https://upstash.services.aporto.ai/v1/redis/databases/:id\`
+**Endpoint:** \`DELETE https://upstash.services.aporto.tech/v1/redis/databases/:id\`
 
 Returns \`204 No Content\` on success.
 
@@ -292,7 +292,7 @@ Path-based commands are fine for tiny values (counters, flags, short strings):
 
 [Section titled “Create Vector Index”](#create-vector-index)
 
-**Endpoint:** \`POST https://upstash.services.aporto.ai/v1/vector/indexes\`
+**Endpoint:** \`POST https://upstash.services.aporto.tech/v1/vector/indexes\`
 
 Parameter
 
@@ -351,7 +351,7 @@ Time-to-live: \`30m\`, \`1h\`, \`1d\`, etc. Max 30 days
 [Section titled “Response”](#response-1)
 
 \`\`\`
-{  "id": "res_xk7p2mwn9qr4jtbv5s01",  "type": "vector",  "name": "my-embeddings",  "status": "provisioning",  "url": "https://res_xk7p2mwn9qr4jtbv5s01.vector.data.aporto.ai",  "region": "us-east-1",  "dimensions": 1536,  "similarityFunction": "cosine",  "expiresAt": "2026-03-04T13:45:00.000Z",  "createdAt": "2026-02-25T13:45:00.000Z"}
+{  "id": "res_xk7p2mwn9qr4jtbv5s01",  "type": "vector",  "name": "my-embeddings",  "status": "provisioning",  "url": "https://res_xk7p2mwn9qr4jtbv5s01.vector.data.aporto.tech",  "region": "us-east-1",  "dimensions": 1536,  "similarityFunction": "cosine",  "expiresAt": "2026-03-04T13:45:00.000Z",  "createdAt": "2026-02-25T13:45:00.000Z"}
 \`\`\`
 
 #### Vector Data Plane
@@ -375,7 +375,7 @@ Use the [Upstash Vector REST API](https://upstash.com/docs/vector/api/endpoints)
 
 [Section titled “Create Search Index”](#create-search-index)
 
-**Endpoint:** \`POST https://upstash.services.aporto.ai/v1/search/indexes\`
+**Endpoint:** \`POST https://upstash.services.aporto.tech/v1/search/indexes\`
 
 Parameter
 
@@ -418,7 +418,7 @@ Time-to-live: \`30m\`, \`1h\`, \`1d\`, etc. Max 30 days
 [Section titled “Response”](#response-2)
 
 \`\`\`
-{  "id": "res_mn4q8rvw2xp5kjtb6h93",  "type": "search",  "name": "my-search-index",  "status": "provisioning",  "url": "https://res_mn4q8rvw2xp5kjtb6h93.search.data.aporto.ai",  "region": "us-central1",  "expiresAt": "2026-03-04T13:45:00.000Z",  "createdAt": "2026-02-25T13:45:00.000Z"}
+{  "id": "res_mn4q8rvw2xp5kjtb6h93",  "type": "search",  "name": "my-search-index",  "status": "provisioning",  "url": "https://res_mn4q8rvw2xp5kjtb6h93.search.data.aporto.tech",  "region": "us-central1",  "expiresAt": "2026-03-04T13:45:00.000Z",  "createdAt": "2026-02-25T13:45:00.000Z"}
 \`\`\`
 
 #### Search Data Plane
@@ -446,7 +446,7 @@ All search data plane paths require the **index name** as a path segment. Using 
 
 [Section titled “Create Database”](#create-database)
 
-**Endpoint:** \`POST https://neon.services.aporto.ai/databases\`
+**Endpoint:** \`POST https://neon.services.aporto.tech/databases\`
 
 Provision an ephemeral PostgreSQL database with a specified lifetime.
 
@@ -524,7 +524,7 @@ Use the \`connectionUri\` to connect with any PostgreSQL client or ORM.
 
 [Section titled “Price Estimate”](#price-estimate)
 
-**Endpoint:** \`POST https://neon.services.aporto.ai/databases/price\` (free)
+**Endpoint:** \`POST https://neon.services.aporto.tech/databases/price\` (free)
 
 Get the cost before creating a database. Accepts the same parameters as create.
 
@@ -556,7 +556,7 @@ DELETE
 
 Delete database (irreversible)
 
-**Base URL:** \`https://neon.services.aporto.ai\`
+**Base URL:** \`https://neon.services.aporto.tech\`
 
 #### Neon Pricing
 
@@ -596,7 +596,7 @@ Powered by [Neon](https://neon.tech) — serverless Postgres with instant provis
 
 [Section titled “Fixed Redis Plans”](#fixed-redis-plans)
 
-**Endpoint:** \`POST https://upstash.services.aporto.ai/v1/redis/databases/fixed\`
+**Endpoint:** \`POST https://upstash.services.aporto.tech/v1/redis/databases/fixed\`
 
 Create a fixed-capacity Redis database with direct Upstash credentials and predictable pricing.
 
@@ -829,7 +829,7 @@ Upstream provisioning error from Upstash
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-const mgmt = "https://upstash.services.aporto.ai";
+const mgmt = "https://upstash.services.aporto.tech";
 async function cacheWorkflow() {  // Create a Redis database with 1-hour TTL  const createRes = await aportoFetch(\`\${mgmt}/v1/redis/databases\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({ name: "session-cache", ttl: "1h" }),  });
   const db = await createRes.json();  console.log(\`Redis ready at \${db.url}\`);
   // Store session data  await aportoFetch(\`\${db.url}/set/session:abc/active\`, { method: "POST" });  await aportoFetch(\`\${db.url}/expire/session:abc/3600\`, { method: "POST" });

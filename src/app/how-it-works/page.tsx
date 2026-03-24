@@ -22,15 +22,15 @@ You never need credentials for the underlying service — just your Aporto API k
 
 Two auth models
 
-**Service gateways** (\`*.services.aporto.ai\`) use the **x402 payment protocol** — wrap your HTTP client with the Aporto SDK and payment is handled automatically.
+**Service gateways** (\`*.services.aporto.tech\`) use the **x402 payment protocol** — wrap your HTTP client with the Aporto SDK and payment is handled automatically.
 
-**Governance API** (\`api.aporto.ai\`) uses **Bearer token auth** — pass your API key directly as \`Authorization: Bearer YOUR_API_KEY\`. No SDK wrapper needed for governance endpoints (rules, agents, activity).
+**Governance API** (\`api.aporto.tech\`) uses **Bearer token auth** — pass your API key directly as \`Authorization: Bearer YOUR_API_KEY\`. No SDK wrapper needed for governance endpoints (rules, agents, activity).
 
 ## Capabilities
 
 [Section titled “Capabilities”](#capabilities)
 
-Capabilities are the paid services available through Aporto. Each capability maps to a third-party provider and is accessed at a \`*.services.aporto.ai\` URL:
+Capabilities are the paid services available through Aporto. Each capability maps to a third-party provider and is accessed at a \`*.services.aporto.tech\` URL:
 
 Capability
 
@@ -92,7 +92,7 @@ Anchor Browser
 
 Web scraping, screenshots, AI browser tasks
 
-Each provider’s API is available at its own subdomain. For example, Linkup search lives at \`https://linkup.services.aporto.ai/v1/search\`.
+Each provider’s API is available at its own subdomain. For example, Linkup search lives at \`https://linkup.services.aporto.tech/v1/search\`.
 
 ## The Payment Flow
 
@@ -109,12 +109,12 @@ The SDK wraps your HTTP client (\`axios\`, \`fetch\`, etc.) and attaches payment
 \`\`\`
 import axios from "axios";import { withAporto } from "@aporto/axios";
 // Wrap your client onceconst client = withAporto(axios.create(), {  apiKey: process.env.SAPIOM_API_KEY!,});
-// Then make requests as usual — payment is handled automaticallyconst { data } = await client.get(  "https://linkup.services.aporto.ai/v1/search",  { params: { q: "latest AI news", depth: "standard" } });
+// Then make requests as usual — payment is handled automaticallyconst { data } = await client.get(  "https://linkup.services.aporto.tech/v1/search",  { params: { q: "latest AI news", depth: "standard" } });
 \`\`\`
 
 Note
 
-Each billable request creates a **transaction** — a record of the API call, its cost, and its status (pending, authorized, completed, or denied). You can view all transactions in the [Dashboard](https://app.aporto.ai).
+Each billable request creates a **transaction** — a record of the API call, its cost, and its status (pending, authorized, completed, or denied). You can view all transactions in the [Dashboard](https://app.aporto.tech).
 
 ## Agents
 
@@ -143,7 +143,7 @@ Rules are optional. You can start without any and add them as you move toward pr
 
 [Section titled “Activity”](#activity)
 
-Aporto logs every request as a transaction. The [Dashboard](https://app.aporto.ai) gives you a real-time view of:
+Aporto logs every request as a transaction. The [Dashboard](https://app.aporto.tech) gives you a real-time view of:
 
 *   Request and response details for every API call
 *   Cost breakdown per service and per agent

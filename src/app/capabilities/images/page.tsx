@@ -12,7 +12,7 @@ const content = `Generate images from text prompts, transform existing images, o
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 // Create a Aporto-tracked fetch functionconst aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-// Generate image with Fal.ai - SDK handles payment/auth automaticallyconst response = await aportoFetch(  "https://fal.services.aporto.ai/v1/run/fal-ai/flux/dev",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      prompt: "A serene mountain landscape at sunset",      image_size: "landscape_4_3",    }),  });
+// Generate image with Fal.ai - SDK handles payment/auth automaticallyconst response = await aportoFetch(  "https://fal.services.aporto.tech/v1/run/fal-ai/flux/dev",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      prompt: "A serene mountain landscape at sunset",      image_size: "landscape_4_3",    }),  });
 const data = await response.json();console.log("Generated image:", data.images[0].url);
 \`\`\`
 
@@ -42,7 +42,7 @@ Powered by [FAL](https://fal.ai). FAL provides fast, scalable inference for gene
 
 [Section titled “Generate Image”](#generate-image)
 
-**Endpoint:** \`POST https://fal.services.aporto.ai/v1/run/{model}\`
+**Endpoint:** \`POST https://fal.services.aporto.tech/v1/run/{model}\`
 
 Generate one or more images from a text prompt. The model is specified in the URL path.
 
@@ -162,7 +162,7 @@ Dimensions
 
 [Section titled “Transform Image”](#transform-image)
 
-**Endpoint:** \`POST https://fal.services.aporto.ai/v1/run/fal-ai/flux/dev/image-to-image\`
+**Endpoint:** \`POST https://fal.services.aporto.tech/v1/run/fal-ai/flux/dev/image-to-image\`
 
 Transform an existing image using img2img techniques. The model path can vary — use any Fal img2img model.
 
@@ -258,7 +258,7 @@ Seed for reproducible generation
 
 [Section titled “Upscale Image”](#upscale-image)
 
-**Endpoint:** \`POST https://fal.services.aporto.ai/v1/run/fal-ai/topaz/upscale/image\`
+**Endpoint:** \`POST https://fal.services.aporto.tech/v1/run/fal-ai/topaz/upscale/image\`
 
 Increase image resolution while preserving quality.
 
@@ -322,7 +322,7 @@ No
 
 [Section titled “Price Estimation”](#price-estimation)
 
-**Endpoint:** \`POST https://fal.services.aporto.ai/v1/price/run/{model}\`
+**Endpoint:** \`POST https://fal.services.aporto.tech/v1/price/run/{model}\`
 
 Get the estimated cost before making a request. Use the same model path as the main endpoint (e.g., \`v1/price/run/fal-ai/flux/dev\`).
 
@@ -365,7 +365,7 @@ Rate limit exceeded
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-const baseUrl = "https://fal.services.aporto.ai/v1";
+const baseUrl = "https://fal.services.aporto.tech/v1";
 async function generateProductImage(description: string) {  // Generate a product visualization  const response = await aportoFetch(\`\${baseUrl}/run/fal-ai/flux/dev\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      prompt: \`Professional product photo: \${description}, studio lighting, white background\`,      image_size: "square_hd",      num_images: 1,      guidance_scale: 4.0,    }),  });
   const data = await response.json();  return data.images[0].url;}
 async function createVariation(imageUrl: string, style: string) {  // Transform an existing image  const response = await aportoFetch(\`\${baseUrl}/run/fal-ai/flux/dev/image-to-image\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      image_url: imageUrl,      prompt: \`Render in \${style} style\`,      strength: 0.6,    }),  });

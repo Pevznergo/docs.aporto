@@ -12,7 +12,7 @@ const content = `Send asynchronous messages, enqueue jobs, and batch deliver pay
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-// Publish a message to a webhookconst response = await aportoFetch(  "https://upstash.services.aporto.ai/v1/qstash/publish/https://example.com/webhook",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      type: "job.created",      payload: { id: "job_123" },    }),  });
+// Publish a message to a webhookconst response = await aportoFetch(  "https://upstash.services.aporto.tech/v1/qstash/publish/https://example.com/webhook",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      type: "job.created",      payload: { id: "job_123" },    }),  });
 const data = await response.json();console.log("Message ID:", data.messageId);
 \`\`\`
 
@@ -44,7 +44,7 @@ Powered by [Upstash QStash](https://upstash.com/docs/qstash). QStash provides se
 
 [Section titled “Endpoints”](#endpoints)
 
-**Base URL:** \`https://upstash.services.aporto.ai\`
+**Base URL:** \`https://upstash.services.aporto.tech\`
 
 Method
 
@@ -76,12 +76,12 @@ Send multiple messages in one request
 
 [Section titled “Publish”](#publish)
 
-**Endpoint:** \`POST https://upstash.services.aporto.ai/v1/qstash/publish/{destination}\`
+**Endpoint:** \`POST https://upstash.services.aporto.tech/v1/qstash/publish/{destination}\`
 
 Send a message to any HTTP endpoint. The destination URL is appended to the path.
 
 \`\`\`
-// The destination URL is part of the request pathawait client.post(  "https://upstash.services.aporto.ai/v1/qstash/publish/https://example.com/webhook",  { event: "user.signup", userId: "usr_123" },  { headers: { "Content-Type": "application/json" } });
+// The destination URL is part of the request pathawait client.post(  "https://upstash.services.aporto.tech/v1/qstash/publish/https://example.com/webhook",  { event: "user.signup", userId: "usr_123" },  { headers: { "Content-Type": "application/json" } });
 \`\`\`
 
 The message body can be any content type — JSON, plain text, binary, etc. It is forwarded as-is to the destination.
@@ -100,12 +100,12 @@ The message body can be any content type — JSON, plain text, binary, etc. It i
 
 [Section titled “Enqueue”](#enqueue)
 
-**Endpoint:** \`POST https://upstash.services.aporto.ai/v1/qstash/enqueue/{queueName}/{destination}\`
+**Endpoint:** \`POST https://upstash.services.aporto.tech/v1/qstash/enqueue/{queueName}/{destination}\`
 
 Add a message to a named queue for ordered processing. Messages in the same queue are delivered sequentially.
 
 \`\`\`
-// Enqueue to the "email-queue" queueawait client.post(  "https://upstash.services.aporto.ai/v1/qstash/enqueue/email-queue/https://example.com/send-email",  { to: "[email protected]", subject: "Welcome!" },  { headers: { "Content-Type": "application/json" } });
+// Enqueue to the "email-queue" queueawait client.post(  "https://upstash.services.aporto.tech/v1/qstash/enqueue/email-queue/https://example.com/send-email",  { to: "[email protected]", subject: "Welcome!" },  { headers: { "Content-Type": "application/json" } });
 \`\`\`
 
 Queue names are automatically scoped to your account — no collisions with other users.
@@ -116,7 +116,7 @@ Queue names are automatically scoped to your account — no collisions with othe
 
 [Section titled “Batch”](#batch)
 
-**Endpoint:** \`POST https://upstash.services.aporto.ai/v1/qstash/batch\`
+**Endpoint:** \`POST https://upstash.services.aporto.tech/v1/qstash/batch\`
 
 Send multiple messages in a single request. The body must be a non-empty JSON array.
 
@@ -140,7 +140,7 @@ Each item in the array can target a different destination and optionally specify
 
 [Section titled “Get Message Status”](#get-message-status)
 
-**Endpoint:** \`GET https://upstash.services.aporto.ai/v1/qstash/messages/{messageId}\`
+**Endpoint:** \`GET https://upstash.services.aporto.tech/v1/qstash/messages/{messageId}\`
 
 Check the delivery status of a published or enqueued message.
 
@@ -153,7 +153,7 @@ console.log(data.state); // "delivered", "pending", "failed", "retry"
 
 [Section titled “Cancel Message”](#cancel-message)
 
-**Endpoint:** \`DELETE https://upstash.services.aporto.ai/v1/qstash/messages/{messageId}\`
+**Endpoint:** \`DELETE https://upstash.services.aporto.tech/v1/qstash/messages/{messageId}\`
 
 Cancel a message that hasn’t been delivered yet.
 
@@ -221,7 +221,7 @@ Create recurring message deliveries using cron expressions.
 
 [Section titled “Create Schedule”](#create-schedule)
 
-**Endpoint:** \`POST https://upstash.services.aporto.ai/v1/qstash/schedules/{destination}\`
+**Endpoint:** \`POST https://upstash.services.aporto.tech/v1/qstash/schedules/{destination}\`
 
 The destination URL is part of the path (same pattern as publish). The cron expression is passed via the \`Upstash-Cron\` header.
 
@@ -338,7 +338,7 @@ Rate limit exceeded
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-const baseUrl = "https://upstash.services.aporto.ai/v1/qstash";
+const baseUrl = "https://upstash.services.aporto.tech/v1/qstash";
 async function processOrder(orderId: string) {  // Fire-and-forget: notify the fulfillment service  await aportoFetch(    \`\${baseUrl}/publish/https://api.example.com/fulfillment\`,    {      method: "POST",      headers: { "Content-Type": "application/json" },      body: JSON.stringify({ orderId, action: "ship" }),    }  );
   // Ordered queue: send confirmation emails sequentially  await aportoFetch(    \`\${baseUrl}/enqueue/email-queue/https://api.example.com/send-email\`,    {      method: "POST",      headers: { "Content-Type": "application/json" },      body: JSON.stringify({ orderId, template: "order-confirmation" }),    }  );
   // Batch: notify multiple services at once  await aportoFetch(\`\${baseUrl}/batch\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify([      {        destination: "https://api.example.com/analytics",        headers: { "Content-Type": "application/json" },        body: JSON.stringify({ event: "order.completed", orderId }),      },      {        destination: "https://api.example.com/inventory",        headers: { "Content-Type": "application/json" },        body: JSON.stringify({ action: "decrement", orderId }),      },    ]),  });

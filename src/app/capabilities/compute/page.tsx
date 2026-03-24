@@ -12,7 +12,7 @@ const content = `Deploy full projects and manage persistent sandbox environments
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-const baseUrl = "https://blaxel.services.aporto.ai/v1";
+const baseUrl = "https://blaxel.services.aporto.tech/v1";
 // Step 1: Create a sandbox with a port exposedconst createRes = await aportoFetch(\`\${baseUrl}/sandboxes\`, {  method: "POST",  headers: { "Content-Type": "application/json" },  body: JSON.stringify({    name: "my-api",    tier: "s",    ttl: "2h",    port: 3000,  }),});
 const sandbox = await createRes.json();
 // Step 2: Wait for it to be readylet status = sandbox.status;while (status !== "running") {  const checkRes = await aportoFetch(\`\${baseUrl}/sandboxes/\${sandbox.name}\`);  const check = await checkRes.json();  status = check.status;}
@@ -45,7 +45,7 @@ Powered by [Blaxel](https://blaxel.ai). Blaxel provides serverless sandbox envir
 
 [Section titled “Endpoints”](#endpoints)
 
-**Base URL:** \`https://blaxel.services.aporto.ai\`
+**Base URL:** \`https://blaxel.services.aporto.tech\`
 
 Method
 
@@ -97,7 +97,7 @@ Sandboxes also expose proxied runtime APIs for process management, filesystem op
 
 [Section titled “Create Sandbox”](#create-sandbox)
 
-**Endpoint:** \`POST https://blaxel.services.aporto.ai/v1/sandboxes\`
+**Endpoint:** \`POST https://blaxel.services.aporto.tech/v1/sandboxes\`
 
 Create a persistent sandbox environment.
 
@@ -223,7 +223,7 @@ Rate (per second)
 
 [Section titled “Extend Sandbox”](#extend-sandbox)
 
-**Endpoint:** \`PATCH https://blaxel.services.aporto.ai/v1/sandboxes/:name\`
+**Endpoint:** \`PATCH https://blaxel.services.aporto.tech/v1/sandboxes/:name\`
 
 Add more time to a running sandbox.
 
@@ -247,7 +247,7 @@ Additional time to add (\`"1h"\` or \`3600\`)
 
 [Section titled “Delete Sandbox”](#delete-sandbox)
 
-**Endpoint:** \`DELETE https://blaxel.services.aporto.ai/v1/sandboxes/:name\`
+**Endpoint:** \`DELETE https://blaxel.services.aporto.tech/v1/sandboxes/:name\`
 
 Returns \`204 No Content\` on success.
 
@@ -257,7 +257,7 @@ Returns \`204 No Content\` on success.
 
 [Section titled “Deploy to Sandbox”](#deploy-to-sandbox)
 
-**Endpoint:** \`POST https://blaxel.services.aporto.ai/v1/sandboxes/:name/deploy\`
+**Endpoint:** \`POST https://blaxel.services.aporto.tech/v1/sandboxes/:name/deploy\`
 
 Deploy code to an existing sandbox. Returns \`202 Accepted\` — the build runs asynchronously. Poll \`GET /v1/sandboxes/:name\` until status transitions to \`running\`.
 
@@ -365,7 +365,7 @@ Previews require the target port to be declared in \`port\` or \`ports\` at sand
 
 [Section titled “Run Code (Ephemeral)”](#run-code-ephemeral)
 
-**Endpoint:** \`POST https://blaxel.services.aporto.ai/v1/run\`
+**Endpoint:** \`POST https://blaxel.services.aporto.tech/v1/run\`
 
 Execute code in an ephemeral sandbox. The response includes stdout, stderr, and exit code. The sandbox is automatically cleaned up after execution.
 
@@ -497,7 +497,7 @@ Jobs are stateless serverless functions deployed to Blaxel. They can run on-dema
 
 [Section titled “Deploy Job”](#deploy-job)
 
-**Endpoint:** \`POST https://blaxel.services.aporto.ai/v1/jobs\`
+**Endpoint:** \`POST https://blaxel.services.aporto.tech/v1/jobs\`
 
 Parameter
 
@@ -617,7 +617,7 @@ Delete a job
 
 [Section titled “Trigger Execution”](#trigger-execution)
 
-**Endpoint:** \`POST https://blaxel.services.aporto.ai/v1/jobs/:name/executions\`
+**Endpoint:** \`POST https://blaxel.services.aporto.tech/v1/jobs/:name/executions\`
 
 Parameter
 
@@ -778,7 +778,7 @@ Upstream timeout
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-const baseUrl = "https://blaxel.services.aporto.ai/v1";
+const baseUrl = "https://blaxel.services.aporto.tech/v1";
 async function deployService() {  // Create a sandbox with port 3000 exposed  const createRes = await aportoFetch(\`\${baseUrl}/sandboxes\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      name: "my-api",      tier: "s",      ttl: "2h",      port: 3000,    }),  });
   const sandbox = await createRes.json();  console.log(\`Sandbox created: \${sandbox.name}\`);
   // Wait for sandbox to be ready  let current = sandbox;  while (current.status !== "running") {    const checkRes = await aportoFetch(      \`\${baseUrl}/sandboxes/\${sandbox.name}\`    );    current = await checkRes.json();  }

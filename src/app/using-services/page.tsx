@@ -9,7 +9,7 @@ const content = `In this guide, you’ll verify a phone number using Aporto — 
     
     [Section titled “Get Your API Key”](#get-your-api-key)
     
-    Sign in to the [Aporto Dashboard](https://app.aporto.ai/settings) and generate an API key.
+    Sign in to the [Aporto Dashboard](https://app.aporto.tech/settings) and generate an API key.
     
     Caution
     
@@ -42,7 +42,7 @@ const content = `In this guide, you’ll verify a phone number using Aporto — 
     \`\`\`
     import { createFetch } from '@aporto/fetch';
     const fetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY!,});
-    async function sendVerificationCode(phoneNumber: string) {  const response = await fetch(    'https://prelude.services.aporto.ai/verifications',    {      method: 'POST',      headers: { 'Content-Type': 'application/json' },      body: JSON.stringify({        target: {          type: 'phone_number',          value: phoneNumber,        },      }),    }  );
+    async function sendVerificationCode(phoneNumber: string) {  const response = await fetch(    'https://prelude.services.aporto.tech/verifications',    {      method: 'POST',      headers: { 'Content-Type': 'application/json' },      body: JSON.stringify({        target: {          type: 'phone_number',          value: phoneNumber,        },      }),    }  );
       const data = await response.json();  console.log('Verification sent!');  console.log('Verification ID:', data.id);  return data.id;}
     // Replace with your phone number (E.164 format)sendVerificationCode('+15551234567');
     \`\`\`
@@ -66,7 +66,7 @@ const content = `In this guide, you’ll verify a phone number using Aporto — 
     \`\`\`
     import { createFetch } from '@aporto/fetch';
     const fetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY!,});
-    async function checkVerificationCode(verificationId: string, code: string) {  const response = await fetch(    'https://prelude.services.aporto.ai/verifications/check',    {      method: 'POST',      headers: { 'Content-Type': 'application/json' },      body: JSON.stringify({        verificationRequestId: verificationId,        code: code,      }),    }  );
+    async function checkVerificationCode(verificationId: string, code: string) {  const response = await fetch(    'https://prelude.services.aporto.tech/verifications/check',    {      method: 'POST',      headers: { 'Content-Type': 'application/json' },      body: JSON.stringify({        verificationRequestId: verificationId,        code: code,      }),    }  );
       const data = await response.json();  if (data.status === 'success') {    console.log('Phone number verified!');  } else {    console.log('Verification failed:', data.status);  }}
     // Use the verification ID from step 3 and the code you receivedcheckVerificationCode('your-verification-id', '123456');
     \`\`\`
@@ -83,7 +83,7 @@ const content = `In this guide, you’ll verify a phone number using Aporto — 
     
     [Section titled “See It in the Dashboard”](#see-it-in-the-dashboard)
     
-    Open the [Aporto Dashboard](https://app.aporto.ai) to see your verification transaction.
+    Open the [Aporto Dashboard](https://app.aporto.tech) to see your verification transaction.
     
     You just verified a phone number with **zero Prelude account setup**. That’s the power of Aporto.
     

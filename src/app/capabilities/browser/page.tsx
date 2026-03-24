@@ -12,7 +12,7 @@ const content = `Extract content from web pages, capture screenshots, or execute
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 // Create a Aporto-tracked fetch functionconst aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-// Extract webpage content - SDK handles payment/auth automaticallyconst response = await aportoFetch(  "https://anchor-browser.services.aporto.ai/v1/tools/fetch-webpage",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      url: "https://example.com",      format: "markdown",    }),  });
+// Extract webpage content - SDK handles payment/auth automaticallyconst response = await aportoFetch(  "https://anchor-browser.services.aporto.tech/v1/tools/fetch-webpage",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      url: "https://example.com",      format: "markdown",    }),  });
 const data = await response.json();console.log("Page content:", data.content);
 \`\`\`
 
@@ -41,7 +41,7 @@ Powered by [Anchor Browser](https://anchorbrowser.io). Anchor provides headless 
 
 [Section titled “Extract Content”](#extract-content)
 
-**Endpoint:** \`POST https://anchor-browser.services.aporto.ai/v1/tools/fetch-webpage\`
+**Endpoint:** \`POST https://anchor-browser.services.aporto.tech/v1/tools/fetch-webpage\`
 
 Extract the main content from a webpage as clean markdown or HTML.
 
@@ -121,7 +121,7 @@ Return partial content if page times out (default: \`false\`)
 
 [Section titled “Capture Screenshot”](#capture-screenshot)
 
-**Endpoint:** \`POST https://anchor-browser.services.aporto.ai/v1/tools/screenshot\`
+**Endpoint:** \`POST https://anchor-browser.services.aporto.tech/v1/tools/screenshot\`
 
 Capture a screenshot of a webpage.
 
@@ -241,8 +241,8 @@ The response is binary image data with the appropriate \`Content-Type\` header (
 
 **Endpoints:**
 
-*   \`POST https://anchor-browser.services.aporto.ai/v1/tools/fetch-webpage/price\`
-*   \`POST https://anchor-browser.services.aporto.ai/v1/tools/screenshot/price\`
+*   \`POST https://anchor-browser.services.aporto.tech/v1/tools/fetch-webpage/price\`
+*   \`POST https://anchor-browser.services.aporto.tech/v1/tools/screenshot/price\`
 
 Get the estimated cost before making a request. Accepts the same parameters as the main endpoint.
 
@@ -281,7 +281,7 @@ Rate limit exceeded
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-const baseUrl = "https://anchor-browser.services.aporto.ai/v1";
+const baseUrl = "https://anchor-browser.services.aporto.tech/v1";
 async function scrapeArticle(url: string) {  // Extract article content as markdown  const response = await aportoFetch(\`\${baseUrl}/tools/fetch-webpage\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      url,      format: "markdown",    }),  });
   const data = await response.json();  return {    title: data.title,    content: data.content,  };}
 async function capturePagePreview(url: string) {  // Capture a screenshot for social preview  const response = await aportoFetch(\`\${baseUrl}/tools/screenshot\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      url,      width: 1200,      height: 630,      format: "jpeg",      image_quality: 90,    }),  });

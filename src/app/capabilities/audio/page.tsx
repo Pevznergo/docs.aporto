@@ -12,7 +12,7 @@ const content = `Convert text to natural-sounding speech or generate sound effec
 \`\`\`
 import { createFetch } from "@aporto/fetch";import fs from "fs";
 // Create a Aporto-tracked fetch functionconst aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-// Convert text to speech - SDK handles payment/auth automaticallyconst response = await aportoFetch(  "https://elevenlabs.services.aporto.ai/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      text: "Hello! Welcome to Aporto. This is a test of the text-to-speech API.",      model_id: "eleven_multilingual_v2",    }),  });
+// Convert text to speech - SDK handles payment/auth automaticallyconst response = await aportoFetch(  "https://elevenlabs.services.aporto.tech/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      text: "Hello! Welcome to Aporto. This is a test of the text-to-speech API.",      model_id: "eleven_multilingual_v2",    }),  });
 // Save the audio to a fileconst buffer = await response.arrayBuffer();fs.writeFileSync("output.mp3", Buffer.from(buffer));console.log("Audio saved to output.mp3");
 \`\`\`
 
@@ -41,7 +41,7 @@ Powered by [ElevenLabs](https://elevenlabs.io). ElevenLabs provides industry-lea
 
 [Section titled “Text-to-Speech”](#text-to-speech)
 
-**Endpoint:** \`POST https://elevenlabs.services.aporto.ai/v1/text-to-speech/{voiceId}\`
+**Endpoint:** \`POST https://elevenlabs.services.aporto.tech/v1/text-to-speech/{voiceId}\`
 
 Convert text to natural-sounding speech. The voice ID is specified in the URL path.
 
@@ -114,7 +114,7 @@ The \`X-Character-Count\` header contains the number of characters processed.
 
 [Section titled “Sound Effects”](#sound-effects)
 
-**Endpoint:** \`POST https://elevenlabs.services.aporto.ai/v1/sound-generation\`
+**Endpoint:** \`POST https://elevenlabs.services.aporto.tech/v1/sound-generation\`
 
 Generate sound effects from text descriptions.
 
@@ -170,8 +170,8 @@ The response is binary MP3 audio data with \`Content-Type: audio/mpeg\`.
 
 **Endpoints:**
 
-*   \`POST https://elevenlabs.services.aporto.ai/v1/text-to-speech/{voiceId}/price\`
-*   \`POST https://elevenlabs.services.aporto.ai/v1/sound-generation/price\`
+*   \`POST https://elevenlabs.services.aporto.tech/v1/text-to-speech/{voiceId}/price\`
+*   \`POST https://elevenlabs.services.aporto.tech/v1/sound-generation/price\`
 
 Get the estimated cost before making a request. Accepts the same parameters as the main endpoint.
 
@@ -183,12 +183,12 @@ Get the estimated cost before making a request. Accepts the same parameters as t
 
 [Section titled “List Voices”](#list-voices)
 
-**Endpoint:** \`GET https://elevenlabs.services.aporto.ai/v2/voices\`
+**Endpoint:** \`GET https://elevenlabs.services.aporto.tech/v2/voices\`
 
 List all available ElevenLabs voices. This endpoint is free and requires no payment.
 
 \`\`\`
-const { data } = await client.get("https://elevenlabs.services.aporto.ai/v2/voices");
+const { data } = await client.get("https://elevenlabs.services.aporto.tech/v2/voices");
 for (const voice of data.voices) {  console.log(\`\${voice.name} (\${voice.voice_id})\`);}
 \`\`\`
 
@@ -227,7 +227,7 @@ Rate limit exceeded
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-const baseUrl = "https://elevenlabs.services.aporto.ai/v1";
+const baseUrl = "https://elevenlabs.services.aporto.tech/v1";
 async function createPodcastIntro(title: string, host: string) {  // Generate podcast intro with TTS  const script = \`Welcome to \${title}. I'm your host, \${host}. Let's dive in.\`;
   const response = await aportoFetch(\`\${baseUrl}/text-to-speech/JBFqnCBsd6RMkjVDRZzb\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      text: script,      model_id: "eleven_multilingual_v2",    }),  });
   return Buffer.from(await response.arrayBuffer());}

@@ -26,7 +26,7 @@ Once installed, the skill gives your AI assistant context about Aporto’s capab
 For tools that support \`llms.txt\` (like Cursor), point to:
 
 \`\`\`
-https://docs.aporto.ai/llms.txt
+https://docs.aporto.tech/llms.txt
 \`\`\`
 
 This provides a structured overview of all Aporto documentation in a format optimized for LLM consumption.
@@ -58,7 +58,7 @@ Example:
 Terminal window
 
 \`\`\`
-curl https://docs.aporto.ai/capabilities/verify.md
+curl https://docs.aporto.tech/capabilities/verify.md
 \`\`\`
 
 Internal links in markdown files point to other \`.md\` files for easy navigation.

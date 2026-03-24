@@ -9,7 +9,7 @@ const content = `Aporto wraps your existing HTTP client so any request to a Apor
     
     [Section titled “Get an API Key”](#get-an-api-key)
     
-    Grab one from the [Aporto Dashboard](https://app.aporto.ai/settings).
+    Grab one from the [Aporto Dashboard](https://app.aporto.tech/settings).
     
     Terminal window
     
@@ -34,7 +34,7 @@ const content = `Aporto wraps your existing HTTP client so any request to a Apor
     \`\`\`
     import { createFetch } from "@aporto/fetch";
     const fetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY!,});
-    const response = await fetch(  "https://linkup.services.aporto.ai/v1/search?q=latest+AI+news&depth=standard");
+    const response = await fetch(  "https://linkup.services.aporto.tech/v1/search?q=latest+AI+news&depth=standard");
     console.log(await response.json());
     \`\`\`
     

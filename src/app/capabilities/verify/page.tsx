@@ -12,7 +12,7 @@ const content = `Verify phone numbers instantly — no Twilio account, no vendor
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-const baseUrl = "https://prelude.services.aporto.ai";
+const baseUrl = "https://prelude.services.aporto.tech";
 // Step 1: Send a verification codeconst sendResponse = await aportoFetch(\`\${baseUrl}/verifications\`, {  method: "POST",  headers: { "Content-Type": "application/json" },  body: JSON.stringify({    target: {      type: "phone_number",      value: "+15551234567",    },  }),});
 const sendData = await sendResponse.json();console.log("Verification sent:", sendData.id);
 // Step 2: Check the code (after user enters it)const checkResponse = await aportoFetch(\`\${baseUrl}/verifications/check\`, {  method: "POST",  headers: { "Content-Type": "application/json" },  body: JSON.stringify({    verificationRequestId: sendData.id,    code: "123456", // code entered by user  }),});
@@ -50,7 +50,7 @@ Powered by [Prelude](https://prelude.so). Prelude handles global SMS delivery wi
 
 [Section titled “Send Verification Code”](#send-verification-code)
 
-**Endpoint:** \`POST https://prelude.services.aporto.ai/verifications\`
+**Endpoint:** \`POST https://prelude.services.aporto.tech/verifications\`
 
 Send a verification code to a phone number.
 
@@ -142,7 +142,7 @@ Delivery was blocked (rate limiting, fraud prevention, or carrier block). Return
 
 [Section titled “Check Verification Code”](#check-verification-code)
 
-**Endpoint:** \`POST https://prelude.services.aporto.ai/verifications/check\`
+**Endpoint:** \`POST https://prelude.services.aporto.tech/verifications/check\`
 
 Verify the code entered by the user. This endpoint is free but rate-limited to prevent brute-force attacks.
 
@@ -245,7 +245,7 @@ Email verification not yet supported — use phone number
 \`\`\`
 import { createFetch } from "@aporto/fetch";
 const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
-const baseUrl = "https://prelude.services.aporto.ai";
+const baseUrl = "https://prelude.services.aporto.tech";
 async function verifyPhoneNumber(phoneNumber: string, userCode: string) {  // Step 1: Send verification code  const sendResponse = await aportoFetch(\`\${baseUrl}/verifications\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      target: {        type: "phone_number",        value: phoneNumber,      },    }),  });
   const sendData = await sendResponse.json();  const verificationId = sendData.id;  console.log(\`Verification code sent to \${phoneNumber}\`);
   // Step 2: Check the code (after user enters it)  const checkResponse = await aportoFetch(\`\${baseUrl}/verifications/check\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      verificationRequestId: verificationId,      code: userCode,    }),  });
