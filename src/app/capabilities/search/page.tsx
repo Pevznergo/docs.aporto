@@ -11,7 +11,7 @@ const content = `Give your agents real-time information from the web — raw sea
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 // Search with AI-generated answerconst response = await aportoFetch(  "https://linkup.services.aporto.tech/v1/search",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      q: "What are the latest developments in quantum computing?",      depth: "standard",      outputType: "sourcedAnswer",    }),  });
 const data = await response.json();console.log(data.answer);console.log("Sources:", data.sources);
 \`\`\`

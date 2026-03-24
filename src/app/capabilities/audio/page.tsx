@@ -11,7 +11,7 @@ const content = `Convert text to natural-sounding speech or generate sound effec
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";import fs from "fs";
-// Create a Aporto-tracked fetch functionconst aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+// Create a Aporto-tracked fetch functionconst aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 // Convert text to speech - SDK handles payment/auth automaticallyconst response = await aportoFetch(  "https://elevenlabs.services.aporto.tech/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      text: "Hello! Welcome to Aporto. This is a test of the text-to-speech API.",      model_id: "eleven_multilingual_v2",    }),  });
 // Save the audio to a fileconst buffer = await response.arrayBuffer();fs.writeFileSync("output.mp3", Buffer.from(buffer));console.log("Audio saved to output.mp3");
 \`\`\`
@@ -226,7 +226,7 @@ Rate limit exceeded
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 const baseUrl = "https://elevenlabs.services.aporto.tech/v1";
 async function createPodcastIntro(title: string, host: string) {  // Generate podcast intro with TTS  const script = \`Welcome to \${title}. I'm your host, \${host}. Let's dive in.\`;
   const response = await aportoFetch(\`\${baseUrl}/text-to-speech/JBFqnCBsd6RMkjVDRZzb\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      text: script,      model_id: "eleven_multilingual_v2",    }),  });

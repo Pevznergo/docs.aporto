@@ -11,7 +11,7 @@ const content = `Verify phone numbers instantly — no Twilio account, no vendor
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 const baseUrl = "https://prelude.services.aporto.tech";
 // Step 1: Send a verification codeconst sendResponse = await aportoFetch(\`\${baseUrl}/verifications\`, {  method: "POST",  headers: { "Content-Type": "application/json" },  body: JSON.stringify({    target: {      type: "phone_number",      value: "+15551234567",    },  }),});
 const sendData = await sendResponse.json();console.log("Verification sent:", sendData.id);
@@ -244,7 +244,7 @@ Email verification not yet supported — use phone number
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 const baseUrl = "https://prelude.services.aporto.tech";
 async function verifyPhoneNumber(phoneNumber: string, userCode: string) {  // Step 1: Send verification code  const sendResponse = await aportoFetch(\`\${baseUrl}/verifications\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      target: {        type: "phone_number",        value: phoneNumber,      },    }),  });
   const sendData = await sendResponse.json();  const verificationId = sendData.id;  console.log(\`Verification code sent to \${phoneNumber}\`);

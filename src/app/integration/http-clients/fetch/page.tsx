@@ -49,7 +49,7 @@ Create a Aporto-enabled fetch function:
 
 \`\`\`
 import { createFetch } from '@aporto/fetch';
-const fetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY});
+const fetch = createFetch({  apiKey: process.env.APORTO_API_KEY});
 // Drop-in replacement for native fetchconst response = await fetch('https://api.example.com/data');const data = await response.json();
 \`\`\`
 
@@ -63,7 +63,7 @@ All configuration options for \`createFetch\`:
 
 \`\`\`
 import { createFetch } from '@aporto/fetch';
-const fetch = createFetch({  // Optional - Automatically uses process.env.SAPIOM_API_KEY if not provided  apiKey: process.env.MY_CUSTOM_SAPIOM_KEY,
+const fetch = createFetch({  // Optional - Automatically uses process.env.APORTO_API_KEY if not provided  apiKey: process.env.MY_CUSTOM_APORTO_KEY,
   // Optional - Control  enabled: true,              // Enable Aporto handling (default: true)  failureMode: 'open',        // 'open' | 'closed' (default: 'open')                              // 'open': Allow requests if Aporto fails (prioritizes availability)                              // 'closed': Block requests if Aporto fails (prioritizes security)
   // Optional - Default metadata (applied to all requests)  agentName: 'my-agent',      // Agent identifier  agentId: 'agent-123',       // Agent UUID or numeric ID  serviceName: 'my-service',  // Service name for transactions  traceId: 'trace-xyz',       // Internal trace UUID  traceExternalId: 'ext-456', // External trace identifier});
 \`\`\`
@@ -74,7 +74,7 @@ const fetch = createFetch({  // Optional - Automatically uses process.env.SAPIOM
 
 \`apiKey\` string required
 
-Your Aporto API key. Can also be set via \`SAPIOM_API_KEY\` environment variable
+Your Aporto API key. Can also be set via \`APORTO_API_KEY\` environment variable
 
 \`enabled\` boolean default: true
 
@@ -130,7 +130,7 @@ The wrapper automatically handles 402 Payment Required responses:
 
 \`\`\`
 import { createFetch } from '@aporto/fetch';
-const fetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY});
+const fetch = createFetch({  apiKey: process.env.APORTO_API_KEY});
 try {  // Automatically handles 402 payment flows  const response = await fetch('https://api.example.com/premium-endpoint');  const data = await response.json();  console.log(data);} catch (error) {  // Payment errors will be handled by Aporto  console.error('Request failed:', error);}
 \`\`\`
 
@@ -142,9 +142,9 @@ try {  // Automatically handles 402 payment flows  const response = await fetch(
 
 Automatically reads from environment:
 
-*   \`SAPIOM_API_KEY\` (required)
-*   \`SAPIOM_BASE_URL\` or \`SAPIOM_API_URL\` (optional)
-*   \`SAPIOM_TIMEOUT\` (optional, in milliseconds)
+*   \`APORTO_API_KEY\` (required)
+*   \`APORTO_BASE_URL\` or \`APORTO_API_URL\` (optional)
+*   \`APORTO_TIMEOUT\` (optional, in milliseconds)
 
 * * *
 

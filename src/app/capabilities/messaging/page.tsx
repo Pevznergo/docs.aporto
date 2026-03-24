@@ -11,7 +11,7 @@ const content = `Send asynchronous messages, enqueue jobs, and batch deliver pay
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 // Publish a message to a webhookconst response = await aportoFetch(  "https://upstash.services.aporto.tech/v1/qstash/publish/https://example.com/webhook",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      type: "job.created",      payload: { id: "job_123" },    }),  });
 const data = await response.json();console.log("Message ID:", data.messageId);
 \`\`\`
@@ -337,7 +337,7 @@ Rate limit exceeded
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 const baseUrl = "https://upstash.services.aporto.tech/v1/qstash";
 async function processOrder(orderId: string) {  // Fire-and-forget: notify the fulfillment service  await aportoFetch(    \`\${baseUrl}/publish/https://api.example.com/fulfillment\`,    {      method: "POST",      headers: { "Content-Type": "application/json" },      body: JSON.stringify({ orderId, action: "ship" }),    }  );
   // Ordered queue: send confirmation emails sequentially  await aportoFetch(    \`\${baseUrl}/enqueue/email-queue/https://api.example.com/send-email\`,    {      method: "POST",      headers: { "Content-Type": "application/json" },      body: JSON.stringify({ orderId, template: "order-confirmation" }),    }  );

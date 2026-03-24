@@ -11,7 +11,7 @@ const content = `Provision and use Redis, vector, and full-text search databases
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 const mgmt = "https://upstash.services.aporto.tech";
 // Step 1: Create a Redis databaseconst createRes = await aportoFetch(\`\${mgmt}/v1/redis/databases\`, {  method: "POST",  headers: { "Content-Type": "application/json" },  body: JSON.stringify({    name: "my-cache",    region: "us-east-1",    ttl: "1d",  }),});
 const db = await createRes.json();console.log("Created:", db.id, db.url);
@@ -828,7 +828,7 @@ Upstream provisioning error from Upstash
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 const mgmt = "https://upstash.services.aporto.tech";
 async function cacheWorkflow() {  // Create a Redis database with 1-hour TTL  const createRes = await aportoFetch(\`\${mgmt}/v1/redis/databases\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({ name: "session-cache", ttl: "1h" }),  });
   const db = await createRes.json();  console.log(\`Redis ready at \${db.url}\`);

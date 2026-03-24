@@ -108,7 +108,7 @@ The SDK wraps your HTTP client (\`axios\`, \`fetch\`, etc.) and attaches payment
 
 \`\`\`
 import axios from "axios";import { withAporto } from "@aporto/axios";
-// Wrap your client onceconst client = withAporto(axios.create(), {  apiKey: process.env.SAPIOM_API_KEY!,});
+// Wrap your client onceconst client = withAporto(axios.create(), {  apiKey: process.env.APORTO_API_KEY!,});
 // Then make requests as usual — payment is handled automaticallyconst { data } = await client.get(  "https://linkup.services.aporto.tech/v1/search",  { params: { q: "latest AI news", depth: "standard" } });
 \`\`\`
 

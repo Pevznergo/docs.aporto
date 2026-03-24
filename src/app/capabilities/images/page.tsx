@@ -11,7 +11,7 @@ const content = `Generate images from text prompts, transform existing images, o
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-// Create a Aporto-tracked fetch functionconst aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+// Create a Aporto-tracked fetch functionconst aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 // Generate image with Fal.ai - SDK handles payment/auth automaticallyconst response = await aportoFetch(  "https://fal.services.aporto.tech/v1/run/fal-ai/flux/dev",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      prompt: "A serene mountain landscape at sunset",      image_size: "landscape_4_3",    }),  });
 const data = await response.json();console.log("Generated image:", data.images[0].url);
 \`\`\`
@@ -364,7 +364,7 @@ Rate limit exceeded
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 const baseUrl = "https://fal.services.aporto.tech/v1";
 async function generateProductImage(description: string) {  // Generate a product visualization  const response = await aportoFetch(\`\${baseUrl}/run/fal-ai/flux/dev\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      prompt: \`Professional product photo: \${description}, studio lighting, white background\`,      image_size: "square_hd",      num_images: 1,      guidance_scale: 4.0,    }),  });
   const data = await response.json();  return data.images[0].url;}

@@ -14,7 +14,7 @@ const content = `Aporto wraps your existing HTTP client so any request to a Apor
     Terminal window
     
     \`\`\`
-    export SAPIOM_API_KEY="your_api_key_here"
+    export APORTO_API_KEY="your_api_key_here"
     \`\`\`
     
 2.  ## Install the SDK
@@ -33,7 +33,7 @@ const content = `Aporto wraps your existing HTTP client so any request to a Apor
     
     \`\`\`
     import { createFetch } from "@aporto/fetch";
-    const fetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY!,});
+    const fetch = createFetch({  apiKey: process.env.APORTO_API_KEY!,});
     const response = await fetch(  "https://linkup.services.aporto.tech/v1/search?q=latest+AI+news&depth=standard");
     console.log(await response.json());
     \`\`\`

@@ -70,7 +70,7 @@ The LangChain v1.x integration uses a middleware-based approach for seamless tra
 \`\`\`
 import { createAgent } from 'langchain';import { createAportoMiddleware } from '@aporto/langchain';
 // Define your toolsconst tools = [getWeather, sendEmail];
-// Create agent with Aporto middlewareconst agent = createAgent({  model: 'gpt-4',  tools,  middleware: [    createAportoMiddleware({      apiKey: process.env.SAPIOM_API_KEY,      failureMode: 'open',  // 'open' (graceful) or 'closed' (strict)      traceId: 'my-workflow',      agentName: 'customer-support-bot',    }),  ],});
+// Create agent with Aporto middlewareconst agent = createAgent({  model: 'gpt-4',  tools,  middleware: [    createAportoMiddleware({      apiKey: process.env.APORTO_API_KEY,      failureMode: 'open',  // 'open' (graceful) or 'closed' (strict)      traceId: 'my-workflow',      agentName: 'customer-support-bot',    }),  ],});
 // All tracking happens automatically!const result = await agent.invoke({  messages: [{ role: 'user', content: 'What is the weather in Tokyo?' }],});
 console.log(result.messages);
 \`\`\`
@@ -101,7 +101,7 @@ await agent.invoke(  { messages: [...] },  {    context: {      aportoTraceId: '
 
 \`apiKey\` string required
 
-Your Aporto API key. Can also be set via \`SAPIOM_API_KEY\` environment variable
+Your Aporto API key. Can also be set via \`APORTO_API_KEY\` environment variable
 
 \`enabled\` boolean default: true
 
@@ -153,7 +153,7 @@ Override agent ID for this invocation
 Terminal window
 
 \`\`\`
-# RequiredSAPIOM_API_KEY=spk_...
+# RequiredAPORTO_API_KEY=spk_...
 # Your LLM provider keysOPENAI_API_KEY=sk-...
 \`\`\`
 
@@ -182,15 +182,15 @@ Use Environment Variables
 Never hardcode API keys:
 
 \`\`\`
-// ✅ GoodcreateAportoMiddleware({  apiKey: process.env.SAPIOM_API_KEY,});
+// ✅ GoodcreateAportoMiddleware({  apiKey: process.env.APORTO_API_KEY,});
 // ❌ BadcreateAportoMiddleware({  apiKey: 'spk_...',});
 \`\`\`
 
 Choose Appropriate Failure Mode
 
 \`\`\`
-// For production - prioritize availabilitycreateAportoMiddleware({  apiKey: process.env.SAPIOM_API_KEY,  failureMode: 'open', // Continues even if tracking fails});
-// For sensitive operations - prioritize securitycreateAportoMiddleware({  apiKey: process.env.SAPIOM_API_KEY,  failureMode: 'closed', // Blocks if tracking fails});
+// For production - prioritize availabilitycreateAportoMiddleware({  apiKey: process.env.APORTO_API_KEY,  failureMode: 'open', // Continues even if tracking fails});
+// For sensitive operations - prioritize securitycreateAportoMiddleware({  apiKey: process.env.APORTO_API_KEY,  failureMode: 'closed', // Blocks if tracking fails});
 \`\`\`
 
 Use Trace IDs for Correlation
@@ -198,7 +198,7 @@ Use Trace IDs for Correlation
 Group related operations with trace IDs:
 
 \`\`\`
-const middleware = createAportoMiddleware({  apiKey: process.env.SAPIOM_API_KEY,  traceId: \`session-\${sessionId}\`,  agentName: 'customer-support',});
+const middleware = createAportoMiddleware({  apiKey: process.env.APORTO_API_KEY,  traceId: \`session-\${sessionId}\`,  agentName: 'customer-support',});
 \`\`\`
 
 * * *

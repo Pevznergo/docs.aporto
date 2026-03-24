@@ -20,7 +20,7 @@ const content = `In this guide, you’ll verify a phone number using Aporto — 
     Terminal window
     
     \`\`\`
-    export SAPIOM_API_KEY="your_api_key_here"
+    export APORTO_API_KEY="your_api_key_here"
     \`\`\`
     
 2.  ## Install the SDK
@@ -41,7 +41,7 @@ const content = `In this guide, you’ll verify a phone number using Aporto — 
     
     \`\`\`
     import { createFetch } from '@aporto/fetch';
-    const fetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY!,});
+    const fetch = createFetch({  apiKey: process.env.APORTO_API_KEY!,});
     async function sendVerificationCode(phoneNumber: string) {  const response = await fetch(    'https://prelude.services.aporto.tech/verifications',    {      method: 'POST',      headers: { 'Content-Type': 'application/json' },      body: JSON.stringify({        target: {          type: 'phone_number',          value: phoneNumber,        },      }),    }  );
       const data = await response.json();  console.log('Verification sent!');  console.log('Verification ID:', data.id);  return data.id;}
     // Replace with your phone number (E.164 format)sendVerificationCode('+15551234567');
@@ -65,7 +65,7 @@ const content = `In this guide, you’ll verify a phone number using Aporto — 
     
     \`\`\`
     import { createFetch } from '@aporto/fetch';
-    const fetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY!,});
+    const fetch = createFetch({  apiKey: process.env.APORTO_API_KEY!,});
     async function checkVerificationCode(verificationId: string, code: string) {  const response = await fetch(    'https://prelude.services.aporto.tech/verifications/check',    {      method: 'POST',      headers: { 'Content-Type': 'application/json' },      body: JSON.stringify({        verificationRequestId: verificationId,        code: code,      }),    }  );
       const data = await response.json();  if (data.status === 'success') {    console.log('Phone number verified!');  } else {    console.log('Verification failed:', data.status);  }}
     // Use the verification ID from step 3 and the code you receivedcheckVerificationCode('your-verification-id', '123456');

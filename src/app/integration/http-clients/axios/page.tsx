@@ -37,7 +37,7 @@ Wrap your Axios instance with Aporto handling:
 
 \`\`\`
 import axios from "axios";import { withAporto } from "@aporto/axios";
-const client = withAporto(  axios.create({    baseURL: "https://api.example.com",  }),  {    apiKey: process.env.SAPIOM_API_KEY,  });
+const client = withAporto(  axios.create({    baseURL: "https://api.example.com",  }),  {    apiKey: process.env.APORTO_API_KEY,  });
 // Automatically handles 402 payment flows and authorizationconst response = await client.get("/premium-endpoint");console.log(response.data);
 \`\`\`
 
@@ -51,7 +51,7 @@ All configuration options for \`withAporto\`:
 
 \`\`\`
 import axios from "axios";import { withAporto } from "@aporto/axios";
-const client = withAporto(  axios.create({    baseURL: "https://api.example.com",  }),  {    // Optional - Automatically uses process.env.SAPIOM_API_KEY if not provided    apiKey: process.env.MY_CUSTOM_SAPIOM_KEY,
+const client = withAporto(  axios.create({    baseURL: "https://api.example.com",  }),  {    // Optional - Automatically uses process.env.APORTO_API_KEY if not provided    apiKey: process.env.MY_CUSTOM_APORTO_KEY,
     // Optional - Control    enabled: true, // Enable Aporto handling (default: true)    failureMode: "open", // 'open' | 'closed' (default: 'open')    // 'open': Allow requests if Aporto fails (prioritizes availability)    // 'closed': Block requests if Aporto fails (prioritizes security)
     // Optional - Default metadata (applied to all requests)    agentName: "my-agent", // Agent identifier    agentId: "agent-123", // Agent UUID or numeric ID    serviceName: "my-service", // Service name for transactions    traceId: "trace-xyz", // Internal trace UUID    traceExternalId: "ext-456", // External trace identifier  });
 \`\`\`
@@ -62,7 +62,7 @@ const client = withAporto(  axios.create({    baseURL: "https://api.example.com"
 
 \`apiKey\` string required
 
-Your Aporto API key. Can also be set via \`SAPIOM_API_KEY\` environment variable
+Your Aporto API key. Can also be set via \`APORTO_API_KEY\` environment variable
 
 \`enabled\` boolean default: true
 
@@ -115,7 +115,7 @@ The wrapper automatically handles 402 Payment Required responses:
 
 \`\`\`
 import axios from "axios";import { withAporto } from "@aporto/axios";
-const client = withAporto(  axios.create({    baseURL: "https://api.example.com",  }),  {    apiKey: process.env.SAPIOM_API_KEY,  });
+const client = withAporto(  axios.create({    baseURL: "https://api.example.com",  }),  {    apiKey: process.env.APORTO_API_KEY,  });
 try {  // Automatically handles 402 payment flows  const response = await client.get("/premium-endpoint");  console.log(response.data);} catch (error) {  // Payment errors will be handled by Aporto  console.error("Request failed:", error);}
 \`\`\`
 
@@ -127,9 +127,9 @@ try {  // Automatically handles 402 payment flows  const response = await client
 
 Automatically reads from environment:
 
-*   \`SAPIOM_API_KEY\` (required)
-*   \`SAPIOM_BASE_URL\` or \`SAPIOM_API_URL\` (optional)
-*   \`SAPIOM_TIMEOUT\` (optional, in milliseconds)
+*   \`APORTO_API_KEY\` (required)
+*   \`APORTO_BASE_URL\` or \`APORTO_API_URL\` (optional)
+*   \`APORTO_TIMEOUT\` (optional, in milliseconds)
 
 * * *
 
@@ -142,15 +142,15 @@ Use Environment Variables
 Never hardcode API keys:
 
 \`\`\`
-// ✅ Goodconst client = withAporto(axios.create(), {  apiKey: process.env.SAPIOM_API_KEY,});
+// ✅ Goodconst client = withAporto(axios.create(), {  apiKey: process.env.APORTO_API_KEY,});
 // ❌ Badconst client = withAporto(axios.create(), {  apiKey: "sk_...",});
 \`\`\`
 
 Choose Appropriate Failure Mode
 
 \`\`\`
-// For production APIs - prioritize availabilityconst client = withAporto(axios.create(), {  apiKey: process.env.SAPIOM_API_KEY,  failureMode: "open", // Requests proceed even if Aporto fails});
-// For sensitive operations - prioritize securityconst client = withAporto(axios.create(), {  apiKey: process.env.SAPIOM_API_KEY,  failureMode: "closed", // Requests blocked if Aporto fails});
+// For production APIs - prioritize availabilityconst client = withAporto(axios.create(), {  apiKey: process.env.APORTO_API_KEY,  failureMode: "open", // Requests proceed even if Aporto fails});
+// For sensitive operations - prioritize securityconst client = withAporto(axios.create(), {  apiKey: process.env.APORTO_API_KEY,  failureMode: "closed", // Requests blocked if Aporto fails});
 \`\`\`
 
 * * *

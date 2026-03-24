@@ -11,7 +11,7 @@ const content = `Extract content from web pages, capture screenshots, or execute
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-// Create a Aporto-tracked fetch functionconst aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+// Create a Aporto-tracked fetch functionconst aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 // Extract webpage content - SDK handles payment/auth automaticallyconst response = await aportoFetch(  "https://anchor-browser.services.aporto.tech/v1/tools/fetch-webpage",  {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      url: "https://example.com",      format: "markdown",    }),  });
 const data = await response.json();console.log("Page content:", data.content);
 \`\`\`
@@ -280,7 +280,7 @@ Rate limit exceeded
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 const baseUrl = "https://anchor-browser.services.aporto.tech/v1";
 async function scrapeArticle(url: string) {  // Extract article content as markdown  const response = await aportoFetch(\`\${baseUrl}/tools/fetch-webpage\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      url,      format: "markdown",    }),  });
   const data = await response.json();  return {    title: data.title,    content: data.content,  };}

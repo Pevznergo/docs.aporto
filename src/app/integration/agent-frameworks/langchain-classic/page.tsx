@@ -70,7 +70,7 @@ Use \`createAportoReactAgent\` for the simplest agent integration:
 \`\`\`
 import { createAportoReactAgent } from '@aporto/langchain-classic';import { ChatOpenAI } from '@langchain/openai';import { TavilySearchResults } from '@langchain/community/tools/tavily_search';
 // Define your toolsconst tools = [  new TavilySearchResults({ maxResults: 3 })];
-// Create Aporto-tracked agent with one function callconst agent = await createAportoReactAgent(  {    llm: new ChatOpenAI({      apiKey: process.env.OPENAI_API_KEY,      model: 'gpt-4',      temperature: 0    }),    tools  },  {    apiKey: process.env.SAPIOM_API_KEY,    traceId: 'agent-workflow', // optional    agentName: 'customer-support-bot',    failureMode: 'open'  });
+// Create Aporto-tracked agent with one function callconst agent = await createAportoReactAgent(  {    llm: new ChatOpenAI({      apiKey: process.env.OPENAI_API_KEY,      model: 'gpt-4',      temperature: 0    }),    tools  },  {    apiKey: process.env.APORTO_API_KEY,    traceId: 'agent-workflow', // optional    agentName: 'customer-support-bot',    failureMode: 'open'  });
 // All operations (model + tools) are automatically trackedconst result = await agent.invoke({  messages: [    { role: 'user', content: 'What is the weather in San Francisco?' }  ]});
 console.log(result.messages);
 \`\`\`
@@ -87,9 +87,9 @@ For more granular control, wrap individual components:
 
 \`\`\`
 import { AportoChatOpenAI, wrapAportoTool, wrapAportoAgent } from '@aporto/langchain-classic';
-// Wrap modelconst model = new AportoChatOpenAI(  { model: 'gpt-4' },  { apiKey: process.env.SAPIOM_API_KEY });
-// Wrap toolsconst wrappedTool = wrapAportoTool(myTool, {  apiKey: process.env.SAPIOM_API_KEY,  serviceName: 'weather-api'});
-// Wrap agentconst agent = wrapAportoAgent(graph, {  apiKey: process.env.SAPIOM_API_KEY,  traceId: 'agent-workflow'});
+// Wrap modelconst model = new AportoChatOpenAI(  { model: 'gpt-4' },  { apiKey: process.env.APORTO_API_KEY });
+// Wrap toolsconst wrappedTool = wrapAportoTool(myTool, {  apiKey: process.env.APORTO_API_KEY,  serviceName: 'weather-api'});
+// Wrap agentconst agent = wrapAportoAgent(graph, {  apiKey: process.env.APORTO_API_KEY,  traceId: 'agent-workflow'});
 \`\`\`
 
 ### Streaming Responses
@@ -100,7 +100,7 @@ Enable streaming for real-time responses:
 
 \`\`\`
 import { AportoChatOpenAI } from '@aporto/langchain-classic';
-const model = new AportoChatOpenAI({  apiKey: process.env.OPENAI_API_KEY,  aportoApiKey: process.env.SAPIOM_API_KEY,  model: 'gpt-4',  streaming: true});
+const model = new AportoChatOpenAI({  apiKey: process.env.OPENAI_API_KEY,  aportoApiKey: process.env.APORTO_API_KEY,  model: 'gpt-4',  streaming: true});
 const stream = await model.stream('Write a short poem about AI');
 for await (const chunk of stream) {  process.stdout.write(chunk.content);}
 \`\`\`
@@ -117,7 +117,7 @@ for await (const chunk of stream) {  process.stdout.write(chunk.content);}
 
 \`apiKey\` string required
 
-Your Aporto API key. Can also be set via \`SAPIOM_API_KEY\` environment variable
+Your Aporto API key. Can also be set via \`APORTO_API_KEY\` environment variable
 
 \`enabled\` boolean default: true
 
@@ -158,7 +158,7 @@ OpenAI model to use (e.g., \`gpt-4\`, \`gpt-4-turbo\`, \`gpt-3.5-turbo\`)
 
 \`aportoApiKey\` string required
 
-Your Aporto API key. Can also be set via \`SAPIOM_API_KEY\` environment variable
+Your Aporto API key. Can also be set via \`APORTO_API_KEY\` environment variable
 
 \`temperature\` number default: 0.7
 
@@ -191,7 +191,7 @@ Service identifier for the tool’s transactions
 Terminal window
 
 \`\`\`
-# RequiredOPENAI_API_KEY=sk-...SAPIOM_API_KEY=spk_...
+# RequiredOPENAI_API_KEY=sk-...APORTO_API_KEY=spk_...
 \`\`\`
 
 * * *
@@ -220,14 +220,14 @@ Never hardcode API keys:
 
 \`\`\`
 import { AportoChatOpenAI } from '@aporto/langchain-classic';
-// ✅ Goodconst model = new AportoChatOpenAI({  apiKey: process.env.OPENAI_API_KEY,  aportoApiKey: process.env.SAPIOM_API_KEY});
+// ✅ Goodconst model = new AportoChatOpenAI({  apiKey: process.env.OPENAI_API_KEY,  aportoApiKey: process.env.APORTO_API_KEY});
 // ❌ Badconst model = new AportoChatOpenAI({  apiKey: 'sk-...',  aportoApiKey: 'spk-...'});
 \`\`\`
 
 Choose the Right Integration Level
 
 \`\`\`
-// Use createAportoReactAgent for simplest setupconst agent = await createAportoReactAgent(  { llm, tools },  { apiKey: process.env.SAPIOM_API_KEY });
+// Use createAportoReactAgent for simplest setupconst agent = await createAportoReactAgent(  { llm, tools },  { apiKey: process.env.APORTO_API_KEY });
 // Use component wrappers for granular controlconst model = new AportoChatOpenAI({ ... });const tool = wrapAportoTool(myTool, { ... });
 \`\`\`
 
@@ -237,7 +237,7 @@ Group related operations with trace IDs:
 
 \`\`\`
 import { createAportoReactAgent } from '@aporto/langchain-classic';
-const agent = await createAportoReactAgent(  { llm, tools },  {    apiKey: process.env.SAPIOM_API_KEY,    traceId: \`session-\${sessionId}\`,    agentName: 'customer-support',  });
+const agent = await createAportoReactAgent(  { llm, tools },  {    apiKey: process.env.APORTO_API_KEY,    traceId: \`session-\${sessionId}\`,    agentName: 'customer-support',  });
 \`\`\`
 
 * * *

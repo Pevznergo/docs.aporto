@@ -11,7 +11,7 @@ const content = `Deploy full projects and manage persistent sandbox environments
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 const baseUrl = "https://blaxel.services.aporto.tech/v1";
 // Step 1: Create a sandbox with a port exposedconst createRes = await aportoFetch(\`\${baseUrl}/sandboxes\`, {  method: "POST",  headers: { "Content-Type": "application/json" },  body: JSON.stringify({    name: "my-api",    tier: "s",    ttl: "2h",    port: 3000,  }),});
 const sandbox = await createRes.json();
@@ -777,7 +777,7 @@ Upstream timeout
 
 \`\`\`
 import { createFetch } from "@aporto/fetch";
-const aportoFetch = createFetch({  apiKey: process.env.SAPIOM_API_KEY,  agentName: "my-agent",});
+const aportoFetch = createFetch({  apiKey: process.env.APORTO_API_KEY,  agentName: "my-agent",});
 const baseUrl = "https://blaxel.services.aporto.tech/v1";
 async function deployService() {  // Create a sandbox with port 3000 exposed  const createRes = await aportoFetch(\`\${baseUrl}/sandboxes\`, {    method: "POST",    headers: { "Content-Type": "application/json" },    body: JSON.stringify({      name: "my-api",      tier: "s",      ttl: "2h",      port: 3000,    }),  });
   const sandbox = await createRes.json();  console.log(\`Sandbox created: \${sandbox.name}\`);
