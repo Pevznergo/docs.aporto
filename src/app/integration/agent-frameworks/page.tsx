@@ -3,36 +3,50 @@
 import React from "react";
 import MarkdownRenderer from "../../../components/MarkdownRenderer";
 
-const content = `Aporto provides native integrations with popular AI agent frameworks, enabling automatic cost tracking, session management, and payment handling for your AI applications.
+const content = `Aporto's LLM gateway is OpenAI-compatible. Any framework that supports a custom \`baseURL\` works out of the box.
+
+## @aporto/core (Recommended)
+
+The official SDK works alongside any agent framework:
+
+\`\`\`bash
+npm install @aporto/core
+\`\`\`
+
+\`\`\`typescript
+import AportoClient from "@aporto/core";
+
+const client = new AportoClient({ apiKey: process.env.APORTO_API_KEY! });
+
+// LLM calls
+const response = await client.chat.completions.create({
+  model: "openai/gpt-4o-mini",
+  messages: [{ role: "user", content: "Hello!" }],
+});
+
+// Partner services in the same agent workflow
+const webResults = await client.services.search.query({
+  query: "current weather in San Francisco",
+  depth: "standard",
+});
+\`\`\`
 
 ## Supported Frameworks
 
-[Section titled “Supported Frameworks”](#supported-frameworks)
+[LangChain](/integration/agent-frameworks/langchain) Use ChatOpenAI with Aporto's baseURL
 
-[LangChain](/integration/agent-frameworks/langchain) v1.x supported (middleware-based)
+[LangChain Classic](/integration/agent-frameworks/langchain-classic) v0.3+ component wrappers
 
-[LangChain Classic](/integration/agent-frameworks/langchain-classic) v0.3+ supported (component wrappers)
+## Coming Soon
 
-Tip
-
-**Language Support:** TypeScript/JavaScript (Node.js 18+)
-
-**Coming Soon:** Mastra, LangGraph, AutoGPT, Python support
-
-Note
-
-**Which package should I use?**
-
-*   Use \`@aporto/langchain\` if you’re on **LangChain v1.x** — simpler middleware-based integration
-*   Use \`@aporto/langchain-classic\` if you’re on **LangChain v0.3+** — component wrapper approach
-
-* * *
+- Mastra
+- LangGraph
+- AutoGPT
+- Python support
 
 ## Next Steps
 
-[Section titled “Next Steps”](#next-steps)
-
-[HTTP Client Integration](/integration/http-clients) Learn about low-level HTTP client integrations`;
+[HTTP Client Integration](/integration/http-clients) Raw fetch/axios integration`;
 
 export default function Page() {
     return <MarkdownRenderer content={content} />;

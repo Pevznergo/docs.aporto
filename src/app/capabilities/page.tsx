@@ -3,177 +3,121 @@
 import React from "react";
 import MarkdownRenderer from "../../components/MarkdownRenderer";
 
-const content = `Your agents need more than reasoning — they need access. Aporto gives your agents instant access to paid services like verification, web search, and AI models with pay-per-use pricing and zero vendor onboarding.
+const content = `Your agents need more than reasoning — they need access. Aporto gives your agents instant access to paid services like verification, web search, AI models, images, and TTS with pay-per-use pricing and zero vendor onboarding.
 
-## How It Works
+## Install the SDK
 
-[Section titled “How It Works”](#how-it-works)
+\`\`\`bash
+npm install @aporto/core
+\`\`\`
 
-Aporto acts as your gateway to paid services. When your agent makes a request:
+\`\`\`typescript
+import AportoClient from "@aporto/core";
 
-1.  **Your request goes to a Aporto-powered endpoint** — Each service has a gateway URL (like \`prelude.services.aporto.tech\`)
-2.  **Aporto handles payment automatically** — The SDK negotiates micropayments so you don’t manage vendor accounts
-3.  **You pay only for what you use** — No subscriptions, no minimums, no upfront costs
-
-All you need is a Aporto API key and the SDK. The SDK wraps your existing HTTP client (Axios, Fetch, etc.) to handle authentication and payment negotiation transparently.
+const client = new AportoClient({ apiKey: process.env.APORTO_API_KEY! });
+\`\`\`
 
 ## Available Capabilities
 
-[Section titled “Available Capabilities”](#available-capabilities)
+### Verify Users
 
-Verify Users
+Send a verification code (OTP) to a phone number. Powered by Prelude.
 
-Verify phone numbers and email addresses with OTP codes. Build trust into your agent workflows without managing Twilio or other SMS providers.
+\`\`\`typescript
+const result = await client.services.sms.send({ to: "+15551234567" });
+\`\`\`
 
-[Get started →](/capabilities/verify)
+[Full docs →](/capabilities/verify)
 
-Search the Web
+---
 
-Give your agents real-time information from the web. Get raw search results, AI-generated answers with citations, or structured data extraction.
+### Search the Web
 
-[Get started →](/capabilities/search)
+Real-time web search with AI-generated answers. Two providers: Linkup and You.com.
 
-AI Model Access
+\`\`\`typescript
+// Linkup — structured results, sourced answers
+const results = await client.services.search.query({
+  query: "latest AI news",
+  depth: "standard",
+  outputType: "sourcedAnswer",
+});
 
-Access 400+ AI models through a single API. Use GPT-4, Claude, Gemini, Llama, and more without managing separate accounts.
+// You.com — AI answer from the web
+const answer = await client.services.search.ai({
+  query: "what is retrieval augmented generation?",
+});
+\`\`\`
 
-[Get started →](/capabilities/ai-models)
+[Full docs →](/capabilities/search)
 
-Compute
+---
 
-Deploy services and manage sandbox runtimes through Blaxel-powered compute endpoints.
+### AI Model Access
 
-[Get started →](/capabilities/compute)
+400+ models through a single API — GPT-4, Claude, Gemini, Llama, and more.
 
-Data
+\`\`\`typescript
+const response = await client.chat.completions.create({
+  model: "openai/gpt-4o-mini",
+  messages: [{ role: "user", content: "Hello!" }],
+});
+\`\`\`
 
-Provision Redis, Vector, Search, and PostgreSQL databases through Aporto’s data gateway.
+[Full docs →](/capabilities/ai-models)
 
-[Get started →](/capabilities/data)
+---
 
-Messaging
+### Generate Images
 
-Publish, enqueue, and batch asynchronous messages using Upstash QStash through Aporto.
+Text-to-image with FLUX models. Powered by Fal.ai.
 
-[Get started →](/capabilities/messaging)
+\`\`\`typescript
+const result = await client.services.images.generate({
+  prompt: "a futuristic city at sunset",
+  model: "flux-schnell",
+  image_size: "landscape_4_3",
+});
+console.log(result.images?.[0].url);
+\`\`\`
 
-Generate Images
+[Full docs →](/capabilities/images)
 
-Create images from text prompts with FLUX and SDXL models. Transform existing images or upscale to higher resolution.
+---
 
-[Get started →](/capabilities/images)
+### Audio / Text-to-Speech
 
-Audio Services
+Natural-sounding speech from text. Powered by ElevenLabs. Returns \`ArrayBuffer\`.
 
-Convert text to natural speech or generate custom sound effects with AI voice technology.
+\`\`\`typescript
+import fs from "fs";
 
-[Get started →](/capabilities/audio)
+const audio = await client.services.tts.create({
+  text: "Hello! Welcome to Aporto.",
+  voice_id: "21m00Tcm4TlvDq8ikWAM",
+});
+fs.writeFileSync("output.mp3", Buffer.from(audio));
+\`\`\`
 
-Browser Automation
+[Full docs →](/capabilities/audio)
 
-Extract content from web pages, capture screenshots, or execute complex browser tasks using natural language.
-
-[Get started →](/capabilities/browser)
-
-Web Scraping
-
-Scrape pages, crawl sites, and extract structured data with Firecrawl-powered browser rendering.
-
-[Get started →](/capabilities/scraping)
+---
 
 ## Quick Comparison
 
-[Section titled “Quick Comparison”](#quick-comparison)
-
-Capability
-
-What It Does
-
-Starting Price
-
-[Verify Users](/capabilities/verify)
-
-Phone & email verification
-
-\$0.015/verification
-
-[Search the Web](/capabilities/search)
-
-AI-powered web search
-
-\$0.006/search
-
-[AI Model Access](/capabilities/ai-models)
-
-400+ AI models
-
-Per-token pricing
-
-[Compute](/capabilities/compute)
-
-Code execution and sandboxes
-
-Per-second, tier-based
-
-[Data](/capabilities/data)
-
-Redis, vector, search, and PostgreSQL databases
-
-Per-command/request
-
-[Messaging](/capabilities/messaging)
-
-Queueing and async message delivery
-
-Per-message
-
-[Generate Images](/capabilities/images)
-
-AI image generation
-
-\$0.004/megapixel
-
-[Audio Services](/capabilities/audio)
-
-TTS, sound effects
-
-\$0.08/generation
-
-[Browser Automation](/capabilities/browser)
-
-Web scraping & screenshots
-
-\$0.01/extraction
-
-[Web Scraping](/capabilities/scraping)
-
-Crawl sites & extract data
-
-\$0.009/page
+Capability | What It Does | Starting Price
+-----------|--------------|---------------
+[Verify Users](/capabilities/verify) | Phone verification via OTP | \$0.015/send
+[Search the Web](/capabilities/search) | AI-powered web search | \$0.006/search
+[AI Model Access](/capabilities/ai-models) | 400+ AI models | Per-token pricing
+[Generate Images](/capabilities/images) | AI image generation | \$0.004/megapixel
+[Audio / TTS](/capabilities/audio) | Text-to-speech | \$0.24/1k characters
 
 ## Getting Started
 
-[Section titled “Getting Started”](#getting-started)
-
-1.  **Get your API key** from the [Aporto Dashboard](https://app.aporto.tech)
-2.  **Install the SDK** for your HTTP client
-3.  **Make your first request** — see the [Quick Start](/quick-start) guide
-
-## Next Steps
-
-[Section titled “Next Steps”](#next-steps)
-
-*   [Quick Start](/quick-start) — Verify a phone number in 5 minutes
-*   [Verify Users](/capabilities/verify) — Phone and email verification
-*   [Search the Web](/capabilities/search) — AI-powered web search
-*   [AI Model Access](/capabilities/ai-models) — Access 400+ AI models
-*   [Compute](/capabilities/compute) — Deploy and manage sandboxes
-*   [Data](/capabilities/data) — Redis, vector, and search capabilities
-*   [Messaging](/capabilities/messaging) — QStash publish/enqueue/batch
-*   [Generate Images](/capabilities/images) — AI image generation
-*   [Audio Services](/capabilities/audio) — Text-to-speech and sound effects
-*   [Browser Automation](/capabilities/browser) — Web scraping and screenshots
-*   [Web Scraping](/capabilities/scraping) — Crawl sites and extract structured data`;
+1. **Get your API key** from the [Aporto Dashboard](https://app.aporto.tech)
+2. \`npm install @aporto/core\`
+3. Make your first request — see the [Quick Start](/quick-start) guide`;
 
 export default function Page() {
     return <MarkdownRenderer content={content} />;

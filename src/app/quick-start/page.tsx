@@ -3,51 +3,73 @@
 import React from "react";
 import MarkdownRenderer from "../../components/MarkdownRenderer";
 
-const content = `Aporto wraps your existing HTTP client so any request to a Aporto service handles payment automatically.
+const content = `Get up and running with Aporto in under 5 minutes.
 
 1.  ## Get an API Key
-    
-    [Section titled “Get an API Key”](#get-an-api-key)
-    
-    Grab one from the [Aporto Dashboard](https://app.aporto.tech/settings).
-    
-    Terminal window
-    
+
+    Sign in to the [Aporto Dashboard](https://app.aporto.tech/settings) and generate an API key.
+
+    \`\`\`bash
+    export APORTO_API_KEY="sk-live-your_key_here"
     \`\`\`
-    export APORTO_API_KEY="your_api_key_here"
-    \`\`\`
-    
+
 2.  ## Install the SDK
-    
-    [Section titled “Install the SDK”](#install-the-sdk)
-    
-    Terminal window
-    
+
+    \`\`\`bash
+    npm install @aporto/core
     \`\`\`
-    npm install @aporto/fetch
+
+3.  ## Make Your First Request
+
+    **Call an AI model:**
+
+    \`\`\`typescript
+    import AportoClient from "@aporto/core";
+
+    const client = new AportoClient({ apiKey: process.env.APORTO_API_KEY! });
+
+    const response = await client.chat.completions.create({
+      model: "openai/gpt-4o-mini",
+      messages: [{ role: "user", content: "Hello!" }],
+    });
+
+    console.log(response.choices[0].message.content);
     \`\`\`
-    
-3.  ## Make a Request
-    
-    [Section titled “Make a Request”](#make-a-request)
-    
+
+    **Or use the OpenAI SDK** — just point \`baseURL\` at Aporto's gateway:
+
+    \`\`\`typescript
+    import OpenAI from "openai";
+
+    const client = new OpenAI({
+      apiKey: process.env.APORTO_API_KEY!,
+      baseURL: "https://api.aporto.tech/v1",
+    });
     \`\`\`
-    import { createFetch } from "@aporto/fetch";
-    const fetch = createFetch({  apiKey: process.env.APORTO_API_KEY!,});
-    const response = await fetch(  "https://linkup.services.aporto.tech/v1/search?q=latest+AI+news&depth=standard");
-    console.log(await response.json());
+
+    **Or use curl:**
+
+    \`\`\`bash
+    curl https://api.aporto.tech/v1/chat/completions \\
+      -H "Authorization: Bearer $APORTO_API_KEY" \\
+      -H "Content-Type: application/json" \\
+      -d '{
+        "model": "openai/gpt-4o-mini",
+        "messages": [{ "role": "user", "content": "Hello!" }]
+      }'
     \`\`\`
-    
-    That’s it. The SDK handles the payment flow behind the scenes — you just make normal HTTP requests.
-    
+
+## Billing
+
+Aporto uses a **prepaid balance** model. Top up your account at [app.aporto.tech](https://app.aporto.tech) — credit card (Stripe) gives you a **30% bonus** on your balance. Crypto is also accepted via NowPayments.
+
+Each API call deducts the cost from your balance. No subscriptions, no minimums.
 
 ## Next Steps
 
-[Section titled “Next Steps”](#next-steps)
+[Using Services](/using-services) Send an SMS, search the web, generate images, and more.
 
-[Using Services](/using-services) Full walkthrough: verify a phone number end-to-end.
-
-[Browse Capabilities](/capabilities) Search, AI models, images, audio, browser automation, and more.`;
+[Browse Capabilities](/capabilities) See all available services and their pricing.`;
 
 export default function Page() {
     return <MarkdownRenderer content={content} />;

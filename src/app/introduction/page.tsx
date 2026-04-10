@@ -34,10 +34,10 @@ export default function IntroductionPage() {
                     <strong style={{ color: '#fff' }}>Real-time Monitoring:</strong> Track every request, token count, and cost in real-time via the Dashboard.
                 </li>
                 <li style={{ marginBottom: '12px' }}>
-                    <strong style={{ color: '#fff' }}>Smart Routing:</strong> Coming soon: automatically route requests to the fastest or cheapest available model.
+                    <strong style={{ color: '#fff' }}>Partner Services:</strong> Send SMS, run web searches, generate images, and create speech — all through the same API key via <code>client.services.*</code>.
                 </li>
                 <li style={{ marginBottom: '12px' }}>
-                    <strong style={{ color: '#fff' }}>Usage Limits:</strong> Set hard or soft budgets for your projects to prevent unexpected costs.
+                    <strong style={{ color: '#fff' }}>Prepaid Billing:</strong> Top up your balance with a credit card (30% bonus on credits) or crypto. Pay only for what you use — no subscriptions.
                 </li>
             </ul>
 

@@ -69,8 +69,8 @@ Internal links in markdown files point to other \`.md\` files for easy navigatio
 
 Both methods provide access to documentation for:
 
-*   **[Capabilities](/capabilities)** — Verification, search, AI models, and more
-*   **[Integration](/integration/http-clients)** — SDK setup for Axios, Fetch, and LangChain
+*   **[Capabilities](/capabilities)** — Verification, search, AI models, images, and TTS
+*   **[Integration](/integration/http-clients)** — @aporto/core SDK, fetch, Axios, and LangChain
 *   **[Governance](/governance)** — Spend limits and usage rules
 *   **[API Reference](/api-reference/introduction)** — Endpoint specifications
 

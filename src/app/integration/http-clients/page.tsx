@@ -3,45 +3,52 @@
 import React from "react";
 import MarkdownRenderer from "../../../components/MarkdownRenderer";
 
-const content = `Aporto provides native integrations with popular HTTP clients, enabling automatic payment handling and authorization for your API requests.
+const content = `Aporto's LLM gateway (\`api.aporto.tech/v1\`) is fully OpenAI-compatible. Any HTTP client that supports a custom base URL and Bearer token auth will work.
+
+## Recommended: @aporto/core
+
+Install the official SDK for the simplest experience — it handles LLM calls and all partner services:
+
+\`\`\`bash
+npm install @aporto/core
+\`\`\`
+
+\`\`\`typescript
+import AportoClient from "@aporto/core";
+
+const client = new AportoClient({ apiKey: process.env.APORTO_API_KEY! });
+
+// LLM
+const response = await client.chat.completions.create({
+  model: "openai/gpt-4o-mini",
+  messages: [{ role: "user", content: "Hello!" }],
+});
+
+// Partner services
+const sms = await client.services.sms.send({ to: "+15551234567" });
+const image = await client.services.images.generate({ prompt: "a cat" });
+\`\`\`
+
+## Using Standard HTTP Clients
+
+For LLM calls only, you can use any HTTP client with these settings:
+
+- **Base URL:** \`https://api.aporto.tech/v1\`
+- **Auth header:** \`Authorization: Bearer sk-live-{your_key}\`
+
+See the sub-pages for fetch, Axios, and Node.js HTTP examples.
 
 ## Supported HTTP Clients
 
-[Section titled “Supported HTTP Clients”](#supported-http-clients)
+[Fetch API](/integration/http-clients/fetch) Native & Node.js 18+
 
-[Axios](/integration/http-clients/axios) v1.0+ supported
+[Axios](/integration/http-clients/axios) v1.0+
 
-[Fetch API](/integration/http-clients/fetch) Native & Node.js
-
-[Node.js HTTP](/integration/http-clients/node-http) Native http/https modules
-
-Tip
-
-**Language Support:** TypeScript/JavaScript (Node.js 18+)
-
-**Coming Soon:** Python support
-
-* * *
-
-## Features
-
-[Section titled “Features”](#features)
-
-All HTTP client integrations provide:
-
-*   **Automatic 402 handling** - Seamless payment flow processing
-*   **Authorization** - Pre-request authorization checks
-*   **Per-request overrides** - Customize behavior for individual requests
-*   **Failure modes** - Choose between availability and security priorities
-*   **Transaction tracking** - Automatic cost and usage tracking
-
-* * *
+[Node.js HTTP](/integration/http-clients/node-http) Native http/https
 
 ## Next Steps
 
-[Section titled “Next Steps”](#next-steps)
-
-[Agent Frameworks](/integration/agent-frameworks) High-level AI agent framework integrations`;
+[Agent Frameworks](/integration/agent-frameworks) LangChain, OpenAI SDK, and more`;
 
 export default function Page() {
     return <MarkdownRenderer content={content} />;
