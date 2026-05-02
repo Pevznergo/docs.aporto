@@ -30,15 +30,7 @@ const Sidebar = () => {
             title: "Capabilities",
             items: [
                 { name: "Capabilities Overview", icon: "🎯", path: "/capabilities" },
-                { name: "Verify Users", icon: "✅", path: "/capabilities/verify" },
-                { name: "Search the Web", icon: "🔍", path: "/capabilities/search" },
-                { name: "AI Models", icon: "🤖", path: "/capabilities/ai-models" },
-                { name: "Compute", icon: "☁️", path: "/capabilities/compute" },
-                { name: "Data", icon: "📊", path: "/capabilities/data" },
-                { name: "Messaging", icon: "💬", path: "/capabilities/messaging" },
-                { name: "Generate Images", icon: "🖼️", path: "/capabilities/images" },
-                { name: "Audio Services", icon: "🎵", path: "/capabilities/audio" },
-                { name: "Browser Automation", icon: "🌐", path: "/capabilities/browser" }
+                { name: "AI Models", icon: "🤖", path: "/capabilities/ai-models" }
             ]
         },
         {
