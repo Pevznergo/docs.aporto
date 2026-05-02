@@ -7,7 +7,7 @@ const content = `Aporto's LLM gateway (\`api.aporto.tech/v1\`) is fully OpenAI-c
 
 ## Recommended: @aporto/core
 
-Install the official SDK for the simplest experience — it handles LLM calls and all partner services:
+Install the official SDK for direct app integrations. For agent workflows, prefer the [MCP router](/integration/mcp-servers/setup).
 
 \`\`\`bash
 npm install @aporto/core
@@ -24,7 +24,7 @@ const response = await client.chat.completions.create({
   messages: [{ role: "user", content: "Hello!" }],
 });
 
-// Partner services
+// Core skills exposed as direct service helpers
 const sms = await client.services.sms.send({ to: "+15551234567" });
 const image = await client.services.images.generate({ prompt: "a cat" });
 \`\`\`

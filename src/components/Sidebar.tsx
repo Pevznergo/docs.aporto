@@ -15,7 +15,7 @@ const Sidebar = () => {
                 { name: "Introduction", icon: "🚀", path: "/introduction" },
                 { name: "How Aporto Works", icon: "⚙️", path: "/how-it-works" },
                 { name: "Quick Start", icon: "⚡", path: "/quick-start" },
-                { name: "Using Services", icon: "🛠️", path: "/using-services" },
+                { name: "Using Skills", icon: "🛠️", path: "/using-services" },
                 { name: "For AI Tools", icon: "🤖", path: "/for-agents" }
             ]
         },
@@ -23,7 +23,7 @@ const Sidebar = () => {
             title: "MCP Server",
             items: [
                 { name: "MCP Setup", icon: "🔌", path: "/integration/mcp-servers/setup" },
-                { name: "Core Tools", icon: "🔧", path: "/integration/mcp-servers/core-tools" },
+                { name: "Skill Tools", icon: "🔧", path: "/integration/mcp-servers/core-tools" },
                 { name: "Compute Tools", icon: "💻", path: "/integration/mcp-servers/compute" },
                 { name: "Database Tools", icon: "🗄️", path: "/integration/mcp-servers/database" },
                 { name: "Messaging Tools", icon: "📨", path: "/integration/mcp-servers/messaging" },

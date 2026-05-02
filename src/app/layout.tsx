@@ -4,7 +4,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 
 export const metadata: Metadata = {
   title: "Aporto Documentation",
-  description: "Documentation for Aporto projects",
+  description: "Documentation for the Aporto AI skill network and MCP router",
 };
 
 export default function RootLayout({

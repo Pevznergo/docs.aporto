@@ -3,42 +3,55 @@
 import React from "react";
 import MarkdownRenderer from "../../components/MarkdownRenderer";
 
-const content = `Aporto is a unified API gateway that gives you access to 400+ AI models and partner services — all through a single API key and prepaid balance.
+const content = `Aporto is an AI skill network. Developers connect one MCP router, discover the right skill by intent, and let Aporto route each paid request to the best active provider.
 
 ## Architecture
 
 \`\`\`
-  Your App                   Aporto                      Provider
-┌──────────┐           ┌──────────────┐            ┌──────────────────┐
-│          │  request  │              │  proxied   │ OpenRouter,      │
-│  Code +  ├──────────►│   Gateway    ├───────────►│ Prelude,         │
-│ @aporto/ │           │              │            │ ElevenLabs, ...  │
-│  core    │◄──────────┤  • Auth      │◄───────────┤                  │
-│          │  response │  • Billing   │  response  │                  │
-└──────────┘           │  • Logging   │            └──────────────────┘
-                       └──────────────┘
+  Agent / App              Aporto Router                Skill Provider
+┌──────────────┐       ┌──────────────────┐          ┌──────────────────┐
+│ MCP client   │ intent│ Skill discovery  │ selected │ Apify actor,     │
+│ or app code  ├──────►│ Provider routing ├─────────►│ API wrapper,     │
+│              │       │ Billing + logs   │          │ model, service   │
+└──────────────┘◄──────┤ Result normalize │◄─────────┤                  │
+     result            └──────────────────┘  result  └──────────────────┘
 \`\`\`
 
-1. Your code calls the \`@aporto/core\` SDK (or any OpenAI-compatible client)
-2. The gateway authenticates your key and checks your balance
-3. The request is forwarded to the provider
-4. The response is returned and the cost is deducted
+1. Your agent connects to \`https://app.aporto.tech/api/mcp\`
+2. It calls \`aporto_discover_skills\` with the user intent
+3. Aporto returns matching skills, required inputs, and provider options
+4. The agent calls \`aporto_execute_skill\`
+5. Aporto selects the best active provider, executes the request, logs usage, and meters cost
 
-You never need credentials for the underlying providers — just your Aporto API key.
+You never need credentials for the underlying providers. Your Aporto API key covers auth, routing, billing, and logs.
 
-## Two Endpoints
+## Skills and Providers
 
-**AI models** — OpenAI-compatible LLM gateway:
+**Skill** means what the agent can do: extract a LinkedIn profile, search the web, generate an image, send an OTP, run a browser task.
+
+**Provider** means who implements that skill. Multiple providers can compete behind the same skill, and the publisher still sees their listing as a skill.
+
+Aporto creates a new skill when the source, data type, or action is different. Aporto adds a provider to an existing skill when the capability is the same but implementation, price, speed, or quality differs.
+
+## Endpoints
+
+**MCP router - recommended for agents:**
+\`\`\`
+https://app.aporto.tech/api/mcp
+\`\`\`
+Use this from Claude Code, Cursor, Windsurf, Codex, or any MCP-capable agent.
+
+**OpenAI-compatible model gateway:**
 \`\`\`
 https://api.aporto.tech/v1
 \`\`\`
-Works with \`@aporto/core\`, the OpenAI SDK, or any OpenAI-compatible client.
+Works with the OpenAI SDK, LangChain, LlamaIndex, and other OpenAI-compatible clients.
 
-**Partner services** — SMS, search, images, TTS:
+**Legacy direct service endpoints:**
 \`\`\`
 https://app.aporto.tech/api/services/{name}
 \`\`\`
-Called via \`client.services.*\` in the SDK. Same API key.
+Available for direct app integrations that do not use MCP yet.
 
 ## Authentication
 
@@ -48,43 +61,44 @@ All requests use Bearer token auth:
 Authorization: Bearer sk-live-{your_key}
 \`\`\`
 
-The same key works for both endpoints.
+The same key works for MCP, direct service endpoints, and the model gateway.
 
 ## Billing
 
 Aporto uses a **prepaid balance** model.
 
-- Top up at [app.aporto.tech](https://app.aporto.tech) — credit card (Stripe) gives a **30% bonus** on your balance, crypto also accepted via NowPayments
-- Each API call deducts the cost — no subscriptions, no minimums
-- Balance is shared across all services: LLM calls, SMS, search, images, TTS
+- Top up at [app.aporto.tech](https://app.aporto.tech)
+- Each skill call deducts the metered provider cost
+- Balance is shared across MCP skill calls, model calls, search, SMS, image, audio, and other capabilities
+- No provider onboarding, separate vendor invoices, or minimum commitments
 
 If your balance hits zero, requests return \`402 Payment Required\`. Top up to continue.
 
 ## Capabilities
 
-Capability | Provider | Endpoint
------------|----------|----------
-[AI Models](/capabilities/ai-models) | OpenRouter | \`api.aporto.tech/v1\`
-[Verify Users](/capabilities/verify) | Prelude | \`/api/services/sms\`
-[Search the Web](/capabilities/search) | Linkup, You.com | \`/api/services/search\`, \`/api/services/ai-search\`
-[Generate Images](/capabilities/images) | Fal.ai | \`/api/services/image\`
-[Audio / TTS](/capabilities/audio) | ElevenLabs | \`/api/services/tts\`
+Capability | Example skills | Access
+-----------|----------------|-------
+Scraping and enrichment | LinkedIn profile, company, post, and jobs extractors | MCP router
+Search | Web search, AI search, research answers | MCP router / direct API
+AI models | 400+ chat and reasoning models | OpenAI-compatible gateway
+Communication | SMS and WhatsApp verification | MCP router / direct API
+Media | Image generation and text-to-speech | MCP router / direct API
 
 ## Activity
 
 Aporto logs every request. The [Dashboard](https://app.aporto.tech) shows:
 
-- Cost breakdown per service
+- Cost breakdown per skill and provider
 - Request and response details
 - Usage history over time
 
 ## Next Steps
 
-[Quick Start](/quick-start) Call your first API in 3 steps.
+[Quick Start](/quick-start) Connect the MCP router and call your first skill.
 
-[Browse Capabilities](/capabilities) See all available services.
+[Browse Capabilities](/capabilities) See available skill categories.
 
-[Using Services](/using-services) Walkthrough: send an SMS end-to-end.`;
+[MCP Setup](/integration/mcp-servers/setup) Configure your agent tool.`;
 
 export default function Page() {
     return <MarkdownRenderer content={content} />;

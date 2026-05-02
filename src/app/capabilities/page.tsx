@@ -3,13 +3,22 @@
 import React from "react";
 import MarkdownRenderer from "../../components/MarkdownRenderer";
 
-const content = `Your agents need more than reasoning — they need access. Aporto gives your agents instant access to paid services like verification, web search, AI models, images, and TTS with pay-per-use pricing and zero vendor onboarding.
+const content = `Your agents need more than reasoning - they need skills. Aporto gives agents one MCP router for 1000+ paid skills across data extraction, search, AI models, communication, media, and automation.
 
-## Install the SDK
+## Recommended: Use the MCP Router
 
 \`\`\`bash
-npm install @aporto/core
+export APORTO_API_KEY="sk-live-your_key_here"
+codex mcp add aporto --url https://app.aporto.tech/api/mcp --bearer-token-env-var APORTO_API_KEY
 \`\`\`
+
+Then ask your agent to discover and execute skills:
+
+\`\`\`text
+Use Aporto to find the best skill for extracting public LinkedIn company pages, then run it for these URLs.
+\`\`\`
+
+For SDK examples below:
 
 \`\`\`typescript
 import AportoClient from "@aporto/core";
@@ -17,21 +26,22 @@ import AportoClient from "@aporto/core";
 const client = new AportoClient({ apiKey: process.env.APORTO_API_KEY! });
 \`\`\`
 
-## Available Capabilities
+## Skill Categories
 
-### Verify Users
+### Scraping and Enrichment
 
-Send a verification code (OTP) to a phone number. Powered by Prelude.
+LinkedIn profiles, company pages, posts, jobs, website data, search results, and other structured extraction workflows. Aporto can route the same skill to multiple active providers.
 
-\`\`\`typescript
-const result = await client.services.sms.send({ to: "+15551234567" });
-\`\`\`
+Example skills:
 
-[Full docs →](/capabilities/verify)
+- LinkedIn Person Profile Extractor
+- LinkedIn Company Profile Extractor
+- LinkedIn Profile Posts Extractor
+- LinkedIn Job Listing Scraper
 
 ---
 
-### Search the Web
+### Search and Research
 
 Real-time web search with AI-generated answers. Two providers: Linkup and You.com.
 
@@ -55,7 +65,7 @@ const answer = await client.services.search.ai({
 
 ### AI Model Access
 
-400+ models through a single API — GPT-4, Claude, Gemini, Llama, and more.
+400+ models through a single OpenAI-compatible gateway - GPT, Claude, Gemini, Llama, and more.
 
 \`\`\`typescript
 const response = await client.chat.completions.create({
@@ -65,6 +75,18 @@ const response = await client.chat.completions.create({
 \`\`\`
 
 [Full docs →](/capabilities/ai-models)
+
+---
+
+### Verify Users
+
+Send a verification code (OTP) to a phone number. Powered by Prelude.
+
+\`\`\`typescript
+const result = await client.services.sms.send({ to: "+15551234567" });
+\`\`\`
+
+[Full docs →](/capabilities/verify)
 
 ---
 
@@ -105,19 +127,20 @@ fs.writeFileSync("output.mp3", Buffer.from(audio));
 
 ## Quick Comparison
 
-Capability | What It Does | Starting Price
------------|--------------|---------------
-[Verify Users](/capabilities/verify) | Phone verification via OTP | \$0.015/send
-[Search the Web](/capabilities/search) | AI-powered web search | \$0.006/search
-[AI Model Access](/capabilities/ai-models) | 400+ AI models | Per-token pricing
-[Generate Images](/capabilities/images) | AI image generation | \$0.004/megapixel
-[Audio / TTS](/capabilities/audio) | Text-to-speech | \$0.24/1k characters
+Capability | What It Does | Access
+-----------|--------------|-------
+Scraping and enrichment | Public web and social data extraction | MCP router
+[Search the Web](/capabilities/search) | AI-powered web search | MCP router / SDK
+[AI Model Access](/capabilities/ai-models) | 400+ AI models | OpenAI-compatible gateway
+[Verify Users](/capabilities/verify) | Phone verification via OTP | MCP router / SDK
+[Generate Images](/capabilities/images) | AI image generation | MCP router / SDK
+[Audio / TTS](/capabilities/audio) | Text-to-speech | MCP router / SDK
 
 ## Getting Started
 
 1. **Get your API key** from the [Aporto Dashboard](https://app.aporto.tech)
-2. \`npm install @aporto/core\`
-3. Make your first request — see the [Quick Start](/quick-start) guide`;
+2. Connect the [MCP router](/integration/mcp-servers/setup)
+3. Discover a skill, execute it, and let Aporto handle provider routing`;
 
 export default function Page() {
     return <MarkdownRenderer content={content} />;

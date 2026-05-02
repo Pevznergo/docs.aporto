@@ -69,7 +69,7 @@ const response = await client.chat.completions.create({
 
 [Fetch API](/integration/http-clients/fetch) Simpler native fetch integration
 
-[@aporto/core](/quick-start) Full SDK with partner services`;
+[@aporto/core](/quick-start) SDK and MCP quick start`;
 
 export default function Page() {
     return <MarkdownRenderer content={content} />;

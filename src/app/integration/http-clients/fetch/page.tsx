@@ -102,7 +102,7 @@ const data = await response.json();
 
 [Axios](/integration/http-clients/axios) Axios integration
 
-[@aporto/core](/quick-start) Full SDK with partner services`;
+[@aporto/core](/quick-start) SDK and MCP quick start`;
 
 export default function Page() {
     return <MarkdownRenderer content={content} />;

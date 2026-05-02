@@ -104,7 +104,7 @@ const result = await client.services.search.query({ query: "latest AI news" });
 
 [Fetch API](/integration/http-clients/fetch) Native fetch integration
 
-[@aporto/core](/quick-start) Full SDK with partner services`;
+[@aporto/core](/quick-start) SDK and MCP quick start`;
 
 export default function Page() {
     return <MarkdownRenderer content={content} />;

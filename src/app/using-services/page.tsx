@@ -3,7 +3,7 @@
 import React from "react";
 import MarkdownRenderer from "../../components/MarkdownRenderer";
 
-const content = `In this guide, you'll send a verification code to a phone number using Aporto — no Prelude account required.
+const content = `In this guide, you'll use Aporto as a skill network: discover a skill, execute it, and inspect the metered result.
 
 1.  ## Get Your API Key
 
@@ -15,51 +15,46 @@ const content = `In this guide, you'll send a verification code to a phone numbe
     export APORTO_API_KEY="sk-live-your_key_here"
     \`\`\`
 
-2.  ## Install the SDK
+2.  ## Connect the MCP Router
 
     \`\`\`bash
-    npm install @aporto/core
+    codex mcp add aporto --url https://app.aporto.tech/api/mcp --bearer-token-env-var APORTO_API_KEY
     \`\`\`
 
-3.  ## Send a Verification Code
+3.  ## Discover the Skill
 
-    Aporto calls Prelude under the hood, which sends a 6-digit OTP to the phone number.
+    Ask your agent to find the right Aporto skill before it executes anything:
 
-    Create a file called \`verify.ts\`:
+    \`\`\`text
+    Use Aporto to find the best skill for extracting public LinkedIn profile data.
+    \`\`\`
 
-    \`\`\`typescript
-    import AportoClient from "@aporto/core";
+    The agent should call \`aporto_discover_skills\` and return matching skills, required inputs, and provider options.
 
-    const client = new AportoClient({ apiKey: process.env.APORTO_API_KEY! });
+4.  ## Execute the Skill
 
-    async function sendVerificationCode(phoneNumber: string) {
-      const result = await client.services.sms.send({ to: phoneNumber });
-      console.log("Verification sent!", result);
-      // result.id can be used to check the code via Prelude directly
-      return result;
+    Provide valid input for the selected skill:
+
+    \`\`\`json
+    {
+      "skillId": 17,
+      "input": {
+        "profileUrls": ["https://www.linkedin.com/in/example"]
+      }
     }
-
-    // Replace with a real phone number (E.164 format)
-    await sendVerificationCode("+15551234567");
     \`\`\`
 
-    Run it:
+    The agent calls \`aporto_execute_skill\`. Aporto chooses the provider unless you explicitly pass a provider ID.
 
-    \`\`\`bash
-    npx tsx verify.ts
-    \`\`\`
+5.  ## See It in the Dashboard
 
-    The phone number will receive a text message with a 6-digit code. Cost: **$0.015 per send**.
-
-4.  ## See It in the Dashboard
-
-    Open the [Aporto Dashboard](https://app.aporto.tech) to see your SMS transaction logged in real time.
+    Open the [Aporto Dashboard](https://app.aporto.tech) to see the skill call, selected provider, request payload, response, and cost.
 
 ## Next Steps
 
-[Browse Capabilities](/capabilities) See all available services — search, AI models, images, audio, and more.
+[Browse Capabilities](/capabilities) See skill categories and core tools.
 
-[How It Works](/how-it-works) Understand the gateway architecture and billing model.`;
+[How It Works](/how-it-works) Understand skill discovery, provider routing, and billing.`;
 
 export default function Page() {
     return <MarkdownRenderer content={content} />;
