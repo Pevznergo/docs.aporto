@@ -3,7 +3,7 @@
 import React from "react";
 import MarkdownRenderer from "../../components/MarkdownRenderer";
 
-const content = `Your agents need more than reasoning - they need skills. Aporto gives agents one MCP router for 1000+ paid skills across data extraction, search, AI models, communication, media, and automation.
+const content = `Your agents need more than reasoning - they need skills. Aporto exposes a small MCP surface: discover the right skill, execute it through provider routing, or call Aporto AI for LLM reasoning.
 
 ## Recommended: Use the MCP Router
 
@@ -18,7 +18,7 @@ Then ask your agent to discover and execute skills:
 Use Aporto to find the best skill for extracting public LinkedIn company pages, then run it for these URLs.
 \`\`\`
 
-For SDK examples below:
+For Aporto AI SDK examples below:
 
 \`\`\`typescript
 import AportoClient from "@aporto/core";
@@ -26,44 +26,41 @@ import AportoClient from "@aporto/core";
 const client = new AportoClient({ apiKey: process.env.APORTO_API_KEY! });
 \`\`\`
 
-## Skill Categories
+## Core MCP Surface
 
-### Scraping and Enrichment
+### Discover Skills
 
-LinkedIn profiles, company pages, posts, jobs, website data, search results, and other structured extraction workflows. Aporto can route the same skill to multiple active providers.
+Use \`aporto_discover_skills\` to find the right capability by intent. This is how agents find scraping, search, enrichment, communication, media, automation, and other skills without hard-coding provider-specific tools.
 
-Example skills:
-
-- LinkedIn Person Profile Extractor
-- LinkedIn Company Profile Extractor
-- LinkedIn Profile Posts Extractor
-- LinkedIn Job Listing Scraper
-
----
-
-### Search and Research
-
-Real-time web search with AI-generated answers. Two providers: Linkup and You.com.
-
-\`\`\`typescript
-// Linkup — structured results, sourced answers
-const results = await client.services.search.query({
-  query: "latest AI news",
-  depth: "standard",
-  outputType: "sourcedAnswer",
-});
-
-// You.com — AI answer from the web
-const answer = await client.services.search.ai({
-  query: "what is retrieval augmented generation?",
-});
+\`\`\`json
+{
+  "intent": "extract public LinkedIn profile data from profile URLs",
+  "maxResults": 5
+}
 \`\`\`
 
-[Full docs →](/capabilities/search)
+Discovery returns matching skills, input requirements, provider options, and pricing signals.
 
 ---
 
-### AI Model Access
+### Execute Skills
+
+Use \`aporto_execute_skill\` to run the selected skill. Aporto chooses the best active provider unless you pass an explicit provider override.
+
+\`\`\`json
+{
+  "skillId": 17,
+  "input": {
+    "profileUrls": ["https://www.linkedin.com/in/example"]
+  }
+}
+\`\`\`
+
+The publisher can see their listing as a skill; internally, review can decide whether it becomes a new skill or a provider for an existing skill.
+
+---
+
+### Aporto AI
 
 400+ models through a single OpenAI-compatible gateway - GPT, Claude, Gemini, Llama, and more.
 
@@ -78,63 +75,13 @@ const response = await client.chat.completions.create({
 
 ---
 
-### Verify Users
-
-Send a verification code (OTP) to a phone number. Powered by Prelude.
-
-\`\`\`typescript
-const result = await client.services.sms.send({ to: "+15551234567" });
-\`\`\`
-
-[Full docs →](/capabilities/verify)
-
----
-
-### Generate Images
-
-Text-to-image with FLUX models. Powered by Fal.ai.
-
-\`\`\`typescript
-const result = await client.services.images.generate({
-  prompt: "a futuristic city at sunset",
-  model: "flux-schnell",
-  image_size: "landscape_4_3",
-});
-console.log(result.images?.[0].url);
-\`\`\`
-
-[Full docs →](/capabilities/images)
-
----
-
-### Audio / Text-to-Speech
-
-Natural-sounding speech from text. Powered by ElevenLabs. Returns \`ArrayBuffer\`.
-
-\`\`\`typescript
-import fs from "fs";
-
-const audio = await client.services.tts.create({
-  text: "Hello! Welcome to Aporto.",
-  voice_id: "21m00Tcm4TlvDq8ikWAM",
-});
-fs.writeFileSync("output.mp3", Buffer.from(audio));
-\`\`\`
-
-[Full docs →](/capabilities/audio)
-
----
-
 ## Quick Comparison
 
-Capability | What It Does | Access
------------|--------------|-------
-Scraping and enrichment | Public web and social data extraction | MCP router
-[Search the Web](/capabilities/search) | AI-powered web search | MCP router / SDK
-[AI Model Access](/capabilities/ai-models) | 400+ AI models | OpenAI-compatible gateway
-[Verify Users](/capabilities/verify) | Phone verification via OTP | MCP router / SDK
-[Generate Images](/capabilities/images) | AI image generation | MCP router / SDK
-[Audio / TTS](/capabilities/audio) | Text-to-speech | MCP router / SDK
+Surface | What It Does | Access
+--------|--------------|-------
+\`aporto_discover_skills\` | Finds the right skill for an intent | MCP router
+\`aporto_execute_skill\` | Executes a selected skill through provider routing | MCP router
+\`aporto_chat\` / Aporto AI | Calls 400+ LLM models | MCP router / OpenAI-compatible gateway
 
 ## Getting Started
 

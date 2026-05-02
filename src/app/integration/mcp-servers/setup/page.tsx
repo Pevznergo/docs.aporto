@@ -75,11 +75,6 @@ If your MCP client does not expand environment variables inside JSON config, pas
 |------|-------------|------|
 | \`aporto_discover_skills\` | Find the best skills for an intent | Free |
 | \`aporto_execute_skill\` | Execute a selected skill through provider routing | Skill pricing |
-| \`aporto_search\` | Web search via Linkup | $0.006 standard / $0.055 deep |
-| \`aporto_ai_search\` | AI-powered search via You.com | $0.005 / $0.0065 research |
-| \`aporto_sms_send\` | SMS/WhatsApp OTP via Prelude | $0.015/send |
-| \`aporto_image_generate\` | Image generation via fal.ai | from $0.004/MP |
-| \`aporto_tts_create\` | Text-to-speech via ElevenLabs | $0.24/1k chars |
 | \`aporto_chat\` | LLM chat completions (400+ models) | model-dependent |
 
 ## Recommended Agent Flow

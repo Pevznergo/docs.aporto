@@ -47,12 +47,6 @@ https://api.aporto.tech/v1
 \`\`\`
 Works with the OpenAI SDK, LangChain, LlamaIndex, and other OpenAI-compatible clients.
 
-**Legacy direct service endpoints:**
-\`\`\`
-https://app.aporto.tech/api/services/{name}
-\`\`\`
-Available for direct app integrations that do not use MCP yet.
-
 ## Authentication
 
 All requests use Bearer token auth:
@@ -61,7 +55,7 @@ All requests use Bearer token auth:
 Authorization: Bearer sk-live-{your_key}
 \`\`\`
 
-The same key works for MCP, direct service endpoints, and the model gateway.
+The same key works for the MCP router and the model gateway.
 
 ## Billing
 
@@ -69,20 +63,18 @@ Aporto uses a **prepaid balance** model.
 
 - Top up at [app.aporto.tech](https://app.aporto.tech)
 - Each skill call deducts the metered provider cost
-- Balance is shared across MCP skill calls, model calls, search, SMS, image, audio, and other capabilities
+- Balance is shared across MCP skill calls and Aporto AI model calls
 - No provider onboarding, separate vendor invoices, or minimum commitments
 
 If your balance hits zero, requests return \`402 Payment Required\`. Top up to continue.
 
-## Capabilities
+## Public Agent Surface
 
-Capability | Example skills | Access
------------|----------------|-------
-Scraping and enrichment | LinkedIn profile, company, post, and jobs extractors | MCP router
-Search | Web search, AI search, research answers | MCP router / direct API
-AI models | 400+ chat and reasoning models | OpenAI-compatible gateway
-Communication | SMS and WhatsApp verification | MCP router / direct API
-Media | Image generation and text-to-speech | MCP router / direct API
+Surface | Purpose | Access
+--------|---------|-------
+\`aporto_discover_skills\` | Find the right skill for an intent | MCP router
+\`aporto_execute_skill\` | Execute the selected skill through provider routing | MCP router
+Aporto AI | Call 400+ LLM models directly | MCP router / OpenAI-compatible gateway
 
 ## Activity
 
@@ -96,7 +88,7 @@ Aporto logs every request. The [Dashboard](https://app.aporto.tech) shows:
 
 [Quick Start](/quick-start) Connect the MCP router and call your first skill.
 
-[Browse Capabilities](/capabilities) See available skill categories.
+[Browse Capabilities](/capabilities) See the public agent surface.
 
 [MCP Setup](/integration/mcp-servers/setup) Configure your agent tool.`;
 
