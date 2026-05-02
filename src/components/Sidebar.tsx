@@ -23,11 +23,7 @@ const Sidebar = () => {
             title: "MCP Server",
             items: [
                 { name: "MCP Setup", icon: "🔌", path: "/integration/mcp-servers/setup" },
-                { name: "Skill Tools", icon: "🔧", path: "/integration/mcp-servers/core-tools" },
-                { name: "Compute Tools", icon: "💻", path: "/integration/mcp-servers/compute" },
-                { name: "Database Tools", icon: "🗄️", path: "/integration/mcp-servers/database" },
-                { name: "Messaging Tools", icon: "📨", path: "/integration/mcp-servers/messaging" },
-                { name: "Scraping Tools", icon: "🕸️", path: "/integration/mcp-servers/scraping" }
+                { name: "Skill Tools", icon: "🔧", path: "/integration/mcp-servers/core-tools" }
             ]
         },
         {
