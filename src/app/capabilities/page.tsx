@@ -30,7 +30,7 @@ const client = new AportoClient({ apiKey: process.env.APORTO_API_KEY! });
 
 ### Discover Skills
 
-Use \`aporto_discover_skills\` to find the right capability by intent. This is how agents find scraping, search, enrichment, communication, media, automation, and other skills without hard-coding provider-specific tools.
+Use \`aporto_discover_skills\` to find the right capability by intent. This is how agents resolve a task into an executable skill without hard-coding provider-specific tools.
 
 \`\`\`json
 {
@@ -56,7 +56,7 @@ Use \`aporto_execute_skill\` to run the selected skill. Aporto chooses the best 
 }
 \`\`\`
 
-The publisher can see their listing as a skill; internally, review can decide whether it becomes a new skill or a provider for an existing skill.
+The publisher sees a skill listing; internally, review can decide whether it becomes a new skill or a provider for an existing skill.
 
 ---
 
