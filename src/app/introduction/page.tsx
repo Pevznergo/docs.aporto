@@ -38,24 +38,11 @@ aporto run 4 --param prompt="a cat on the moon" --wait`}
                 </code>
             </pre>
 
-            <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '24px', color: '#fff' }}>What You Can Do</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px', marginBottom: '48px' }}>
-                <div style={{ background: '#111', border: '1px solid #333', padding: '20px', borderRadius: '12px' }}>
-                    <h4 style={{ color: '#00dc82', marginBottom: '8px', fontSize: '15px' }}>Search & Scraping</h4>
-                    <p style={{ fontSize: '13px', color: '#888', margin: 0 }}>Web search, site scraping, LinkedIn enrichment, Google Maps data</p>
-                </div>
-                <div style={{ background: '#111', border: '1px solid #333', padding: '20px', borderRadius: '12px' }}>
-                    <h4 style={{ color: '#00dc82', marginBottom: '8px', fontSize: '15px' }}>AI Models</h4>
-                    <p style={{ fontSize: '13px', color: '#888', margin: 0 }}>400+ LLMs via OpenAI-compatible gateway, embeddings, completions</p>
-                </div>
-                <div style={{ background: '#111', border: '1px solid #333', padding: '20px', borderRadius: '12px' }}>
-                    <h4 style={{ color: '#00dc82', marginBottom: '8px', fontSize: '15px' }}>Image & Audio</h4>
-                    <p style={{ fontSize: '13px', color: '#888', margin: 0 }}>Image generation, TTS, speech-to-text, video generation</p>
-                </div>
-                <div style={{ background: '#111', border: '1px solid #333', padding: '20px', borderRadius: '12px' }}>
-                    <h4 style={{ color: '#00dc82', marginBottom: '8px', fontSize: '15px' }}>Verification & Automation</h4>
-                    <p style={{ fontSize: '13px', color: '#888', margin: 0 }}>Email verification, OTP, browser automation, document processing</p>
-                </div>
+            <div style={{ background: '#111', border: '1px solid #333', padding: '24px 28px', borderRadius: '12px', marginBottom: '48px' }}>
+                <p style={{ margin: 0, fontSize: '15px', color: '#aaa' }}>
+                    <span style={{ color: '#00dc82', fontWeight: '600' }}>1000+ skills:</span>{' '}
+                    Search, Scraping, Browser, AI Models, Image, Audio, Video, Verification, Automation, Email, Maps, Documents, and more.
+                </p>
             </div>
 
             <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '24px', color: '#fff' }}>Alternative: MCP Server</h2>
