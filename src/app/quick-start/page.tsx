@@ -3,7 +3,7 @@
 import React from "react";
 import MarkdownRenderer from "../../components/MarkdownRenderer";
 
-const content = `Get up and running with Aporto's AI skill network in under 5 minutes.
+const content = `Get up and running with Aporto in under 30 seconds.
 
 1.  ## Get an API Key
 
@@ -13,85 +13,126 @@ const content = `Get up and running with Aporto's AI skill network in under 5 mi
     export APORTO_API_KEY="sk-live-your_key_here"
     \`\`\`
 
-2.  ## Connect the MCP Router
+2.  ## Install the CLI
 
-    Aporto exposes one MCP server that lets your agent discover and call 1000+ skills.
-
-    **Codex CLI:**
     \`\`\`bash
-    codex mcp add aporto --url https://app.aporto.tech/api/mcp --bearer-token-env-var APORTO_API_KEY
+    npm install -g @aporto-tech/sdk
     \`\`\`
 
-    **Generic MCP config:**
+3.  ## Discover Skills
 
-    \`\`\`json
-    {
-      "mcpServers": {
-        "aporto": {
-          "transport": "http",
-          "url": "https://app.aporto.tech/api/mcp",
-          "headers": {
-            "Authorization": "Bearer \${APORTO_API_KEY}"
-          }
-        }
+    Search 1000+ skills by description:
+
+    \`\`\`bash
+    aporto discover "generate image"
+
+    # 4    Image Generation              media/image    $0.0040/call
+    # 96   Image Generation Nano Banana  media/image    $0.0400/call
+    # 67   Image Generation Recraft      media/image    $0.0200/call
+    \`\`\`
+
+4.  ## Run a Skill
+
+    \`\`\`bash
+    aporto run 4 --param prompt="a cat on the moon" --wait
+
+    # status: succeeded
+    # skill: Image Generation
+    # provider: fal-flux-schnell
+    # costUSD: 0.004
+    # artifact: https://storage.aporto.tech/...
+    \`\`\`
+
+    Or run by intent with automatic skill matching:
+
+    \`\`\`bash
+    aporto run "generate product video" \\
+      --param prompt="clean product launch teaser" \\
+      --provider auto \\
+      --wait
+    \`\`\`
+
+---
+
+## Alternative: MCP Server
+
+If you're using an AI agent (Claude Code, Cursor, Windsurf, Codex), add Aporto as an MCP server:
+
+**Claude Code / Codex CLI:**
+\`\`\`bash
+codex mcp add aporto --url https://app.aporto.tech/api/mcp --bearer-token-env-var APORTO_API_KEY
+\`\`\`
+
+**Generic MCP config (Cursor, Windsurf, etc.):**
+
+\`\`\`json
+{
+  "mcpServers": {
+    "aporto": {
+      "transport": "http",
+      "url": "https://app.aporto.tech/api/mcp",
+      "headers": {
+        "Authorization": "Bearer \${APORTO_API_KEY}"
       }
     }
-    \`\`\`
+  }
+}
+\`\`\`
 
-3.  ## Discover a Skill
+Your agent gets access to these MCP tools:
+- \`aporto_discover_skills\` — find skills by description
+- \`aporto_run_skill\` — execute with smart provider routing
+- \`aporto_get_skill_run\` — poll async results
+- \`aporto_chat\` — LLM completions (400+ models)
+- \`aporto_image_generate\` — image generation
+- \`aporto_tts_create\` — text to speech
+- \`aporto_search\` — web search
 
-    Ask your agent to use \`aporto_discover_skills\` before execution:
+---
 
-    \`\`\`text
-    Find the best Aporto skill for extracting public LinkedIn profiles, then run it for these URLs.
-    \`\`\`
+## Alternative: TypeScript SDK
 
-    Discovery returns matching skills, available providers, pricing signals, and required input fields.
-
-4.  ## Execute the Skill
-
-    Your agent can call \`aporto_execute_skill\` with the selected skill and input:
-
-    \`\`\`json
-    {
-      "skillId": 17,
-      "input": {
-        "profileUrls": ["https://www.linkedin.com/in/example"]
-      }
-    }
-    \`\`\`
-
-    Aporto routes the request to the best active provider, logs the call, and deducts the metered cost from your balance.
-
-## Optional: Use the SDK or OpenAI Gateway
-
-For direct application code, you can still use the TypeScript SDK and OpenAI-compatible model gateway.
+For programmatic use in your application:
 
 \`\`\`bash
-npm install @aporto/core
+npm install @aporto-tech/sdk
 \`\`\`
 
 \`\`\`typescript
-import AportoClient from "@aporto/core";
+import { AportoClient } from "@aporto-tech/sdk";
 
-const client = new AportoClient({ apiKey: process.env.APORTO_API_KEY! });
-
-const response = await client.chat.completions.create({
-  model: "openai/gpt-4o-mini",
-  messages: [{ role: "user", content: "Hello!" }],
+const aporto = new AportoClient({
+  apiKey: process.env.APORTO_API_KEY,
 });
 
-console.log(response.choices[0].message.content);
+// Discover skills
+const { skills } = await aporto.routing.discoverSkills({
+  query: "generate image",
+});
+
+// Run a skill
+const result = await aporto.routing.runSkill({
+  intent: "generate product image",
+  params: { prompt: "a cat on the moon" },
+  waitForResult: true,
+});
+
+console.log(result.artifacts?.[0]?.url);
 \`\`\`
 
-Or use the OpenAI SDK with Aporto's gateway:
+Or use the OpenAI-compatible gateway for LLM routing:
 
 \`\`\`typescript
 import OpenAI from "openai";
 
 const client = new OpenAI({
-  apiKey: process.env.APORTO_API_KEY!,
+  apiKey: process.env.APORTO_API_KEY,
   baseURL: "https://api.aporto.tech/v1",
+});
+
+const response = await client.chat.completions.create({
+  model: "openai/gpt-4o-mini",
+  messages: [{ role: "user", content: "Hello!" }],
 });
 \`\`\`
 
