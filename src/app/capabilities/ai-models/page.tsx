@@ -89,7 +89,7 @@ const data = await response.json();`
 
             <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '16px', color: '#fff' }}>How It Works</h2>
             <p style={{ marginBottom: '24px' }}>
-                AI model requests are powered by Aporto's unified API Gateway. When you make a request, the gateway:
+                AI model requests are powered by Aporto&apos;s unified API Gateway. When you make a request, the gateway:
             </p>
             <ul style={{ paddingLeft: '20px', marginBottom: '40px', listStyleType: 'decimal' }}>
                 <li style={{ marginBottom: '8px' }}><strong style={{ color: '#fff' }}>Authenticates</strong> your Aporto API key.</li>

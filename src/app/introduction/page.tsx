@@ -1,8 +1,9 @@
 import React from "react";
+import styles from "./introduction.module.css";
 
 export default function IntroductionPage() {
     return (
-        <div style={{ maxWidth: '900px', margin: '0 auto', color: '#ccc', lineHeight: '1.6' }}>
+        <div className={styles.introPage} style={{ maxWidth: '900px', margin: '0 auto', color: '#ccc', lineHeight: '1.6' }}>
             <h1 style={{ fontSize: '48px', fontWeight: '800', marginBottom: '16px', color: '#fff' }}>All you need.</h1>
             <p style={{ fontSize: '18px', marginBottom: '32px', color: '#888', maxWidth: '700px' }}>
                 <em>&ldquo;Scrape every competitor&apos;s pricing page, enrich leads from LinkedIn, generate product images, and send the report via email.&rdquo;</em>

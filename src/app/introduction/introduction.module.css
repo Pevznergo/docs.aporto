@@ -1,0 +1,41 @@
+.introPage {
+    width: min(100%, 900px);
+    margin: 0 auto;
+}
+
+.introPage pre {
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 760px) {
+    .introPage h1 {
+        font-size: 36px !important;
+        line-height: 1.12 !important;
+    }
+
+    .introPage h2 {
+        font-size: 22px !important;
+    }
+
+    .introPage p {
+        font-size: 15px !important;
+    }
+
+    .introPage pre {
+        margin-right: -4px !important;
+        margin-left: -4px !important;
+        padding: 16px !important;
+        border-radius: 8px !important;
+    }
+
+    .introPage code {
+        font-size: 13px !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .introPage h1 {
+        font-size: 32px !important;
+    }
+}

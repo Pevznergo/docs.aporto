@@ -14,6 +14,8 @@
     position: fixed;
     height: 100vh;
     z-index: 100;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .mainContent {
@@ -39,7 +41,8 @@
 }
 
 .contentBody {
-    padding: 24px;
+    width: 100%;
+    padding: 32px 24px;
     flex: 1;
 }
 
@@ -76,6 +79,7 @@
 .sidebarNav {
     flex: 1;
     padding: 0 12px;
+    padding-bottom: 24px;
 }
 
 .navSection {
@@ -113,9 +117,17 @@
     background-color: #222222;
 }
 
+.sidebarOverlay {
+    display: none;
+}
+
 
 
 /* Header Styles */
+.menuButton {
+    display: none;
+}
+
 .dashboardButton {
     background-color: #00dc82;
     color: #000;
@@ -151,5 +163,101 @@
     .navItem {
         justify-content: center;
         padding: 12px 0;
+    }
+}
+
+@media (max-width: 760px) {
+    .layout {
+        display: block;
+    }
+
+    .sidebar {
+        width: min(320px, 86vw);
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+        box-shadow: 24px 0 50px rgba(0, 0, 0, 0.45);
+    }
+
+    .sidebarOpen {
+        transform: translateX(0);
+    }
+
+    .sidebarOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: 95;
+        display: block;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0);
+        transition: background 0.2s ease;
+    }
+
+    .sidebarOverlayVisible {
+        pointer-events: auto;
+        background: rgba(0, 0, 0, 0.62);
+    }
+
+    .mainContent {
+        min-width: 0;
+        margin-left: 0;
+    }
+
+    .header {
+        height: 56px;
+        justify-content: space-between;
+        padding: 0 16px;
+    }
+
+    .menuButton {
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border-radius: 6px;
+        color: #ffffff;
+    }
+
+    .menuButton span {
+        width: 18px;
+        height: 2px;
+        border-radius: 2px;
+        background: currentColor;
+    }
+
+    .contentBody {
+        padding: 24px 16px 40px;
+    }
+
+    .logoText,
+    .navItem span,
+    .navSectionTitle {
+        display: inline;
+    }
+
+    .navSectionTitle {
+        display: block;
+    }
+
+    .sidebarLogo {
+        justify-content: flex-start;
+        padding: 20px 24px;
+    }
+
+    .navItem {
+        justify-content: flex-start;
+        padding: 10px 12px;
+    }
+}
+
+@media (max-width: 420px) {
+    .contentBody {
+        padding: 20px 12px 36px;
+    }
+
+    .dashboardButton {
+        padding: 8px 12px;
     }
 }

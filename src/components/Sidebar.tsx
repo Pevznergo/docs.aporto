@@ -5,7 +5,12 @@ import styles from "./layout.module.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const Sidebar = () => {
+interface SidebarProps {
+    isOpen: boolean;
+    onNavigate: () => void;
+}
+
+const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
     const pathname = usePathname();
 
     const sections = [
@@ -49,7 +54,7 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside className={styles.sidebar}>
+        <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}>
             <div className={styles.sidebarLogo}>
                 <Link href="/" className={styles.logoLink}>
                     <img src="/logo.svg" alt="Aporto Logo" style={{ width: 32, height: 32 }} />
@@ -66,6 +71,7 @@ const Sidebar = () => {
                                 key={item.path}
                                 href={item.path}
                                 className={`${styles.navItem} ${pathname === item.path ? styles.activeNavItem : ""}`}
+                                onClick={onNavigate}
                             >
                                 <span>{item.icon}</span>
                                 <span>{item.name}</span>
