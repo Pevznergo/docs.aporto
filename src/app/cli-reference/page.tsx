@@ -109,6 +109,27 @@ aporto run 17 --params linkedin-params.json --wait --json
 aporto run 4 --param prompt="sunset" --wait --json
 \`\`\`
 
+### ElevenLabs voice selection
+
+ElevenLabs text-to-speech uses \`voice_id\` as a normal skill parameter. The \`--provider\` flag only selects the provider; it does not select a voice.
+
+\`\`\`bash
+# Discover the text-to-speech skill
+aporto discover "text to speech elevenlabs" --json
+
+# List available ElevenLabs voices
+aporto run "list elevenlabs voices" --wait --json
+
+# Generate speech with an explicit voice
+aporto run 5 \\
+  --param text="Hello! Welcome to Aporto." \\
+  --param voice_id="21m00Tcm4TlvDq8ikWAM" \\
+  --param model_id="eleven_multilingual_v2" \\
+  --wait
+\`\`\`
+
+If \`voice_id\` is omitted, Aporto uses Rachel: \`21m00Tcm4TlvDq8ikWAM\`.
+
 ### How \`--file\` works
 
 The \`--file\` flag reads a local file, base64-encodes it, and sends it as a parameter with metadata:

@@ -56,20 +56,28 @@ const content = `Get up and running with Aporto in under 30 seconds.
 
 ## Alternative: MCP Server
 
-If you're using an AI agent (Claude Code, Cursor, Windsurf, Codex), add Aporto as an MCP server:
+If you're using an AI agent, MCP is the recommended integration. It gives the agent structured tools for skill discovery, option discovery, execution, and polling.
 
-**Claude Code / Codex CLI:**
+**Claude Code CLI:**
+\`\`\`bash
+claude mcp add --transport http aporto https://app.aporto.tech/api/mcp \\
+  --header "Authorization: Bearer $APORTO_API_KEY"
+\`\`\`
+
+**Codex CLI:**
 \`\`\`bash
 codex mcp add aporto --url https://app.aporto.tech/api/mcp --bearer-token-env-var APORTO_API_KEY
 \`\`\`
 
-**Generic MCP config (Cursor, Windsurf, etc.):**
+See [MCP Setup](/integration/mcp-servers/setup) for Claude Code config, Cursor, Windsurf, OpenClaw, and generic MCP JSON.
+
+**Generic MCP config:**
 
 \`\`\`json
 {
   "mcpServers": {
     "aporto": {
-      "transport": "http",
+      "type": "http",
       "url": "https://app.aporto.tech/api/mcp",
       "headers": {
         "Authorization": "Bearer \${APORTO_API_KEY}"
@@ -81,6 +89,7 @@ codex mcp add aporto --url https://app.aporto.tech/api/mcp --bearer-token-env-va
 
 Your agent gets access to these MCP tools:
 - \`aporto_discover_skills\` — find skills by description
+- \`aporto_list_options\` — list provider-specific options such as voices and models
 - \`aporto_run_skill\` — execute with smart provider routing
 - \`aporto_get_skill_run\` — poll async results
 - \`aporto_chat\` — LLM completions (400+ models)

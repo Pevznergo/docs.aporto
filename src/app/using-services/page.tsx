@@ -29,7 +29,7 @@ const content = `In this guide, you'll use Aporto as a skill network: discover a
     Use Aporto to find the best skill for extracting public LinkedIn profile data.
     \`\`\`
 
-    The agent should call \`aporto_discover_skills\` and return matching skills, required inputs, and provider options.
+    The agent should call \`aporto_discover_skills\` and return matching skills, required inputs, and parameter schemas. If the skill has provider-specific choices, the agent should call \`aporto_list_options\`.
 
 4.  ## Execute the Skill
 
@@ -38,13 +38,15 @@ const content = `In this guide, you'll use Aporto as a skill network: discover a
     \`\`\`json
     {
       "skillId": 17,
-      "input": {
+      "intent": "extract public LinkedIn profile data",
+      "params": {
         "profileUrls": ["https://www.linkedin.com/in/example"]
-      }
+      },
+      "waitForResult": true
     }
     \`\`\`
 
-    The agent calls \`aporto_execute_skill\`. Aporto chooses the provider unless you explicitly pass a provider ID.
+    The agent calls \`aporto_run_skill\`. Aporto chooses the provider unless you pass a provider hint.
 
 5.  ## See It in the Dashboard
 

@@ -3,7 +3,31 @@
 import React from "react";
 import MarkdownRenderer from "../../components/MarkdownRenderer";
 
-const content = `Aporto provides structured documentation for AI coding assistants. Choose the integration method that works best for your tool.
+const content = `Aporto provides structured documentation and MCP tools for AI coding assistants. Use MCP when your client supports it; use the CLI only when MCP is unavailable.
+
+## Recommended: Connect MCP
+
+MCP gives agents structured tools for discovery, option lookup, execution, and polling. This is more reliable than asking agents to parse terminal output.
+
+Core tools:
+
+*   \`aporto_discover_skills\` — find the right skill by intent
+*   \`aporto_list_options\` — list provider-specific options such as voices, models, languages, or styles
+*   \`aporto_run_skill\` — run a skill through provider routing
+*   \`aporto_get_skill_run\` — poll an async skill run
+
+Use [MCP Setup](/integration/mcp-servers/setup) for Claude Code CLI, Claude Code project config, Codex CLI, Cursor, Windsurf, OpenClaw, and generic MCP JSON.
+
+## CLI Fallback
+
+If MCP is not available, agents can use the terminal CLI:
+
+\`\`\`bash
+aporto discover "text to speech" --json
+aporto run 5 --param text="Hello" --param voice_id="21m00Tcm4TlvDq8ikWAM" --wait --json
+\`\`\`
+
+Prefer \`--json\` for agent workflows so the output stays structured.
 
 ## Install the Skill
 

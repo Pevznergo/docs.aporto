@@ -52,7 +52,8 @@ aporto run 4 --param prompt="a cat on the moon" --wait`}
             </p>
             <pre style={{ background: '#0a0a0a', padding: '16px 20px', borderRadius: '10px', border: '1px solid #333', overflowX: 'auto', marginBottom: '16px' }}>
                 <code style={{ fontSize: '14px', color: '#00dc82' }}>
-                    {`claude mcp add aporto -- --transport http --url https://app.aporto.tech/api/mcp --header "Authorization: Bearer $APORTO_API_KEY"`}
+                    {`claude mcp add --transport http aporto https://app.aporto.tech/api/mcp \\
+  --header "Authorization: Bearer $APORTO_API_KEY"`}
                 </code>
             </pre>
             <p style={{ marginBottom: '48px', color: '#666', fontSize: '14px' }}>

@@ -50,6 +50,27 @@ Voice ID | Name | Description
 \`JBFqnCBsd6RMkjVDRZzb\` | George | Male narrative voice
 \`AZnzlk1XvdvUeBnXmlld\` | Domi | Strong female voice
 
+## CLI Usage
+
+When using the \`aporto\` CLI, pass the ElevenLabs voice as \`--param voice_id=...\`. The \`--provider\` flag only controls provider routing; it does not choose the voice.
+
+\`\`\`bash
+# Find the TTS skill
+aporto discover "text to speech elevenlabs" --json
+
+# Find available voices
+aporto run "list elevenlabs voices" --wait --json
+
+# Generate speech with a selected voice
+aporto run 5 \\
+  --param text="Hello! Welcome to Aporto." \\
+  --param voice_id="21m00Tcm4TlvDq8ikWAM" \\
+  --param model_id="eleven_multilingual_v2" \\
+  --wait
+\`\`\`
+
+If \`voice_id\` is omitted, Aporto uses Rachel: \`21m00Tcm4TlvDq8ikWAM\`.
+
 ### Response
 
 Returns a raw \`ArrayBuffer\` (binary MP3 data). Save it to a file or stream it directly.

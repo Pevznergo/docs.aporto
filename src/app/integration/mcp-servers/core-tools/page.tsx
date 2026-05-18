@@ -13,25 +13,71 @@ const content = `Reference for the core tools available through Aporto's MCP rou
 
 Find skills that match a user intent. Use this before execution when you do not know the exact skill ID or input schema.
 
-\`intent\` string required — Natural-language description of what the user wants done
+\`query\` string required — Natural-language description of what the user wants done
 
 \`category\` string — Optional category filter such as \`scraping/social\`, \`search\`, \`media\`, or \`communication\`
 
-\`maxResults\` number — Number of matching skills to return
+\`page\` number — Page index for pagination
 
-Returns matching skills, provider options, pricing signals, and expected input fields.
+Returns matching skills, IDs, categories, capabilities, and \`paramsSchema\`.
+
+---
+
+### \`aporto_list_options\`
+
+List valid provider-specific options for a skill, such as ElevenLabs voices, model IDs, languages, or styles.
+
+\`skillId\` number required — Skill ID returned by discovery
+
+\`optionType\` string required — Option type, such as \`voice\`, \`model\`, \`language\`, or \`style\`
+
+\`query\` string — Optional natural-language filter, such as \`female british\` or \`fast model\`
+
+\`page\` number — Page index for pagination
+
+Example: call \`aporto_list_options\` with \`skillId=5\`, \`optionType="voice"\`, and \`query="female british"\` before passing \`voice_id\` to text-to-speech.
+
+---
+
+### \`aporto_run_skill\`
+
+Run a skill through discovery, provider selection, execution, artifact storage, and optional polling. This is the default execution tool for agents.
+
+\`intent\` string required — Plain-language task intent
+
+\`params\` object — Payload matching the selected skill schema
+
+\`skillId\` number — Optional exact skill ID from discovery
+
+\`providerHint\` string — Optional provider or model hint, such as \`nano banana\`, \`sora 2\`, or an Apify actor name
+
+\`waitForResult\` boolean — Whether Aporto should wait for async completion within the request
+
+\`maxWaitSeconds\` number — Maximum server-side wait time
+
+---
+
+### \`aporto_get_skill_run\`
+
+Fetch or continue polling a run returned by \`aporto_run_skill\`.
+
+\`runId\` string required — Run ID returned by \`aporto_run_skill\`
+
+\`waitForResult\` boolean — Whether Aporto should wait for completion before returning
+
+\`maxWaitSeconds\` number — Maximum server-side wait time
 
 ---
 
 ### \`aporto_execute_skill\`
 
-Execute a selected skill. Aporto routes the call to the best active provider and meters the cost.
+Low-level execution escape hatch. It may return provider-specific async task IDs and does not provide the full run lifecycle. Prefer \`aporto_run_skill\` for agent workflows.
 
 \`skillId\` number required — Skill ID returned by discovery
 
-\`input\` object required — Payload matching the selected skill schema
+\`params\` object required — Payload matching the selected skill schema
 
-\`providerId\` number — Optional provider override. Omit this to let Aporto route automatically.
+\`sessionId\` string — Optional session ID for retry routing
 
 ---
 

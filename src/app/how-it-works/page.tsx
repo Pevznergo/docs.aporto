@@ -31,11 +31,13 @@ const content = `Aporto is an AI skill network. Install the CLI, discover skills
 For AI agents (Claude Code, Cursor, Windsurf, Codex), add Aporto as an MCP server:
 
 \`\`\`bash
-claude mcp add aporto -- --transport http --url https://app.aporto.tech/api/mcp --header "Authorization: Bearer $APORTO_API_KEY"
+claude mcp add --transport http aporto https://app.aporto.tech/api/mcp \\
+  --header "Authorization: Bearer $APORTO_API_KEY"
 \`\`\`
 
 Your agent connects to \`https://app.aporto.tech/api/mcp\` and gets access to:
 - \`aporto_discover_skills\` — find skills by description
+- \`aporto_list_options\` — list provider-specific options such as voices and models
 - \`aporto_run_skill\` — execute with smart provider routing
 - \`aporto_get_skill_run\` — poll async results
 - \`aporto_chat\` — LLM completions (400+ models)
