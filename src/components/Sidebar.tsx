@@ -20,6 +20,7 @@ const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
                 { name: "Introduction", icon: "🚀", path: "/introduction" },
                 { name: "How Aporto Works", icon: "⚙️", path: "/how-it-works" },
                 { name: "Quick Start", icon: "⚡", path: "/quick-start" },
+                { name: "Coworker", icon: "💬", path: "/coworker" },
                 { name: "Skill Pricing", icon: "💳", path: "/skill-pricing" },
                 { name: "CLI Reference", icon: "💻", path: "/cli-reference" },
                 { name: "Using Skills", icon: "🛠️", path: "/using-services" },
