@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import EndpointsTab from "./EndpointsTab";
 import ModelPricingTab from "./ModelPricingTab";
 
 const models = [
@@ -13,7 +14,7 @@ const models = [
 
 export default function AIModelsPage() {
     const [activeCodeTab, setActiveCodeTab] = useState("axios");
-    const [activePageTab, setActivePageTab] = useState<"overview" | "pricing">("overview");
+    const [activePageTab, setActivePageTab] = useState<"overview" | "endpoints" | "pricing">("overview");
 
     return (
         <div style={{ maxWidth: '900px', margin: '0 auto', color: '#ccc', lineHeight: '1.6' }}>
@@ -25,6 +26,7 @@ export default function AIModelsPage() {
             <div role="tablist" aria-label="AI model documentation" style={{ display: 'flex', gap: '8px', marginBottom: '40px', borderBottom: '1px solid #333' }}>
                 {[
                     { id: 'overview' as const, label: 'Overview' },
+                    { id: 'endpoints' as const, label: 'Endpoints' },
                     { id: 'pricing' as const, label: 'Models & Pricing' },
                 ].map((tab) => (
                     <button
@@ -47,7 +49,7 @@ export default function AIModelsPage() {
                 ))}
             </div>
 
-            {activePageTab === 'pricing' ? <ModelPricingTab /> : <>
+            {activePageTab === 'pricing' ? <ModelPricingTab /> : activePageTab === 'endpoints' ? <EndpointsTab /> : <>
 
             <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '24px', color: '#fff' }}>Quick Example</h2>
             
