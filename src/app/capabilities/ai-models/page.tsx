@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import ModelPricingTab from "./ModelPricingTab";
 
 const models = [
     { provider: "OpenAI", items: ["openai/gpt-4o", "openai/gpt-4o-mini", "openai/gpt-4-turbo"] },
@@ -11,7 +12,8 @@ const models = [
 ];
 
 export default function AIModelsPage() {
-    const [activeTab, setActiveTab] = useState("axios");
+    const [activeCodeTab, setActiveCodeTab] = useState("axios");
+    const [activePageTab, setActivePageTab] = useState<"overview" | "pricing">("overview");
 
     return (
         <div style={{ maxWidth: '900px', margin: '0 auto', color: '#ccc', lineHeight: '1.6' }}>
@@ -20,6 +22,33 @@ export default function AIModelsPage() {
                 Access 400+ AI models through a single API — GPT-4, Claude, Gemini, Llama, and more — without managing separate accounts or API keys.
             </p>
 
+            <div role="tablist" aria-label="AI model documentation" style={{ display: 'flex', gap: '8px', marginBottom: '40px', borderBottom: '1px solid #333' }}>
+                {[
+                    { id: 'overview' as const, label: 'Overview' },
+                    { id: 'pricing' as const, label: 'Models & Pricing' },
+                ].map((tab) => (
+                    <button
+                        key={tab.id}
+                        role="tab"
+                        aria-selected={activePageTab === tab.id}
+                        onClick={() => setActivePageTab(tab.id)}
+                        style={{
+                            padding: '12px 16px',
+                            background: 'transparent',
+                            border: 'none',
+                            borderBottom: activePageTab === tab.id ? '2px solid #00dc82' : '2px solid transparent',
+                            color: activePageTab === tab.id ? '#00dc82' : '#888',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                        }}
+                    >
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
+            {activePageTab === 'pricing' ? <ModelPricingTab /> : <>
+
             <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '24px', color: '#fff' }}>Quick Example</h2>
             
             <div style={{ background: '#111', borderRadius: '12px', border: '1px solid #333', overflow: 'hidden', marginBottom: '40px' }}>
@@ -27,13 +56,13 @@ export default function AIModelsPage() {
                     {['Axios', 'Fetch'].map((tab) => (
                         <button
                             key={tab}
-                            onClick={() => setActiveTab(tab.toLowerCase())}
+                            onClick={() => setActiveCodeTab(tab.toLowerCase())}
                             style={{
                                 padding: '12px 24px',
-                                background: activeTab === tab.toLowerCase() ? 'transparent' : 'transparent',
+                                background: 'transparent',
                                 border: 'none',
-                                color: activeTab === tab.toLowerCase() ? '#00dc82' : '#666',
-                                borderBottom: activeTab === tab.toLowerCase() ? '2px solid #00dc82' : '2px solid transparent',
+                                color: activeCodeTab === tab.toLowerCase() ? '#00dc82' : '#666',
+                                borderBottom: activeCodeTab === tab.toLowerCase() ? '2px solid #00dc82' : '2px solid transparent',
                                 fontWeight: '600',
                                 fontSize: '14px'
                             }}
@@ -45,7 +74,7 @@ export default function AIModelsPage() {
                 <div style={{ padding: '24px', background: '#0a0a0a' }}>
                     <pre style={{ margin: 0, overflowX: 'auto' }}>
                         <code style={{ fontSize: '14px', color: '#aaa' }}>
-                            {activeTab === 'axios' ? (
+                            {activeCodeTab === 'axios' ? (
 `import axios from "axios";
 
 const client = axios.create({
@@ -190,6 +219,7 @@ const data = await response.json();`
                     ))}
                 </tbody>
             </table>
+            </>}
         </div>
     );
 }
