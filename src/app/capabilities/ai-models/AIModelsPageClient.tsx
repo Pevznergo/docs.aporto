@@ -13,10 +13,22 @@ const models = [
 ];
 
 export type PageTab = "overview" | "endpoints" | "pricing";
+export type Locale = "en" | "ru";
 
-export default function AIModelsPageClient({ initialPageTab }: { initialPageTab: PageTab }) {
+export default function AIModelsPageClient({ initialPageTab, locale }: { initialPageTab: PageTab; locale: Locale }) {
     const [activeCodeTab, setActiveCodeTab] = useState("axios");
     const [activePageTab, setActivePageTab] = useState<PageTab>(initialPageTab);
+    const copy = locale === "ru" ? {
+        title: "Доступ к моделям ИИ",
+        intro: "Более 400 моделей через единый API — GPT, Claude, Gemini, Llama и другие — без отдельных аккаунтов и API-ключей.",
+        tabs: { overview: "Обзор", endpoints: "Эндпоинты", pricing: "Модели и цены" },
+        tabList: "Документация по моделям ИИ",
+    } : {
+        title: "AI Model Access",
+        intro: "Access 400+ AI models through a single API — GPT-4, Claude, Gemini, Llama, and more — without managing separate accounts or API keys.",
+        tabs: { overview: "Overview", endpoints: "Endpoints", pricing: "Models & Pricing" },
+        tabList: "AI model documentation",
+    };
 
     function selectPageTab(tab: PageTab) {
         setActivePageTab(tab);
@@ -27,17 +39,17 @@ export default function AIModelsPageClient({ initialPageTab }: { initialPageTab:
     }
 
     return (
-        <div style={{ maxWidth: '900px', margin: '0 auto', color: '#ccc', lineHeight: '1.6' }}>
-            <h1 style={{ fontSize: '42px', fontWeight: '800', marginBottom: '16px', color: '#fff' }}>AI Model Access</h1>
+        <div lang={locale} style={{ maxWidth: '900px', margin: '0 auto', color: '#ccc', lineHeight: '1.6' }}>
+            <h1 style={{ fontSize: '42px', fontWeight: '800', marginBottom: '16px', color: '#fff' }}>{copy.title}</h1>
             <p style={{ fontSize: '20px', marginBottom: '48px', color: '#888' }}>
-                Access 400+ AI models through a single API — GPT-4, Claude, Gemini, Llama, and more — without managing separate accounts or API keys.
+                {copy.intro}
             </p>
 
-            <div role="tablist" aria-label="AI model documentation" style={{ display: 'flex', gap: '8px', marginBottom: '40px', borderBottom: '1px solid #333' }}>
+            <div role="tablist" aria-label={copy.tabList} style={{ display: 'flex', gap: '8px', marginBottom: '40px', borderBottom: '1px solid #333' }}>
                 {[
-                    { id: 'overview' as const, label: 'Overview' },
-                    { id: 'endpoints' as const, label: 'Endpoints' },
-                    { id: 'pricing' as const, label: 'Models & Pricing' },
+                    { id: 'overview' as const, label: copy.tabs.overview },
+                    { id: 'endpoints' as const, label: copy.tabs.endpoints },
+                    { id: 'pricing' as const, label: copy.tabs.pricing },
                 ].map((tab) => (
                     <button
                         key={tab.id}
@@ -59,7 +71,7 @@ export default function AIModelsPageClient({ initialPageTab }: { initialPageTab:
                 ))}
             </div>
 
-            {activePageTab === 'pricing' ? <ModelPricingTab /> : activePageTab === 'endpoints' ? <EndpointsTab /> : <>
+            {activePageTab === 'pricing' ? <ModelPricingTab locale={locale} /> : activePageTab === 'endpoints' ? <EndpointsTab /> : <>
 
             <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '24px', color: '#fff' }}>Quick Example</h2>
             
