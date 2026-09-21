@@ -1,0 +1,50 @@
+name: Release artifact
+
+# Builds a deployable bundle off the serving host. docs.aporto.tech runs from
+# /var/www/docs.aporto.tech-candidate-<sha> on a host that also serves NewAPI, so the
+# build must not happen there. The bundle is the whole project minus .git —
+# the same shape as the existing candidate directories — started with
+# `next start -p <port> -H 127.0.0.1`.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch, tag or SHA to build"
+        required: true
+        default: main
+
+jobs:
+  build:
+    name: Build deployable bundle
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          # Must match the runtime on the serving host (Node 24).
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+      - name: Assemble the bundle
+        id: bundle
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$sha" > REVISION
+          # Written outside the tree so tar never archives its own output.
+          tar --exclude=./.git -czf "$RUNNER_TEMP/site-$sha.tar.gz" .
+          mv "$RUNNER_TEMP/site-$sha.tar.gz" .
+          ls -lh "site-$sha.tar.gz"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-${{ steps.bundle.outputs.sha }}
+          path: site-${{ steps.bundle.outputs.sha }}.tar.gz
+          retention-days: 14
