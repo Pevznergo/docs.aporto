@@ -16,6 +16,10 @@ assert.equal(quote.rubPerUsd, 118.1997);
 assert.equal(isCurrentQuote(quote, new Date("2026-09-30T20:59:59.000Z")), true);
 assert.equal(isCurrentQuote(quote, new Date("2026-09-30T21:00:00.000Z")), false);
 assert.equal(cacheSeconds(new Date("2026-09-30T20:59:59.500Z")), 1);
+assert.equal(cacheSeconds(new Date("2026-09-30T12:00:00.000Z")), 300);
+const morningQuote = parseCbrUsd(xml(), "2026-09-30", "2026-09-30T09:00:00.000Z");
+assert.equal(isCurrentQuote(morningQuote, new Date("2026-09-30T09:14:59.999Z")), true);
+assert.equal(isCurrentQuote(morningQuote, new Date("2026-09-30T09:15:00.001Z")), false);
 
 assert.doesNotThrow(() => parseCbrUsd(xml("27.09.2026"), "2026-09-28", "2026-09-28T09:00:00Z"));
 assert.throws(() => parseCbrUsd(xml("01.10.2026"), "2026-09-30", "2026-09-30T09:00:00Z"));

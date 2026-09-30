@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FX_CACHE_MS, isCurrentQuote } from "@/lib/model-pricing";
+import { FX_CACHE_MS, cacheSeconds, isCurrentQuote } from "@/lib/model-pricing";
 import type { Locale } from "./AIModelsPageClient";
 
 type PricingModel = {
@@ -126,14 +126,18 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
     useEffect(() => {
         let cancelled = false;
         let timer: number | undefined;
-        const schedule = (delay: number) => {
+        const schedule = (delay: number, clearFx = false) => {
             window.clearTimeout(timer);
             timer = window.setTimeout(() => {
+                if (clearFx && !cancelled) {
+                    setPricing((current) => current ? { ...current, fx: null } : current);
+                }
                 if (document.visibilityState === "visible") void load();
             }, delay);
         };
         const load = (): Promise<void> => {
             window.clearTimeout(timer);
+            setPricing((current) => current?.fx && !isCurrentQuote(current.fx) ? { ...current, fx: null } : current);
             return fetch("/api/model-pricing", { cache: "no-store" }).then(async (response) => {
                 const payload = await response.json();
                 if (!response.ok || payload.success !== true) throw new Error(payload.message || copy.unavailable);
@@ -144,7 +148,16 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
                 if (!cancelled) {
                     setPricing({ ...payload, fx });
                     setError("");
-                    schedule(fx ? Math.max(1_000, Date.parse(fx.checkedAt) + FX_CACHE_MS - Date.now() + 1_000) : 5 * 60 * 1000);
+                    const now = new Date();
+                    schedule(
+                        fx
+                            ? Math.max(1_000, Math.min(
+                                Date.parse(fx.checkedAt) + FX_CACHE_MS - now.getTime(),
+                                cacheSeconds(now, 24 * 60 * 60) * 1_000,
+                            ))
+                            : 5 * 60 * 1000,
+                        Boolean(fx),
+                    );
                 }
             })
             .catch((reason) => {
@@ -181,8 +194,9 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
     if (error) return <p style={{ color: '#ff8a8a' }}>{error}</p>;
     if (!pricing) return <p style={{ color: '#888' }}>{copy.loading}</p>;
 
-    // Roubles only for Russian readers, and only when the rate actually loaded.
-    const showRubles = locale === "ru" && pricing.fx !== null;
+    // Re-check on every render; the expiry timer clears the quote before refresh.
+    const currentFx = isCurrentQuote(pricing.fx) ? pricing.fx : null;
+    const showRubles = locale === "ru" && currentFx !== null;
 
     return (
         <section aria-labelledby="model-pricing-heading">
@@ -190,9 +204,9 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
             <p style={{ color: '#888', marginBottom: showRubles ? '12px' : '24px' }}>
                 {copy.description(models.length)}
             </p>
-            {showRubles && pricing.fx && (
+            {showRubles && currentFx && (
                 <>
-                    <p style={{ color: '#888', marginBottom: '16px', fontSize: '14px' }}>{copy.fxNote(pricing.fx)}</p>
+                    <p style={{ color: '#888', marginBottom: '16px', fontSize: '14px' }}>{copy.fxNote(currentFx)}</p>
                     <a
                         href="https://app.aporto.tech/dashboard?lang=ru&topup=rub"
                         style={{ display: 'inline-block', marginBottom: '24px', padding: '10px 18px', background: '#6be195', color: '#04140b', borderRadius: '8px', fontWeight: 600, textDecoration: 'none' }}
@@ -201,7 +215,7 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
                     </a>
                 </>
             )}
-            {locale === "ru" && !pricing.fx && (
+            {locale === "ru" && !currentFx && (
                 <p role="status" style={{ color: '#f0bd66', marginBottom: '24px', fontSize: '14px' }}>{copy.fxUnavailable}</p>
             )}
             <label style={{ display: 'block', marginBottom: '20px' }}>
@@ -234,10 +248,10 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
                                 <td style={{ padding: '12px', border: '1px solid #333' }}>
                                     {priceLines(model, pricing.quota_per_unit, locale).map((line) => (
                                         <div key={`${line.token}:${line.minUsd}:${line.maxUsd}`}>
-                                            {showRubles && pricing.fx ? (
+                                            {showRubles && currentFx ? (
                                                 <>
                                                     {line.token}{' '}
-                                                    {line.minUsd === line.maxUsd ? rubles(line.minUsd, pricing.fx) : `${rubles(line.minUsd, pricing.fx)}–${rubles(line.maxUsd, pricing.fx)}`}/1M{' '}
+                                                    {line.minUsd === line.maxUsd ? rubles(line.minUsd, currentFx) : `${rubles(line.minUsd, currentFx)}–${rubles(line.maxUsd, currentFx)}`}/1M{' '}
                                                     <span style={{ color: '#666', fontSize: '12px' }}>
                                                         ({line.minUsd === line.maxUsd ? money(line.minUsd) : `${money(line.minUsd)}–${money(line.maxUsd)}`})
                                                     </span>

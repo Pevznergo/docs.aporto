@@ -3,7 +3,7 @@
 import React from "react";
 import styles from "./layout.module.css";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -12,7 +12,6 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
     const pathname = usePathname();
-    const searchParams = useSearchParams();
 
     const sections = [
         {
@@ -50,7 +49,7 @@ const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
                             <Link
                                 key={item.path}
                                 href={item.path}
-                                className={`${styles.navItem} ${pathname === item.path.split("?")[0] && (!item.path.includes("?") || item.path.endsWith(`tab=${searchParams.get("tab")}`)) ? styles.activeNavItem : ""}`}
+                                className={`${styles.navItem} ${!item.path.includes("?") && pathname === item.path ? styles.activeNavItem : ""}`}
                                 onClick={onNavigate}
                             >
                                 <span>{item.icon}</span>
