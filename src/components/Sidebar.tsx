@@ -3,7 +3,7 @@
 import React from "react";
 import styles from "./layout.module.css";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -12,45 +12,23 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     const sections = [
         {
             title: "Getting Started",
             items: [
-                { name: "Introduction", icon: "🚀", path: "/introduction" },
-                { name: "How Aporto Works", icon: "⚙️", path: "/how-it-works" },
                 { name: "Quick Start", icon: "⚡", path: "/quick-start" },
-                { name: "Coworker", icon: "💬", path: "/coworker" },
-                { name: "Skill Pricing", icon: "💳", path: "/skill-pricing" },
-                { name: "CLI Reference", icon: "💻", path: "/cli-reference" },
-                { name: "Using Skills", icon: "🛠️", path: "/using-services" },
-                { name: "For AI Tools", icon: "🤖", path: "/for-agents" }
+                { name: "Introduction", icon: "🚀", path: "/introduction" },
             ]
         },
         {
-            title: "MCP Server",
+            title: "LLM API",
             items: [
-                { name: "MCP Setup", icon: "🔌", path: "/integration/mcp-servers/setup" },
-                { name: "Skill Tools", icon: "🔧", path: "/integration/mcp-servers/core-tools" }
-            ]
-        },
-        {
-            title: "Capabilities",
-            items: [
-                { name: "Capabilities Overview", icon: "🎯", path: "/capabilities" },
-                { name: "AI Models", icon: "🤖", path: "/capabilities/ai-models" }
-            ]
-        },
-        {
-            title: "Integration",
-            items: [
-                { name: "Agent Frameworks", icon: "🧩", path: "/integration/agent-frameworks" },
-                { name: "LangChain", icon: "🦜", path: "/integration/agent-frameworks/langchain" },
-                { name: "LangChain Classic", icon: "🦜", path: "/integration/agent-frameworks/langchain-classic" },
-                { name: "HTTP Clients", icon: "🌐", path: "/integration/http-clients" },
-                { name: "Axios", icon: "🚀", path: "/integration/http-clients/axios" },
-                { name: "Fetch", icon: "⚡", path: "/integration/http-clients/fetch" },
-                { name: "Node HTTP", icon: "📦", path: "/integration/http-clients/node-http" }
+                { name: "Models & Pricing", icon: "💳", path: "/capabilities/ai-models?tab=pricing" },
+                { name: "Endpoints", icon: "🔌", path: "/capabilities/ai-models?tab=endpoints" },
+                { name: "API Reference", icon: "📖", path: "/api-reference" },
+                { name: "Billing & RUB", icon: "₽", path: "/billing" },
             ]
         }
     ];
@@ -72,7 +50,7 @@ const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
                             <Link
                                 key={item.path}
                                 href={item.path}
-                                className={`${styles.navItem} ${pathname === item.path ? styles.activeNavItem : ""}`}
+                                className={`${styles.navItem} ${pathname === item.path.split("?")[0] && (!item.path.includes("?") || item.path.endsWith(`tab=${searchParams.get("tab")}`)) ? styles.activeNavItem : ""}`}
                                 onClick={onNavigate}
                             >
                                 <span>{item.icon}</span>

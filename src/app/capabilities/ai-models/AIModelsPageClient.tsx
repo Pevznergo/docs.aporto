@@ -1,33 +1,41 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import EndpointsTab from "./EndpointsTab";
 import ModelPricingTab from "./ModelPricingTab";
-
-const models = [
-    { provider: "OpenAI", items: ["openai/gpt-4o", "openai/gpt-4o-mini", "openai/gpt-4-turbo"] },
-    { provider: "Anthropic", items: ["anthropic/claude-3.5-sonnet", "anthropic/claude-3-opus"] },
-    { provider: "Google", items: ["google/gemini-pro", "google/gemini-flash"] },
-    { provider: "Meta", items: ["meta-llama/llama-3.1-405b", "meta-llama/llama-3.2-90b"] },
-    { provider: "Mistral", items: ["mistralai/mistral-large", "mistralai/mixtral-8x7b"] },
-];
 
 export type PageTab = "overview" | "endpoints" | "pricing";
 export type Locale = "en" | "ru";
 
+const codeStyle = {
+    margin: 0,
+    padding: '18px',
+    overflowX: 'auto' as const,
+    color: '#bbb',
+    background: '#0a0a0a',
+    border: '1px solid #2a2a2a',
+    borderRadius: '8px',
+    fontSize: '13px',
+};
+
 export default function AIModelsPageClient({ initialPageTab, locale }: { initialPageTab: PageTab; locale: Locale }) {
-    const [activeCodeTab, setActiveCodeTab] = useState("axios");
     const [activePageTab, setActivePageTab] = useState<PageTab>(initialPageTab);
     const copy = locale === "ru" ? {
-        title: "Доступ к моделям ИИ",
-        intro: "Более 400 моделей через единый API — GPT, Claude, Gemini, Llama и другие — без отдельных аккаунтов и API-ключей.",
+        title: "Модели и цены",
+        intro: "Актуальные модели, совместимые API-эндпоинты и тарифы Aporto из одного живого каталога.",
         tabs: { overview: "Обзор", endpoints: "Эндпоинты", pricing: "Модели и цены" },
-        tabList: "Документация по моделям ИИ",
+        tabList: "Документация LLM API",
+        overviewTitle: "Выберите модель по совместимости",
+        overview: "Получите список моделей для своего ключа через GET /v1/models или используйте вкладку цен. Полный ID модели передаётся в поле model.",
+        next: "Цена зависит от модели и типа использования. Для рублёвого ориентира откройте вкладку цен: она применяет действующий курс ЦБ × 1,40 к тому же USD-тарифу.",
     } : {
-        title: "AI Model Access",
-        intro: "Access 400+ AI models through a single API — GPT-4, Claude, Gemini, Llama, and more — without managing separate accounts or API keys.",
+        title: "Models & Pricing",
+        intro: "Current Aporto models, compatible API endpoints, and tariffs from one live catalog.",
         tabs: { overview: "Overview", endpoints: "Endpoints", pricing: "Models & Pricing" },
-        tabList: "AI model documentation",
+        tabList: "LLM API documentation",
+        overviewTitle: "Choose by endpoint compatibility",
+        overview: "List the models available to your key with GET /v1/models or use the pricing tab. Send the full model ID in the model field.",
+        next: "Prices vary by model and billable unit. The pricing tab reads the same live USD tariff used for the Russian RUB estimate.",
     };
 
     function selectPageTab(tab: PageTab) {
@@ -41,209 +49,48 @@ export default function AIModelsPageClient({ initialPageTab, locale }: { initial
     return (
         <div lang={locale} style={{ maxWidth: '900px', margin: '0 auto', color: '#ccc', lineHeight: '1.6' }}>
             <h1 style={{ fontSize: '42px', fontWeight: '800', marginBottom: '16px', color: '#fff' }}>{copy.title}</h1>
-            <p style={{ fontSize: '20px', marginBottom: '48px', color: '#888' }}>
-                {copy.intro}
-            </p>
+            <p style={{ fontSize: '20px', marginBottom: '48px', color: '#888' }}>{copy.intro}</p>
 
-            <div role="tablist" aria-label={copy.tabList} style={{ display: 'flex', gap: '8px', marginBottom: '40px', borderBottom: '1px solid #333' }}>
-                {[
-                    { id: 'overview' as const, label: copy.tabs.overview },
-                    { id: 'endpoints' as const, label: copy.tabs.endpoints },
-                    { id: 'pricing' as const, label: copy.tabs.pricing },
-                ].map((tab) => (
+            <div role="tablist" aria-label={copy.tabList} style={{ display: 'flex', gap: '8px', marginBottom: '40px', borderBottom: '1px solid #333', overflowX: 'auto' }}>
+                {([
+                    ['overview', copy.tabs.overview],
+                    ['endpoints', copy.tabs.endpoints],
+                    ['pricing', copy.tabs.pricing],
+                ] as const).map(([id, label]) => (
                     <button
-                        key={tab.id}
+                        key={id}
                         role="tab"
-                        aria-selected={activePageTab === tab.id}
-                        onClick={() => selectPageTab(tab.id)}
+                        aria-selected={activePageTab === id}
+                        onClick={() => selectPageTab(id)}
                         style={{
                             padding: '12px 16px',
                             background: 'transparent',
                             border: 'none',
-                            borderBottom: activePageTab === tab.id ? '2px solid #00dc82' : '2px solid transparent',
-                            color: activePageTab === tab.id ? '#00dc82' : '#888',
+                            borderBottom: activePageTab === id ? '2px solid #00dc82' : '2px solid transparent',
+                            color: activePageTab === id ? '#00dc82' : '#888',
                             fontWeight: 600,
                             cursor: 'pointer',
+                            whiteSpace: 'nowrap',
                         }}
                     >
-                        {tab.label}
+                        {label}
                     </button>
                 ))}
             </div>
 
-            {activePageTab === 'pricing' ? <ModelPricingTab locale={locale} /> : activePageTab === 'endpoints' ? <EndpointsTab /> : <>
-
-            <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '24px', color: '#fff' }}>Quick Example</h2>
-            
-            <div style={{ background: '#111', borderRadius: '12px', border: '1px solid #333', overflow: 'hidden', marginBottom: '40px' }}>
-                <div style={{ display: 'flex', borderBottom: '1px solid #333', background: '#0a0a0a' }}>
-                    {['Axios', 'Fetch'].map((tab) => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveCodeTab(tab.toLowerCase())}
-                            style={{
-                                padding: '12px 24px',
-                                background: 'transparent',
-                                border: 'none',
-                                color: activeCodeTab === tab.toLowerCase() ? '#00dc82' : '#666',
-                                borderBottom: activeCodeTab === tab.toLowerCase() ? '2px solid #00dc82' : '2px solid transparent',
-                                fontWeight: '600',
-                                fontSize: '14px'
-                            }}
-                        >
-                            {tab}
-                        </button>
-                    ))}
-                </div>
-                <div style={{ padding: '24px', background: '#0a0a0a' }}>
-                    <pre style={{ margin: 0, overflowX: 'auto' }}>
-                        <code style={{ fontSize: '14px', color: '#aaa' }}>
-                            {activeCodeTab === 'axios' ? (
-`import axios from "axios";
-
-const client = axios.create({
-  headers: {
-    "Authorization": \`Bearer \${process.env.APORTO_API_KEY}\`,
-    "Content-Type": "application/json"
-  }
-});
-
-const { data } = await client.post(
-  "https://api.aporto.tech/v1/chat/completions",
-  {
-    model: "openai/gpt-4o-mini",
-    messages: [{ role: "user", content: "Hello, world!" }],
-    max_tokens: 100,
-  }
-);`
-                            ) : (
-`const response = await fetch(
-  "https://api.aporto.tech/v1/chat/completions",
-  {
-    method: "POST",
-    headers: { 
-      "Content-Type": "application/json",
-      "Authorization": \`Bearer \${process.env.APORTO_API_KEY}\`
-    },
-    body: JSON.stringify({
-      model: "openai/gpt-4o-mini",
-      messages: [{ role: "user", content: "Hello, world!" }],
-      max_tokens: 100,
-    }),
-  }
-);
-
-const data = await response.json();`
-                            )}
-                        </code>
-                    </pre>
-                </div>
-            </div>
-
-            <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '16px', color: '#fff' }}>How It Works</h2>
-            <p style={{ marginBottom: '24px' }}>
-                AI model requests are powered by Aporto&apos;s unified API Gateway. When you make a request, the gateway:
-            </p>
-            <ul style={{ paddingLeft: '20px', marginBottom: '40px', listStyleType: 'decimal' }}>
-                <li style={{ marginBottom: '8px' }}><strong style={{ color: '#fff' }}>Authenticates</strong> your Aporto API key.</li>
-                <li style={{ marginBottom: '8px' }}><strong style={{ color: '#fff' }}>Checks</strong> your account balance and estimates the cost.</li>
-                <li style={{ marginBottom: '8px' }}><strong style={{ color: '#fff' }}>Forwards</strong> the request to the upstream provider flawlessly.</li>
-                <li style={{ marginBottom: '8px' }}><strong style={{ color: '#fff' }}>Returns</strong> the model response to your application.</li>
-            </ul>
-
-            <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '16px', color: '#fff' }}>API Reference</h2>
-            <p style={{ marginBottom: '24px' }}>
-                All requests should be sent to the Aporto gateway URL:<br />
-                <code style={{ background: '#222', padding: '2px 6px', borderRadius: '4px', color: '#00dc82' }}>https://api.aporto.tech/v1</code>
-            </p>
-
-            <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '16px', color: '#fff' }}>Chat Completions</h3>
-            <p style={{ color: '#00dc82', fontWeight: '600', marginBottom: '12px' }}>POST /chat/completions</p>
-
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '40px', border: '1px solid #333' }}>
-                <thead style={{ background: '#1a1a1a' }}>
-                    <tr>
-                        <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #333', fontSize: '13px', color: '#fff' }}>Parameter</th>
-                        <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #333', fontSize: '13px', color: '#fff' }}>Type</th>
-                        <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #333', fontSize: '13px', color: '#fff' }}>Required</th>
-                        <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #333', fontSize: '13px', color: '#fff' }}>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {[
-                        { p: 'model', t: 'string', r: 'Yes', d: 'Full model name with provider (e.g., openai/gpt-4o-mini)' },
-                        { p: 'messages', t: 'array', r: 'Yes', d: 'Array of message objects with role and content' },
-                        { p: 'max_tokens', t: 'number', r: 'Yes', d: 'Maximum tokens to generate (required for cost estimation)' },
-                        { p: 'stream', t: 'boolean', r: 'No', d: 'Whether to stream the response (default: false)' },
-                    ].map((row, i) => (
-                        <tr key={i}>
-                            <td style={{ padding: '12px', border: '1px solid #333' }}><code style={{ color: '#e2e2e2' }}>{row.p}</code></td>
-                            <td style={{ padding: '12px', border: '1px solid #333' }}>{row.t}</td>
-                            <td style={{ padding: '12px', border: '1px solid #333' }}>{row.r}</td>
-                            <td style={{ padding: '12px', border: '1px solid #333' }}>{row.d}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '24px', color: '#fff' }}>Supported Models</h2>
-            <p style={{ marginBottom: '24px' }}>
-                Aporto provides access to 400+ models. Here are some popular options:
-            </p>
-
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '48px', border: '1px solid #333' }}>
-                <thead style={{ background: '#1a1a1a' }}>
-                    <tr>
-                        <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #333', fontSize: '13px', color: '#fff' }}>Provider</th>
-                        <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #333', fontSize: '13px', color: '#fff' }}>Models</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {models.map((m, i) => (
-                        <tr key={i}>
-                            <td style={{ padding: '12px', border: '1px solid #333', fontWeight: '600', color: '#fff' }}>{m.provider}</td>
-                            <td style={{ padding: '12px', border: '1px solid #333' }}>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                                    {m.items.map(item => (
-                                        <code key={item} style={{ background: '#222', padding: '2px 6px', borderRadius: '4px', fontSize: '13px' }}>{item}</code>
-                                    ))}
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <div style={{ background: 'rgba(0, 220, 130, 0.05)', border: '1px solid rgba(0, 220, 130, 0.2)', padding: '24px', borderRadius: '12px', marginBottom: '48px' }}>
-                <p style={{ margin: 0, color: '#00dc82', fontSize: '15px' }}>
-                    🚀 <strong>Tip</strong>: The pattern works with any SDK that accepts a <code>fetch</code> parameter — the standard fetch wrapper handles auth headers transparently.
-                </p>
-            </div>
-
-            <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '24px', color: '#fff' }}>Error Codes</h2>
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '48px', border: '1px solid #333' }}>
-                <thead style={{ background: '#1a1a1a' }}>
-                    <tr>
-                        <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #333', fontSize: '13px', color: '#fff' }}>Code</th>
-                        <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #333', fontSize: '13px', color: '#fff' }}>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {[
-                        { c: '400', d: 'Invalid request — check model name and parameters' },
-                        { c: '401', d: 'Unauthorized — check your APORTO_API_KEY' },
-                        { c: '402', d: 'Payment required — ensure you have sufficient balance' },
-                        { c: '404', d: 'Model not found — use full model name with provider prefix' },
-                        { c: '429', d: 'Rate limit exceeded' },
-                    ].map((row, i) => (
-                        <tr key={i}>
-                            <td style={{ padding: '12px', border: '1px solid #333', color: '#fff', fontWeight: '600' }}>{row.c}</td>
-                            <td style={{ padding: '12px', border: '1px solid #333' }}>{row.d}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            </>}
+            {activePageTab === 'pricing' ? <ModelPricingTab locale={locale} /> : activePageTab === 'endpoints' ? <EndpointsTab /> : (
+                <section aria-labelledby="models-overview-heading">
+                    <h2 id="models-overview-heading" style={{ fontSize: '24px', color: '#fff', marginBottom: '12px' }}>{copy.overviewTitle}</h2>
+                    <p style={{ color: '#aaa', marginBottom: '20px' }}>{copy.overview}</p>
+                    <pre style={{ ...codeStyle, marginBottom: '24px' }}><code>{`curl https://api.aporto.tech/v1/models \\
+  -H "Authorization: Bearer $APORTO_API_KEY"`}</code></pre>
+                    <p style={{ color: '#888', marginBottom: '28px' }}>{copy.next}</p>
+                    <p>
+                        <a href="/quick-start" style={{ color: '#00dc82', marginRight: '24px' }}>Quick Start</a>
+                        <a href="/api-reference" style={{ color: '#00dc82' }}>API Reference</a>
+                    </p>
+                </section>
+            )}
         </div>
     );
 }

@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run check:pricing",
     "build": "next build",
+    "check:pricing": "node scripts/check-model-pricing.mjs",
     "start": "next start",
     "serve": "next start -p 3002",
     "lint": "eslint"

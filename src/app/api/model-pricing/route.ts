@@ -1,42 +1,40 @@
 import { NextResponse } from "next/server";
+import {
+    FX_CACHE_MS,
+    cacheSeconds,
+    isCurrentQuote,
+    moscowDate,
+    parseCbrUsd,
+    type FxQuote,
+} from "@/lib/model-pricing";
 
 const API_BASE = "https://api.aporto.tech/api";
 const CBR_URL = "https://www.cbr.ru/scripts/XML_daily.asp";
-/** The rouble price of a dollar is the CBR rate times this. VAT is inside it. */
-const RUB_MULTIPLIER = 1.3;
+
+let fxCache: { quote: FxQuote; expiresAt: number } | null = null;
 
 /**
  * The USD rate CBR published for today in Moscow. `date_req` is always sent:
- * without it CBR returns tomorrow's rate after ~11:30 Moscow time.
+ * without it CBR can return a rate before its Moscow effective date.
  * Any failure yields null — this route must keep serving prices.
  */
-async function fetchCbrUsd(): Promise<{ cbrRate: number; cbrDate: string; multiplier: number; rubPerUsd: number } | null> {
+async function fetchCbrUsd(retryAfterMidnight = true): Promise<FxQuote | null> {
     try {
-        const moscowToday = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(new Date());
-        const [year, month, day] = moscowToday.split("-");
+        const requestedDate = moscowDate();
+        if (fxCache && fxCache.quote.requestedDate === requestedDate && fxCache.expiresAt > Date.now()) {
+            return fxCache.quote;
+        }
+        const [year, month, day] = requestedDate.split("-");
         const response = await fetch(`${CBR_URL}?date_req=${day}/${month}/${year}`, {
             headers: { "User-Agent": "Aporto Docs Pricing/1.0" },
-            next: { revalidate: 3600 },
+            cache: "no-store",
+            signal: AbortSignal.timeout(4_000),
         });
         if (!response.ok) return null;
-        const xml = await response.text();
-
-        const usd = xml.match(/<CharCode>USD<\/CharCode>[\s\S]*?<Nominal>(\d+)<\/Nominal>[\s\S]*?<Value>([\d,.]+)<\/Value>/);
-        const published = xml.match(/<ValCurs[^>]*\bDate="(\d{2})\.(\d{2})\.(\d{4})"/);
-        if (!usd || !published) return null;
-
-        const cbrRate = Number(usd[2].replace(",", ".")) / Number(usd[1]);
-        if (!Number.isFinite(cbrRate) || cbrRate < 20 || cbrRate > 500) return null;
-        const cbrDate = `${published[3]}-${published[2]}-${published[1]}`;
-        // A rate dated after the request means the date was ignored.
-        if (cbrDate > moscowToday) return null;
-
-        return {
-            cbrRate,
-            cbrDate,
-            multiplier: RUB_MULTIPLIER,
-            rubPerUsd: Math.ceil(cbrRate * RUB_MULTIPLIER * 10_000) / 10_000,
-        };
+        const quote = parseCbrUsd(await response.text(), requestedDate, new Date().toISOString());
+        if (!isCurrentQuote(quote)) return retryAfterMidnight ? fetchCbrUsd(false) : null;
+        fxCache = { quote, expiresAt: Date.parse(quote.checkedAt) + FX_CACHE_MS };
+        return quote;
     } catch {
         return null;
     }
@@ -44,17 +42,20 @@ async function fetchCbrUsd(): Promise<{ cbrRate: number; cbrDate: string; multip
 
 export async function GET() {
     const headers = { "User-Agent": "Aporto Docs Pricing/1.0" };
-    const [pricingResponse, statusResponse, fx] = await Promise.all([
-        fetch(`${API_BASE}/pricing`, { headers, next: { revalidate: 300 } }),
-        fetch(`${API_BASE}/status`, { headers, next: { revalidate: 300 } }),
+    const [pricingResponse, statusResponse, firstFx] = await Promise.all([
+        fetch(`${API_BASE}/pricing`, { headers, next: { revalidate: 300 } }).catch(() => null),
+        fetch(`${API_BASE}/status`, { headers, next: { revalidate: 300 } }).catch(() => null),
         fetchCbrUsd(),
     ]);
 
-    if (!pricingResponse.ok || !statusResponse.ok) {
+    if (!pricingResponse?.ok || !statusResponse?.ok) {
         return NextResponse.json({ success: false, message: "Pricing is temporarily unavailable." }, { status: 502 });
     }
 
     const [pricing, status] = await Promise.all([pricingResponse.json(), statusResponse.json()]);
+    const retriedFx = firstFx && !isCurrentQuote(firstFx) ? await fetchCbrUsd() : firstFx;
+    const responseNow = new Date();
+    const fx = retriedFx && isCurrentQuote(retriedFx, responseNow) ? retriedFx : null;
     return NextResponse.json(
         {
             success: pricing.success === true,
@@ -64,6 +65,13 @@ export async function GET() {
             quota_per_unit: status.data?.quota_per_unit,
             fx,
         },
-        { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600" } },
+        {
+            headers: {
+                "Cache-Control": `public, max-age=0, s-maxage=${cacheSeconds(
+                    responseNow,
+                    fx && fxCache ? Math.min(5 * 60, Math.max(1, Math.floor((fxCache.expiresAt - Date.now()) / 1000))) : 5 * 60,
+                )}, must-revalidate`,
+            },
+        },
     );
 }
