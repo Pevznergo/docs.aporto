@@ -236,7 +236,7 @@ try {
     const errorPage = await openPage({ width: 390, height: 844 });
     await routePricing(errorPage, 503);
     await errorPage.goto(`${base}/capabilities/ai-models?tab=pricing`, { waitUntil: "networkidle" });
-    assert.ok(await errorPage.getByRole("alert").isVisible(), "pricing error state must be visible");
+    assert.ok(await errorPage.locator('main p[role="alert"]').isVisible(), "pricing error state must be visible");
     await errorPage.screenshot({ path: `${output}/pricing-en-error-mobile.png` });
     await errorPage.close();
 
