@@ -210,10 +210,10 @@ try {
     await checkDocument(mobile, "ru", "/ru/quick-start", "Быстрый старт");
     await assertTheme(mobile, "light");
     await mobile.getByRole("button", { name: "Открыть навигацию" }).click();
-    const apiLink = mobile.getByRole("link", { name: "Справочник API", exact: true });
-    assert.equal(new URL(await apiLink.getAttribute("href"), base).pathname, "/ru/api-reference");
-    await apiLink.waitFor({ state: "visible" });
     await mobile.waitForFunction(() => Math.abs(document.querySelector("aside").getBoundingClientRect().x) < 1);
+    const apiLink = mobile.getByRole("link", { name: "Справочник API", exact: true });
+    await apiLink.waitFor({ state: "visible" });
+    assert.equal(new URL(await apiLink.getAttribute("href"), base).pathname, "/ru/api-reference");
     await mobile.screenshot({ path: `${output}/docs-ru-mobile.png` });
     await mobile.screenshot({ path: `${output}/docs-ru-light-mobile.png` });
     await Promise.all([

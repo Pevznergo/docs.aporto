@@ -70,6 +70,7 @@ const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
                             <Link
                                 key={item.path}
                                 href={withLocale(item.path, locale)}
+                                aria-label={item.name}
                                 aria-current={currentPath === withLocale(item.path, locale) ? "page" : undefined}
                                 className={`${styles.navItem} ${currentPath === withLocale(item.path, locale) ? styles.activeNavItem : ""}`}
                                 onClick={onNavigate}

@@ -93,7 +93,7 @@
 }
 
 .markdown table {
-    display: block;
+    display: table;
     width: 100%;
     margin-bottom: 40px;
     overflow-x: auto;
@@ -245,7 +245,7 @@
     font-size: 14px;
 }
 
-.primaryAction {
+.markdown .primaryAction {
     display: inline-block;
     margin-bottom: 24px;
     border-radius: 12px;
@@ -257,7 +257,7 @@
     text-decoration: none;
 }
 
-.primaryAction:hover {
+.markdown .primaryAction:hover {
     background: var(--primary-hover);
 }
 
@@ -356,6 +356,10 @@
 
     .markdown blockquote {
         padding: 18px;
+    }
+
+    .markdown table {
+        display: block;
     }
 
     .modelIntro {
