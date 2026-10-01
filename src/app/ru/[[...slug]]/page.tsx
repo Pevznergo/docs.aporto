@@ -24,7 +24,7 @@ const metadata: Record<DocPage | "capabilities/ai-models", { title: string; desc
     },
     billing: {
         title: "Баланс и оплата — Aporto LLM API",
-        description: "Текущий USD-баланс, оплата счёта в RUB и готовящийся отдельный RUB-кошелёк.",
+        description: "Независимые USD- и RUB-кошельки, пополнение и правила списаний Aporto LLM API.",
     },
     "capabilities/ai-models": {
         title: "Модели и цены — Aporto LLM API",

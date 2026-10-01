@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FX_CACHE_MS, cacheSeconds, isCurrentQuote } from "@/lib/model-pricing";
+import { FX_CACHE_MS, cacheSeconds, isCurrentQuote, rubUsagePerUsd, type FxQuote } from "@/lib/model-pricing";
 import type { Locale } from "./AIModelsPageClient";
 
 type PricingModel = {
@@ -33,23 +33,13 @@ function isPublishable(model: PricingModel): boolean {
     return !(ratio === 37.5 && completion === 1);
 }
 
-type Fx = {
-    cbrRate: number;
-    cbrDate: string;
-    effectiveDate: string;
-    requestedDate: string;
-    checkedAt: string;
-    multiplier: number;
-    rubPerUsd: number;
-};
-
 type PricingResponse = {
     success: boolean;
     data: PricingModel[];
     vendors: { id: number; name: string }[];
     pricing_version: string;
     quota_per_unit: number;
-    fx: Fx | null;
+    fx: FxQuote | null;
 };
 
 const TOKEN_LABELS: Record<Locale, Record<string, string>> = {
@@ -58,8 +48,8 @@ const TOKEN_LABELS: Record<Locale, Record<string, string>> = {
 };
 
 const money = (value: number) => `$${value.toLocaleString("en-US", { maximumFractionDigits: 6 })}`;
-const rubles = (value: number, fx: Fx) =>
-    `${(value * fx.rubPerUsd).toLocaleString("ru-RU", { maximumFractionDigits: 2 })} ₽`;
+const rubles = (value: number, fx: FxQuote) =>
+    `${(value * rubUsagePerUsd(fx.cbrRate)).toLocaleString("ru-RU", { maximumFractionDigits: 2 })} ₽`;
 
 type PriceLine = { token: string; minUsd: number; maxUsd: number };
 
@@ -93,22 +83,22 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
     const [query, setQuery] = useState("");
     const copy = locale === "ru" ? {
         title: "Модели и цены",
-        description: (count: number) => `Актуальные тарифы для ${count} моделей. Цены указаны в долларах США за 1 млн токенов и могут различаться по типу данных и кешированию.`,
+        description: (count: number) => `Актуальные тарифы для ${count} моделей. Суммы в ₽ показывают расчёт поддерживаемых текстовых запросов RUB-кошелька и не являются отметкой совместимости модели.`,
         search: "Поиск моделей",
         loading: "Загружаем актуальные цены…",
         unavailable: "Цены временно недоступны.",
         empty: "Модели не найдены.",
         showing: (count: number, version: string) => `Показано моделей: ${count} · Версия цен: ${version}`,
         headings: ["Модель", "Провайдер", "Цена", "Эндпоинты"],
-        fxNote: (fx: Fx) =>
+        fxNote: (fx: FxQuote) =>
             `Действующий курс ЦБ РФ на ${new Date(`${fx.cbrDate}T00:00:00Z`).toLocaleDateString("ru-RU", { timeZone: "UTC" })}: 1 USD = ${fx.cbrRate.toLocaleString("ru-RU", { maximumFractionDigits: 4 })} ₽. ` +
-            `Расчёт Aporto: USD-тариф × курс ЦБ × ${fx.multiplier.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}; ` +
-            `${fx.rubPerUsd.toLocaleString("ru-RU", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} ₽ за $1 тарифа. ` +
-            `Проверено ${new Date(fx.checkedAt).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })} МСК. Баланс ведётся в USD, курс нового платежа фиксируется до оплаты.`,
-        fxUnavailable: "Рублёвый расчёт временно недоступен: курс ЦБ не получен. USD-тарифы ниже остаются актуальными.",
+            `Расчёт RUB-запроса: USD-тариф × курс ЦБ × ${fx.multiplier.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} без промежуточного округления; ` +
+            `≈ ${rubUsagePerUsd(fx.cbrRate).toLocaleString("ru-RU", { maximumFractionDigits: 6 })} ₽ за $1 тарифа. Итоговая денежная сумма округляется один раз. ` +
+            `Проверено ${new Date(fx.checkedAt).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })} МСК. Ставка фиксируется до запроса; пополнение RUB-кошелька зачисляется 1:1 и её не использует.`,
+        fxUnavailable: "Свежий проверенный курс ЦБ РФ не получен. USD-тарифы ниже остаются актуальными; RUB-запросы выполняются только со свежей ставкой.",
         conditional: "Диапазон опубликованных ставок; итог зависит от условий тарифа.",
         conditionalOnly: "Условный тариф; точная ставка зависит от параметров запроса.",
-        topUp: "Пополнить в рублях",
+        topUp: "Открыть RUB-кошелёк",
     } : {
         title: "Models & Pricing",
         description: (count: number) => `Live gateway pricing for ${count} models. Token prices are in USD per 1 million tokens and may vary by modality or cache tier.`,
@@ -118,7 +108,7 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
         empty: "No models found.",
         showing: (count: number, version: string) => `Showing ${count} models · Pricing version ${version}`,
         headings: ["Model", "Provider", "Pricing", "Endpoints"],
-        fxNote: (_fx: Fx) => "",
+        fxNote: (_fx: FxQuote) => "",
         fxUnavailable: "",
         conditional: "Published rate range; the applied rate depends on tariff conditions.",
         conditionalOnly: "Conditional tariff; the exact rate depends on request parameters.",
@@ -211,7 +201,7 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
                 <>
                     <p style={{ color: '#888', marginBottom: '16px', fontSize: '14px' }}>{copy.fxNote(currentFx)}</p>
                     <a
-                        href="https://app.aporto.tech/dashboard?lang=ru&topup=rub"
+                        href="https://app.aporto.tech/dashboard?wallet=RUB&lang=ru"
                         style={{ display: 'inline-block', marginBottom: '24px', padding: '10px 18px', background: '#6be195', color: '#04140b', borderRadius: '8px', fontWeight: 600, textDecoration: 'none' }}
                     >
                         {copy.topUp}
@@ -259,7 +249,7 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
                                             {showRubles && currentFx ? (
                                                 <>
                                                     {line.token}{' '}
-                                                    {line.minUsd === line.maxUsd ? rubles(line.minUsd, currentFx) : `${rubles(line.minUsd, currentFx)}–${rubles(line.maxUsd, currentFx)}`}{unit}{' '}
+                                                    ≈ {line.minUsd === line.maxUsd ? rubles(line.minUsd, currentFx) : `${rubles(line.minUsd, currentFx)}–${rubles(line.maxUsd, currentFx)}`}{unit}{' '}
                                                     <span style={{ color: '#666', fontSize: '12px' }}>
                                                         ({line.minUsd === line.maxUsd ? money(line.minUsd) : `${money(line.minUsd)}–${money(line.maxUsd)}`})
                                                     </span>
