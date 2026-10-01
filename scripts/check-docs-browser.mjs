@@ -56,6 +56,8 @@ try {
     await desktop.screenshot({ path: `${output}/docs-ru-desktop.png`, fullPage: true });
     await checkDocument(desktop, "en", "/introduction", "Aporto LLM API");
     await desktop.screenshot({ path: `${output}/docs-en-desktop.png`, fullPage: true });
+    await checkDocument(desktop, "ru", "/ru/billing", "Баланс и оплата");
+    await desktop.screenshot({ path: `${output}/docs-ru-wallets-desktop.png`, fullPage: true });
 
     await desktop.goto(`${base}/ru/capabilities/ai-models#request`, { waitUntil: "networkidle" });
     await desktop.getByRole("tab", { name: "Эндпоинты", exact: true }).click();
@@ -96,6 +98,7 @@ try {
     const apiLink = mobile.getByRole("link", { name: "Справочник API", exact: true });
     assert.equal(new URL(await apiLink.getAttribute("href"), base).pathname, "/ru/api-reference");
     await apiLink.waitFor({ state: "visible" });
+    await mobile.waitForFunction(() => Math.abs(document.querySelector("aside").getBoundingClientRect().x) < 1);
     await mobile.screenshot({ path: `${output}/docs-ru-mobile.png`, fullPage: true });
     await Promise.all([
         mobile.waitForURL(`${base}/ru/api-reference`),
@@ -103,6 +106,8 @@ try {
     ]);
     assert.equal(await mobile.locator("html").getAttribute("lang"), "ru");
     assert.equal((await mobile.locator("h1").textContent())?.trim(), "Справочник API");
+    await checkDocument(mobile, "ru", "/ru/billing", "Баланс и оплата");
+    await mobile.screenshot({ path: `${output}/docs-ru-wallets-mobile.png`, fullPage: true });
 
     assert.deepEqual(errors, []);
 } finally {
