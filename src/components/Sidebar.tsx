@@ -29,7 +29,7 @@ const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
                 { name: "Модели и цены", icon: "💳", path: "/capabilities/ai-models?tab=pricing" },
                 { name: "Эндпоинты", icon: "🔌", path: "/capabilities/ai-models?tab=endpoints" },
                 { name: "Справочник API", icon: "📖", path: "/api-reference" },
-                { name: "Оплата в USD и RUB", icon: "₽", path: "/billing" },
+                { name: "Баланс и оплата", icon: "💳", path: "/billing" },
             ]
         }
     ] : [

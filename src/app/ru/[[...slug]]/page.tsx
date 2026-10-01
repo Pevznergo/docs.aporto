@@ -23,8 +23,8 @@ const metadata: Record<DocPage | "capabilities/ai-models", { title: string; desc
         description: "Авторизация, эндпоинты, потоковые ответы, ошибки и повторные запросы.",
     },
     billing: {
-        title: "Оплата в USD и RUB — Aporto LLM API",
-        description: "Тарифы моделей, баланс в USD и расчёт стоимости в рублях по курсу ЦБ РФ.",
+        title: "Баланс и оплата — Aporto LLM API",
+        description: "Текущий USD-баланс, оплата счёта в RUB и готовящийся отдельный RUB-кошелёк.",
     },
     "capabilities/ai-models": {
         title: "Модели и цены — Aporto LLM API",

@@ -43,7 +43,7 @@ try {
         ["ru", "/ru/introduction", "Aporto LLM API"],
         ["ru", "/ru/quick-start", "Быстрый старт"],
         ["ru", "/ru/api-reference", "Справочник API"],
-        ["ru", "/ru/billing", "Оплата в USD и RUB"],
+        ["ru", "/ru/billing", "Баланс и оплата"],
         ["en", "/introduction", "Aporto LLM API"],
         ["en", "/quick-start", "Quick Start"],
         ["en", "/api-reference", "API Reference"],
