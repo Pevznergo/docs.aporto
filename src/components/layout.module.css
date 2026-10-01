@@ -339,7 +339,7 @@
     }
 
     .logoText,
-    .navItem span,
+    .navItem span:last-child,
     .navSectionTitle {
         display: inline;
     }

@@ -213,6 +213,7 @@ try {
     await mobile.waitForFunction(() => Math.abs(document.querySelector("aside").getBoundingClientRect().x) < 1);
     const apiLink = mobile.getByRole("link", { name: "Справочник API", exact: true });
     await apiLink.waitFor({ state: "visible" });
+    assert.ok(await apiLink.getByText("Справочник API", { exact: true }).isVisible(), "mobile navigation labels must be visible");
     assert.equal(new URL(await apiLink.getAttribute("href"), base).pathname, "/ru/api-reference");
     await mobile.screenshot({ path: `${output}/docs-ru-mobile.png` });
     await mobile.screenshot({ path: `${output}/docs-ru-light-mobile.png` });
@@ -231,6 +232,8 @@ try {
     await checkDocument(mobile, "en", "/capabilities/ai-models?tab=pricing", "Models & Pricing");
     await assertTheme(mobile, "dark");
     await mobile.getByRole("searchbox", { name: "Search models" }).waitFor({ state: "visible" });
+    const selectedPricingTab = await mobile.getByRole("tab", { name: "Models & Pricing", exact: true }).boundingBox();
+    assert.ok(selectedPricingTab && selectedPricingTab.x + selectedPricingTab.width <= 391, "selected mobile pricing tab must fit the viewport");
     await mobile.screenshot({ path: `${output}/pricing-en-dark-mobile.png`, fullPage: true });
 
     const errorPage = await openPage({ width: 390, height: 844 });

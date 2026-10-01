@@ -370,6 +370,12 @@
     .tabs {
         margin-right: -4px;
         margin-bottom: 32px;
+        gap: 2px;
+    }
+
+    .tab {
+        padding: 12px 8px;
+        font-size: 14px;
     }
 }
 
