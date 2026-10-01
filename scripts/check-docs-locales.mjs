@@ -30,6 +30,8 @@ assert.match(englishBilling, /actual usage × current effective CBR USD\/RUB rat
 assert.match(russianBilling, /фактического расхода в USD × действующий курс ЦБ РФ USD\/RUB × 1,40/);
 assert.match(englishBilling, /same currency-neutral request body[\s\S]+never automatically use the other wallet/);
 assert.match(russianBilling, /тело запроса без параметра валюты[\s\S]+не будет автоматически списывать средства с другого кошелька/);
+assert.match(englishBilling, /FX snapshot is fixed before the request is sent upstream[\s\S]+not repriced/);
+assert.match(russianBilling, /Снимок действующего курса фиксируется до отправки запроса[\s\S]+не пересчитываются/);
 assert.match(englishBilling, /Available now: RUB invoice for the USD balance/);
 assert.match(russianBilling, /Доступно сейчас: счёт в RUB для пополнения USD-баланса/);
 

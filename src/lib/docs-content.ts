@@ -217,7 +217,7 @@ One Aporto account will have two separate wallets:
 | Holds USD and uses API keys linked to the USD wallet | Holds RUB and uses API keys linked to the RUB wallet |
 | Keeps its own balance and usage and billing history | Keeps its own balance and usage and billing history |
 
-Both key types will call the same `https://api.aporto.tech/v1` endpoint with the same currency-neutral request body. The API key will select the wallet and billing currency. A request will never automatically use the other wallet, and Aporto will not automatically transfer funds between wallets.
+Both key types will call the same \`https://api.aporto.tech/v1\` endpoint with the same currency-neutral request body. The API key will select the wallet and billing currency. A request will never automatically use the other wallet, and Aporto will not automatically transfer funds between wallets.
 
 ### Funding and request charges in RUB
 
@@ -227,6 +227,7 @@ Both key types will call the same `https://api.aporto.tech/v1` endpoint with the
   **RUB debit = published USD charge for actual usage × current effective CBR USD/RUB rate × 1.40**
 
   The exchange rate and the 1.40 multiplier are applied once to the request's USD charge.
+  The effective FX snapshot is fixed before the request is sent upstream and is used for settlement and any refund. Completed charges and wallet balances are not repriced when the CBR rate later changes.
 - If the RUB wallet cannot cover a request, the USD wallet will not be charged as a fallback.
 - The USD wallet, its API keys, and its charging behavior will remain unchanged.
 
@@ -449,7 +450,7 @@ curl -N https://api.aporto.tech/v1/chat/completions \\
 | Хранит USD и использует привязанные к нему API-ключи | Хранит RUB и использует привязанные к нему API-ключи |
 | Имеет свой баланс и свои истории использования и списаний | Имеет свой баланс и свои истории использования и списаний |
 
-Ключи обоих кошельков будут работать через один адрес `https://api.aporto.tech/v1` и одинаковое тело запроса без параметра валюты. Кошелёк и валюту списания определит API-ключ. Запрос не будет автоматически списывать средства с другого кошелька, а Aporto не будет автоматически переводить средства между кошельками.
+Ключи обоих кошельков будут работать через один адрес \`https://api.aporto.tech/v1\` и одинаковое тело запроса без параметра валюты. Кошелёк и валюту списания определит API-ключ. Запрос не будет автоматически списывать средства с другого кошелька, а Aporto не будет автоматически переводить средства между кошельками.
 
 ### Пополнение и списания в RUB
 
@@ -459,6 +460,7 @@ curl -N https://api.aporto.tech/v1/chat/completions \\
   **Списание в RUB = опубликованная стоимость фактического расхода в USD × действующий курс ЦБ РФ USD/RUB × 1,40**
 
   Курс и коэффициент 1,40 применяются к стоимости запроса в USD один раз.
+  Снимок действующего курса фиксируется до отправки запроса вышестоящему провайдеру и используется для списания и возможного возврата. Завершённые списания и остатки кошельков не пересчитываются при последующих изменениях курса ЦБ РФ.
 - Если средств на RUB-кошельке недостаточно, списания с USD-кошелька не произойдёт.
 - USD-кошелёк, его API-ключи и порядок списаний останутся без изменений.
 
