@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import styles from "./layout.module.css";
+import { localeFromPathname } from "@/lib/docs-locale";
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -11,6 +13,8 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const pathname = usePathname();
+    const locale = localeFromPathname(pathname);
 
     return (
         <div className={styles.layout}>
@@ -18,11 +22,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <button
                 className={`${styles.sidebarOverlay} ${isSidebarOpen ? styles.sidebarOverlayVisible : ""}`}
                 type="button"
-                aria-label="Close navigation"
+                aria-label={locale === "ru" ? "Закрыть навигацию" : "Close navigation"}
                 onClick={() => setIsSidebarOpen(false)}
             />
             <main className={styles.mainContent}>
-                <Header onMenuClick={() => setIsSidebarOpen(true)} />
+                <Header locale={locale} pathname={pathname} onMenuClick={() => setIsSidebarOpen(true)} />
                 <div className={styles.contentBody}>{children}</div>
             </main>
         </div>

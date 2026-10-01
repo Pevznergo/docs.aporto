@@ -97,6 +97,7 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
         search: "Поиск моделей",
         loading: "Загружаем актуальные цены…",
         unavailable: "Цены временно недоступны.",
+        empty: "Модели не найдены.",
         showing: (count: number, version: string) => `Показано моделей: ${count} · Версия цен: ${version}`,
         headings: ["Модель", "Провайдер", "Цена", "Эндпоинты"],
         fxNote: (fx: Fx) =>
@@ -114,6 +115,7 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
         search: "Search models",
         loading: "Loading current model pricing…",
         unavailable: "Pricing is unavailable.",
+        empty: "No models found.",
         showing: (count: number, version: string) => `Showing ${count} models · Pricing version ${version}`,
         headings: ["Model", "Provider", "Pricing", "Endpoints"],
         fxNote: (_fx: Fx) => "",
@@ -140,7 +142,7 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
             setPricing((current) => current?.fx && !isCurrentQuote(current.fx) ? { ...current, fx: null } : current);
             return fetch("/api/model-pricing", { cache: "no-store" }).then(async (response) => {
                 const payload = await response.json();
-                if (!response.ok || payload.success !== true) throw new Error(payload.message || copy.unavailable);
+                if (!response.ok || payload.success !== true) throw new Error(copy.unavailable);
                 if (!Array.isArray(payload.data) || !Array.isArray(payload.vendors) || !Number.isFinite(payload.quota_per_unit) || payload.quota_per_unit <= 0) {
                     throw new Error(copy.unavailable);
                 }
@@ -162,7 +164,7 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
             })
             .catch((reason) => {
                 if (!cancelled) {
-                    setError(reason instanceof Error ? reason.message : copy.unavailable);
+                    setError(reason instanceof Error && reason.message === copy.unavailable ? reason.message : copy.unavailable);
                     schedule(60_000);
                 }
             });
@@ -191,12 +193,13 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
             .sort((a, b) => a.model_name.localeCompare(b.model_name));
     }, [pricing, query, vendors]);
 
-    if (error) return <p style={{ color: '#ff8a8a' }}>{error}</p>;
+    if (error) return <p role="alert" style={{ color: '#ff8a8a' }}>{error}</p>;
     if (!pricing) return <p style={{ color: '#888' }}>{copy.loading}</p>;
 
     // Re-check on every render; the expiry timer clears the quote before refresh.
     const currentFx = isCurrentQuote(pricing.fx) ? pricing.fx : null;
     const showRubles = locale === "ru" && currentFx !== null;
+    const unit = locale === "ru" ? "/1 млн" : "/1M";
 
     return (
         <section aria-labelledby="model-pricing-heading">
@@ -241,6 +244,11 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
                         </tr>
                     </thead>
                     <tbody>
+                        {!models.length && (
+                            <tr>
+                                <td colSpan={4} style={{ padding: '18px 12px', border: '1px solid #333', color: '#888' }}>{copy.empty}</td>
+                            </tr>
+                        )}
                         {models.map((model) => (
                             <tr key={model.model_name}>
                                 <td style={{ padding: '12px', border: '1px solid #333' }}><code style={{ color: '#e2e2e2' }}>{model.model_name}</code></td>
@@ -251,13 +259,13 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
                                             {showRubles && currentFx ? (
                                                 <>
                                                     {line.token}{' '}
-                                                    {line.minUsd === line.maxUsd ? rubles(line.minUsd, currentFx) : `${rubles(line.minUsd, currentFx)}–${rubles(line.maxUsd, currentFx)}`}/1M{' '}
+                                                    {line.minUsd === line.maxUsd ? rubles(line.minUsd, currentFx) : `${rubles(line.minUsd, currentFx)}–${rubles(line.maxUsd, currentFx)}`}{unit}{' '}
                                                     <span style={{ color: '#666', fontSize: '12px' }}>
                                                         ({line.minUsd === line.maxUsd ? money(line.minUsd) : `${money(line.minUsd)}–${money(line.maxUsd)}`})
                                                     </span>
                                                 </>
                                             ) : (
-                                                `${line.token} ${line.minUsd === line.maxUsd ? money(line.minUsd) : `${money(line.minUsd)}–${money(line.maxUsd)}`}/1M`
+                                                `${line.token} ${line.minUsd === line.maxUsd ? money(line.minUsd) : `${money(line.minUsd)}–${money(line.maxUsd)}`}${unit}`
                                             )}
                                         </div>
                                     ))}

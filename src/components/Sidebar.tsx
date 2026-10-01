@@ -4,6 +4,7 @@ import React from "react";
 import styles from "./layout.module.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { localeFromPathname, withLocale } from "@/lib/docs-locale";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -12,8 +13,26 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
     const pathname = usePathname();
+    const locale = localeFromPathname(pathname);
 
-    const sections = [
+    const sections = locale === "ru" ? [
+        {
+            title: "Начало работы",
+            items: [
+                { name: "Быстрый старт", icon: "⚡", path: "/quick-start" },
+                { name: "Введение", icon: "🚀", path: "/introduction" },
+            ]
+        },
+        {
+            title: "LLM API",
+            items: [
+                { name: "Модели и цены", icon: "💳", path: "/capabilities/ai-models?tab=pricing" },
+                { name: "Эндпоинты", icon: "🔌", path: "/capabilities/ai-models?tab=endpoints" },
+                { name: "Справочник API", icon: "📖", path: "/api-reference" },
+                { name: "Оплата в USD и RUB", icon: "₽", path: "/billing" },
+            ]
+        }
+    ] : [
         {
             title: "Getting Started",
             items: [
@@ -24,10 +43,10 @@ const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
         {
             title: "LLM API",
             items: [
-                { name: "Models & Pricing", icon: "💳", path: "/capabilities/ai-models?tab=pricing" },
+                { name: "Models & Pricing", icon: "🤖", path: "/capabilities/ai-models?tab=pricing" },
                 { name: "Endpoints", icon: "🔌", path: "/capabilities/ai-models?tab=endpoints" },
                 { name: "API Reference", icon: "📖", path: "/api-reference" },
-                { name: "Billing & RUB", icon: "₽", path: "/billing" },
+                { name: "Billing", icon: "💳", path: "/billing" },
             ]
         }
     ];
@@ -35,8 +54,8 @@ const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
     return (
         <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}>
             <div className={styles.sidebarLogo}>
-                <Link href="/" className={styles.logoLink}>
-                    <img src="/logo.svg" alt="Aporto Logo" style={{ width: 32, height: 32 }} />
+                <Link href={withLocale("/introduction", locale)} className={styles.logoLink} onClick={onNavigate}>
+                    <img src="/logo.svg" alt="Aporto" style={{ width: 32, height: 32 }} />
                     <span className={styles.logoText}>Aporto</span>
                 </Link>
             </div>
@@ -48,11 +67,11 @@ const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
                         {section.items.map((item) => (
                             <Link
                                 key={item.path}
-                                href={item.path}
-                                className={`${styles.navItem} ${!item.path.includes("?") && pathname === item.path ? styles.activeNavItem : ""}`}
+                                href={withLocale(item.path, locale)}
+                                className={`${styles.navItem} ${!item.path.includes("?") && pathname === withLocale(item.path, locale) ? styles.activeNavItem : ""}`}
                                 onClick={onNavigate}
                             >
-                                <span>{item.icon}</span>
+                                <span aria-hidden="true">{item.icon}</span>
                                 <span>{item.name}</span>
                             </Link>
                         ))}

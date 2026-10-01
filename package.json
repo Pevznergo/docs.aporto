@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npm run check:pricing",
+    "prebuild": "npm run check:pricing && npm run check:locales",
     "build": "next build",
     "check:pricing": "node scripts/check-model-pricing.mjs",
+    "check:locales": "node scripts/check-docs-locales.mjs",
+    "check:rendered": "node scripts/check-rendered-docs.mjs",
     "start": "next start",
     "serve": "next start -p 3002",
     "lint": "eslint"

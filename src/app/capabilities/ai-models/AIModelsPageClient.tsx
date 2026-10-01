@@ -28,6 +28,8 @@ export default function AIModelsPageClient({ initialPageTab, locale }: { initial
         overviewTitle: "Выберите модель по совместимости",
         overview: "Получите список моделей для своего ключа через GET /v1/models или используйте вкладку цен. Полный ID модели передаётся в поле model.",
         next: "Цена зависит от модели и типа использования. Для рублёвого ориентира откройте вкладку цен: она применяет действующий курс ЦБ × 1,40 к тому же USD-тарифу.",
+        quickStart: "Быстрый старт",
+        apiReference: "Справочник API",
     } : {
         title: "Models & Pricing",
         intro: "Current Aporto models, compatible API endpoints, and tariffs from one live catalog.",
@@ -35,8 +37,11 @@ export default function AIModelsPageClient({ initialPageTab, locale }: { initial
         tabList: "LLM API documentation",
         overviewTitle: "Choose by endpoint compatibility",
         overview: "List the models available to your key with GET /v1/models or use the pricing tab. Send the full model ID in the model field.",
-        next: "Prices vary by model and billable unit. The pricing tab reads the same live USD tariff used for the Russian RUB estimate.",
+        next: "Prices vary by model and billable unit. The pricing tab reads the live USD tariff published by the gateway.",
+        quickStart: "Quick Start",
+        apiReference: "API Reference",
     };
+    const prefix = locale === "ru" ? "/ru" : "";
 
     function selectPageTab(tab: PageTab) {
         setActivePageTab(tab);
@@ -78,7 +83,7 @@ export default function AIModelsPageClient({ initialPageTab, locale }: { initial
                 ))}
             </div>
 
-            {activePageTab === 'pricing' ? <ModelPricingTab locale={locale} /> : activePageTab === 'endpoints' ? <EndpointsTab /> : (
+            {activePageTab === 'pricing' ? <ModelPricingTab locale={locale} /> : activePageTab === 'endpoints' ? <EndpointsTab locale={locale} /> : (
                 <section aria-labelledby="models-overview-heading">
                     <h2 id="models-overview-heading" style={{ fontSize: '24px', color: '#fff', marginBottom: '12px' }}>{copy.overviewTitle}</h2>
                     <p style={{ color: '#aaa', marginBottom: '20px' }}>{copy.overview}</p>
@@ -86,8 +91,8 @@ export default function AIModelsPageClient({ initialPageTab, locale }: { initial
   -H "Authorization: Bearer $APORTO_API_KEY"`}</code></pre>
                     <p style={{ color: '#888', marginBottom: '28px' }}>{copy.next}</p>
                     <p>
-                        <a href="/quick-start" style={{ color: '#00dc82', marginRight: '24px' }}>Quick Start</a>
-                        <a href="/api-reference" style={{ color: '#00dc82' }}>API Reference</a>
+                        <a href={`${prefix}/quick-start`} style={{ color: '#00dc82', marginRight: '24px' }}>{copy.quickStart}</a>
+                        <a href={`${prefix}/api-reference`} style={{ color: '#00dc82' }}>{copy.apiReference}</a>
                     </p>
                 </section>
             )}

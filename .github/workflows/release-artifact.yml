@@ -31,6 +31,25 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      - name: Install Playwright outside the project
+        run: |
+          mkdir -p "$RUNNER_TEMP/pw"
+          cd "$RUNNER_TEMP/pw"
+          npm init -y >/dev/null
+          npm i playwright@1.55.0 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+
+      - name: Smoke-test rendered locales
+        run: |
+          set -euo pipefail
+          npm run start -- -H 127.0.0.1 -p 3002 > "$RUNNER_TEMP/docs.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          npm run check:rendered
+          cp scripts/check-docs-browser.mjs "$RUNNER_TEMP/pw/"
+          cd "$RUNNER_TEMP/pw"
+          node check-docs-browser.mjs http://127.0.0.1:3002 "$GITHUB_WORKSPACE/browser-out"
+
       - name: Assemble the bundle
         id: bundle
         run: |
@@ -47,4 +66,13 @@ jobs:
         with:
           name: site-${{ steps.bundle.outputs.sha }}
           path: site-${{ steps.bundle.outputs.sha }}.tar.gz
+          retention-days: 14
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docs-smoke-${{ steps.bundle.outputs.sha }}
+          path: |
+            browser-out
+            ${{ runner.temp }}/docs.log
           retention-days: 14
