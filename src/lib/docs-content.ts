@@ -177,7 +177,7 @@ Use exponential backoff with jitter for \`429\` and transient \`5xx\` responses.
 
         billing: `# Billing
 
-Aporto uses a prepaid USD balance. Requests are charged from that balance at the active model tariff; there is no subscription charge for API usage.
+Aporto currently uses a prepaid USD balance. Requests are charged from that balance at the active model tariff; there is no subscription charge for API usage. The separate RUB wallet described below is not live yet.
 
 ## Live prices
 
@@ -197,13 +197,41 @@ The commercial RUB-per-USD rate is rounded up to four decimal places. The page s
 
 If the CBR quote is unavailable, the USD catalog remains available and the page explicitly marks the RUB estimate unavailable. No fallback or invented exchange rate is used.
 
-## Paying in roubles
+## Available now: RUB invoice for the USD balance
 
-[Open RUB top-up in the dashboard →](https://app.aporto.tech/dashboard?topup=rub&lang=ru)
+[Fund the USD balance by RUB invoice →](https://app.aporto.tech/dashboard?topup=rub&lang=ru)
 
 Current RUB payments credit the account's USD balance. The quote shown before payment uses the current rule above; an issued invoice specifies its rate and USD amount. Ask the manager to reconcile an older unpaid invoice before payment. Completed payments keep their stored accounting amounts and are not repriced by later CBR changes.
 
 Displayed catalog amounts are reference estimates. The payment quote or issued invoice is the payable amount and takes precedence.
+
+## Coming soon: separate RUB wallet
+
+**Preparing for launch. The RUB wallet and the API keys linked to it, described in this section, are not available in production yet.**
+
+One Aporto account will have two separate wallets:
+
+| USD wallet · Available now | RUB wallet · Coming soon |
+|---|---|
+| Remains the default and works as it does today | A manager enables it for an opted-in account |
+| Holds USD and uses API keys linked to the USD wallet | Holds RUB and uses API keys linked to the RUB wallet |
+| Keeps its own balance and usage and billing history | Keeps its own balance and usage and billing history |
+
+Both key types will call the same \`https://api.aporto.tech/v1\` endpoint with the same currency-neutral request body. The API key will select the wallet and billing currency. A request will never automatically use the other wallet, and Aporto will not automatically transfer funds between wallets.
+
+### Funding and request charges in RUB
+
+- Paying **10,000 RUB** will credit exactly **10,000 RUB** to the RUB wallet.
+- For each completed request, Aporto will first calculate the published USD charge from actual metered usage. It will then calculate one RUB debit:
+
+  **RUB debit = published USD charge for actual usage × current effective CBR USD/RUB rate × 1.40**
+
+  The exchange rate and the 1.40 multiplier are applied once to the request's USD charge.
+  The effective FX snapshot is fixed before the request is sent upstream and is used for settlement and any refund. Completed charges and wallet balances are not repriced when the CBR rate later changes.
+- If the RUB wallet cannot cover a request, the USD wallet will not be charged as a fallback.
+- The USD wallet, its API keys, and its charging behavior will remain unchanged.
+
+[Request another billing currency →](https://aporto.tech/contact)
 
 ## Usage
 
@@ -244,9 +272,9 @@ https://api.aporto.tech/v1
 | Базовый URL | \`https://api.aporto.tech/v1\` |
 | Авторизация | \`Authorization: Bearer $APORTO_API_KEY\` |
 | Список моделей | \`GET /v1/models\` |
-| Валюта баланса | USD |
+| Валюта баланса сейчас | USD |
 
-Далее: [быстрый старт](/ru/quick-start), [справочник API](/ru/api-reference) и [оплата в USD и RUB](/ru/billing).`,
+Далее: [быстрый старт](/ru/quick-start), [справочник API](/ru/api-reference) и [баланс и оплата](/ru/billing).`,
 
         "quick-start": `# Быстрый старт
 
@@ -317,7 +345,7 @@ console.log(response.choices[0].message.content);
 
 - [Эндпоинты и совместимость моделей](/ru/capabilities/ai-models?tab=endpoints)
 - [Потоковые ответы, расход, ошибки и лимиты](/ru/api-reference)
-- [Актуальные цены и расчёт в рублях](/ru/billing)`,
+- [Баланс, цены и оплата](/ru/billing)`,
 
         "api-reference": `# Справочник API
 
@@ -360,7 +388,7 @@ curl -N https://api.aporto.tech/v1/chat/completions \\
 
 Совместимые ответы содержат данные провайдера о расходе, например число входных и выходных токенов. Списание рассчитывается по измеренному шлюзом расходу и действующему тарифу выбранной модели. Клиентские расчёты остаются оценочными; фактические значения указаны в балансе и истории использования аккаунта.
 
-Источник тарифов и валютный расчёт описаны в разделе [«Оплата в USD и RUB»](/ru/billing).
+Источник тарифов и валютный расчёт описаны в разделе [«Баланс и оплата»](/ru/billing).
 
 ## Ошибки
 
@@ -382,9 +410,9 @@ curl -N https://api.aporto.tech/v1/chat/completions \\
 
 Для \`429\` и временных ошибок \`5xx\` используйте экспоненциальную задержку со случайным разбросом. Не повторяйте запрос генерации автоматически, если первый запрос мог завершиться: это может создать дублирующий результат и повторное списание.`,
 
-        billing: `# Оплата в USD и RUB
+        billing: `# Баланс и оплата
 
-Aporto использует предоплаченный баланс в долларах США. Запросы оплачиваются с этого баланса по действующему тарифу модели; отдельной абонентской платы за использование API нет.
+Сейчас Aporto использует предоплаченный баланс в долларах США. Запросы оплачиваются с этого баланса по действующему тарифу модели; отдельной абонентской платы за использование API нет. Описанный ниже отдельный RUB-кошелёк пока не запущен.
 
 ## Актуальные цены
 
@@ -402,13 +430,41 @@ Aporto использует предоплаченный баланс в дол�
 
 Если курс ЦБ недоступен, каталог в USD продолжает работать, а страница явно сообщает, что оценка в рублях недоступна. Резервный или вымышленный курс не используется.
 
-## Пополнение в рублях
+## Доступно сейчас: счёт в RUB для пополнения USD-баланса
 
-[Пополнить баланс в рублях →](https://app.aporto.tech/dashboard?lang=ru&topup=rub)
+[Пополнить USD-баланс по счёту →](https://app.aporto.tech/dashboard?lang=ru&topup=rub)
 
 Текущее пополнение в рублях зачисляет средства на USD-баланс аккаунта. Предварительный расчёт использует правило выше; в выставленном счёте зафиксированы курс и сумма в USD. Перед оплатой старого неоплаченного счёта попросите менеджера сверить его. Завершённые платежи сохраняют записанные бухгалтерские суммы и не пересчитываются при последующих изменениях курса ЦБ.
 
 Суммы в каталоге — справочная оценка. К оплате применяется сумма из платёжного расчёта или выставленного счёта.
+
+## Скоро: отдельный RUB-кошелёк
+
+**Готовится к запуску. RUB-кошелёк и привязанные к нему API-ключи, описанные в этом разделе, пока недоступны в рабочем кабинете и API.**
+
+В одном аккаунте Aporto будет два отдельных кошелька:
+
+| USD-кошелёк · Доступен сейчас | RUB-кошелёк · Скоро |
+|---|---|
+| Останется кошельком по умолчанию и продолжит работать как сейчас | Менеджер подключит его аккаунту по запросу |
+| Хранит USD и использует привязанные к нему API-ключи | Хранит RUB и использует привязанные к нему API-ключи |
+| Имеет свой баланс и свои истории использования и списаний | Имеет свой баланс и свои истории использования и списаний |
+
+Ключи обоих кошельков будут работать через один адрес \`https://api.aporto.tech/v1\` и одинаковое тело запроса без параметра валюты. Кошелёк и валюту списания определит API-ключ. Запрос не будет автоматически списывать средства с другого кошелька, а Aporto не будет автоматически переводить средства между кошельками.
+
+### Пополнение и списания в RUB
+
+- Оплата **10 000 RUB** зачислит ровно **10 000 RUB** на RUB-кошелёк.
+- Для каждого завершённого запроса Aporto сначала рассчитает опубликованную стоимость в USD по фактическому измеренному расходу. Затем будет рассчитано одно списание в RUB:
+
+  **Списание в RUB = опубликованная стоимость фактического расхода в USD × действующий курс ЦБ РФ USD/RUB × 1,40**
+
+  Курс и коэффициент 1,40 применяются к стоимости запроса в USD один раз.
+  Снимок действующего курса фиксируется до отправки запроса вышестоящему провайдеру и используется для списания и возможного возврата. Завершённые списания и остатки кошельков не пересчитываются при последующих изменениях курса ЦБ РФ.
+- Если средств на RUB-кошельке недостаточно, списания с USD-кошелька не произойдёт.
+- USD-кошелёк, его API-ключи и порядок списаний останутся без изменений.
+
+[Подать заявку на RUB-кошелёк →](https://aporto.tech/ru/contact)
 
 ## Использование
 
