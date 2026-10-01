@@ -8,8 +8,12 @@ export type FxQuote = {
     requestedDate: string;
     checkedAt: string;
     multiplier: number;
+    /** Legacy invoice quote rounded up to four places; do not use for RUB request tariffs. */
     rubPerUsd: number;
 };
+
+/** RUB request factor before the single final money rounding. */
+export const rubUsagePerUsd = (cbrRate: number) => cbrRate * RUB_MULTIPLIER;
 
 export const moscowDate = (date = new Date()) =>
     new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(date);
@@ -47,7 +51,7 @@ export function parseCbrUsd(xml: string, requestedDate: string, checkedAt: strin
         requestedDate,
         checkedAt,
         multiplier: RUB_MULTIPLIER,
-        rubPerUsd: Math.ceil(cbrRate * RUB_MULTIPLIER * 10_000) / 10_000,
+        rubPerUsd: Math.ceil(rubUsagePerUsd(cbrRate) * 10_000) / 10_000,
     };
 }
 
@@ -57,7 +61,7 @@ export function isCurrentQuote(quote: unknown, now = new Date()): quote is FxQuo
     const checkedAt = typeof fx.checkedAt === "string" ? Date.parse(fx.checkedAt) : NaN;
     const age = now.getTime() - checkedAt;
     const expected = typeof fx.cbrRate === "number"
-        ? Math.ceil(fx.cbrRate * RUB_MULTIPLIER * 10_000) / 10_000
+        ? Math.ceil(rubUsagePerUsd(fx.cbrRate) * 10_000) / 10_000
         : NaN;
     return fx.requestedDate === moscowDate(now)
         && typeof fx.cbrDate === "string"

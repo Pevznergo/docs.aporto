@@ -6,7 +6,7 @@ export const DOC_CONTENT: Record<DocsLocale, Record<DocPage, string>> = {
     en: {
         introduction: `# Aporto LLM API
 
-Use OpenAI-compatible clients with one Aporto API key and choose a model by its full Aporto ID. Requests go to:
+Use OpenAI-compatible clients with an Aporto API key and choose a model by its full Aporto ID. Requests go to:
 
 \`\`\`text
 https://api.aporto.tech/v1
@@ -37,7 +37,7 @@ Keep API keys on your server and out of browser code, source control, and suppor
 | Base URL | \`https://api.aporto.tech/v1\` |
 | Authentication | \`Authorization: Bearer $APORTO_API_KEY\` |
 | Model discovery | \`GET /v1/models\` |
-| Default billing currency | USD balance |
+| Billing wallets | USD by default; RUB by manager request |
 
 Continue to [Quick Start](/quick-start), [API Reference](/api-reference), or [Billing](/billing).`,
 
@@ -177,7 +177,7 @@ Use exponential backoff with jitter for \`429\` and transient \`5xx\` responses.
 
         billing: `# Billing
 
-Aporto currently uses a prepaid USD balance. Requests are charged from that balance at the active model tariff; there is no subscription charge for API usage. The separate RUB wallet described below is not live yet.
+One Aporto login can have two independent prepaid wallets. USD is the default. A manager enables the RUB wallet by request. Each wallet has its own balance, API keys, and usage and billing history. There is no subscription charge for API usage.
 
 ## Live prices
 
@@ -185,63 +185,59 @@ Aporto currently uses a prepaid USD balance. Requests are charged from that bala
 
 The catalog reads the gateway's current \`default\` group tariffs and quota unit. It does not maintain a second hand-written model list. Models with conditional tariffs show their published rate variants rather than one flattened fixed price.
 
-## Rouble estimates
+## RUB request tariffs
 
-[Открыть актуальный прайс в рублях →](/capabilities/ai-models?tab=pricing&lang=ru)
+[Open current RUB request tariffs →](/capabilities/ai-models?tab=pricing&lang=ru)
 
-For Russian readers, each live USD tariff is converted by this rule:
+For supported RUB-wallet requests, each live USD tariff is calculated in RUB by this rule:
 
-**RUB estimate = USD tariff × effective CBR USD/RUB rate × 1.40**
+**RUB debit = published Aporto USD tariff for actual usage × effective CBR USD/RUB rate × 1.40**
 
-The commercial RUB-per-USD rate is rounded up to four decimal places. The page shows the CBR effective date and the time the quote was checked. The latest already-effective rate remains valid until the next rate takes effect. A rate dated after the current Moscow calendar day is rejected and never shown early.
+The CBR rate and the 1.40 multiplier are applied exactly once to the request charge. Their exact product is not rounded up first; only the final money amount is rounded once. Funding the RUB wallet is a separate 1:1 credit and does not use this calculation.
 
-If the CBR quote is unavailable, the USD catalog remains available and the page explicitly marks the RUB estimate unavailable. No fallback or invented exchange rate is used.
+The catalog shows the CBR effective date and the time the rate was checked. Only a fresh, verified, already-effective rate is shown; a missing, stale, future-dated, or invented fallback rate is not used. RUB amounts explain request tariffs and do not mean that every catalog model or endpoint supports the RUB wallet.
 
-## Available now: RUB invoice for the USD balance
+## Independent wallets
 
-[Fund the USD balance by RUB invoice →](https://app.aporto.tech/dashboard?topup=rub&lang=ru)
-
-Current RUB payments credit the account's USD balance. The quote shown before payment uses the current rule above; an issued invoice specifies its rate and USD amount. Ask the manager to reconcile an older unpaid invoice before payment. Completed payments keep their stored accounting amounts and are not repriced by later CBR changes.
-
-Displayed catalog amounts are reference estimates. The payment quote or issued invoice is the payable amount and takes precedence.
-
-## Coming soon: separate RUB wallet
-
-**Preparing for launch. The RUB wallet and the API keys linked to it, described in this section, are not available in production yet.**
-
-One Aporto account will have two separate wallets:
-
-| USD wallet · Available now | RUB wallet · Coming soon |
+| USD wallet · Default | RUB wallet · By request |
 |---|---|
-| Remains the default and works as it does today | A manager enables it for an opted-in account |
+| Works for the published API capabilities | A manager enables it for the account |
 | Holds USD and uses API keys linked to the USD wallet | Holds RUB and uses API keys linked to the RUB wallet |
 | Keeps its own balance and usage and billing history | Keeps its own balance and usage and billing history |
 
-Both key types will call the same \`https://api.aporto.tech/v1\` endpoint with the same currency-neutral request body. The API key will select the wallet and billing currency. A request will never automatically use the other wallet, and Aporto will not automatically transfer funds between wallets.
+[Open or request the RUB wallet →](https://app.aporto.tech/dashboard?wallet=RUB&lang=ru)
 
-### Funding and request charges in RUB
+The link opens the RUB wallet when it is active, or its request/status view otherwise. It never approves access; manager approval is required.
 
-- Paying **10,000 RUB** will credit exactly **10,000 RUB** to the RUB wallet.
-- For each completed request, Aporto will first calculate the published USD charge from actual metered usage. It will then calculate one RUB debit:
+Both key types call the same https://api.aporto.tech/v1 endpoint with the same currency-neutral request body. The API key fixes the wallet and billing currency. There is no currency override, automatic conversion, transfer, or fallback charge from the other wallet.
 
-  **RUB debit = published USD charge for actual usage × current effective CBR USD/RUB rate × 1.40**
+### RUB support scope
 
-  The exchange rate and the 1.40 multiplier are applied once to the request's USD charge.
-  The effective FX snapshot is fixed before the request is sent upstream and is used for settlement and any refund. Completed charges and wallet balances are not repriced when the CBR rate later changes.
-- If the RUB wallet cannot cover a request, the USD wallet will not be charged as a fallback.
-- The USD wallet, its API keys, and its charging behavior will remain unchanged.
+A RUB key supports text POST /v1/chat/completions, including non-streaming and streaming responses, with ordinary published token tariffs and cache usage. The enabled model set can be narrower than the full catalog. Images, audio, video, realtime, background jobs, and server-executed tools are not supported by the RUB wallet and require a USD key.
 
-[Request another billing currency →](https://aporto.tech/contact)
+### Funding the RUB wallet
+
+Funding uses a bank invoice confirmed by a manager; there is no automatic checkout.
+
+- Paying **10,000 RUB** credits exactly **10,000 RUB** to the RUB wallet.
+- No FX conversion or markup is applied to the amount credited.
+- Before a supported request is sent upstream, Aporto snapshots the effective CBR rate and the published tariff. That snapshot is used for settlement and any refund. Existing balances and completed history are not revalued when the rate or tariff changes.
+- If the RUB wallet cannot cover a request, the USD wallet is not charged as a fallback.
+- The USD wallet, its API keys, and its charging behavior remain unchanged.
+
+### Legacy RUB invoices for the USD wallet
+
+The compatibility link [?topup=rub](https://app.aporto.tech/dashboard?topup=rub&lang=ru) still funds the USD wallet under the saved terms of its invoice. It does not select or fund the independent RUB wallet. Existing invoices and completed payments keep their stored accounting amounts.
 
 ## Usage
 
-Input, output, cache, image, and other billable units can have different rates. Use the selected model's live price lines and endpoint marker. The account's usage history is authoritative for completed requests.`,
+Input, output, and cache can have different rates. Use the selected model's live price lines and the wallet's supported scope. Each wallet's own usage history is authoritative for its completed requests.`,
     },
 
     ru: {
         introduction: `# Aporto LLM API
 
-Подключайте OpenAI-совместимые клиенты с одним API-ключом Aporto и выбирайте модель по её полному ID в Aporto. Запросы отправляются на адрес:
+Подключайте OpenAI-совместимые клиенты с API-ключом Aporto и выбирайте модель по её полному ID в Aporto. Запросы отправляются на адрес:
 
 \`\`\`text
 https://api.aporto.tech/v1
@@ -272,7 +268,7 @@ https://api.aporto.tech/v1
 | Базовый URL | \`https://api.aporto.tech/v1\` |
 | Авторизация | \`Authorization: Bearer $APORTO_API_KEY\` |
 | Список моделей | \`GET /v1/models\` |
-| Валюта баланса сейчас | USD |
+| Кошельки для оплаты | USD по умолчанию; RUB по заявке менеджеру |
 
 Далее: [быстрый старт](/ru/quick-start), [справочник API](/ru/api-reference) и [баланс и оплата](/ru/billing).`,
 
@@ -412,7 +408,7 @@ curl -N https://api.aporto.tech/v1/chat/completions \\
 
         billing: `# Баланс и оплата
 
-Сейчас Aporto использует предоплаченный баланс в долларах США. Запросы оплачиваются с этого баланса по действующему тарифу модели; отдельной абонентской платы за использование API нет. Описанный ниже отдельный RUB-кошелёк пока не запущен.
+В одном аккаунте Aporto могут работать два независимых предоплаченных кошелька. USD-кошелёк используется по умолчанию, RUB-кошелёк подключает менеджер по заявке. У каждого свои баланс, API-ключи и история использования и списаний. Абонентской платы за API нет.
 
 ## Актуальные цены
 
@@ -420,54 +416,50 @@ curl -N https://api.aporto.tech/v1/chat/completions \\
 
 Каталог получает текущие тарифы группы \`default\` и единицу квоты непосредственно от шлюза. Отдельного вручную составленного списка моделей нет. Для условных тарифов показаны опубликованные варианты ставок, а не одна усреднённая цена.
 
-## Расчёт в рублях
+## Тарифы запросов в RUB
 
-Каждый актуальный USD-тариф пересчитывается по правилу:
+Для поддерживаемых запросов RUB-кошелька каждый актуальный USD-тариф рассчитывается в рублях по правилу:
 
-**Оценка в RUB = USD-тариф × действующий курс ЦБ РФ USD/RUB × 1,40**
+**Списание в RUB = опубликованный тариф Aporto в USD за фактическое использование × действующий курс ЦБ РФ USD/RUB × 1,40**
 
-Коммерческий курс RUB за USD округляется вверх до четырёх знаков после запятой. На странице указаны дата действия курса ЦБ и время его проверки. Последний уже вступивший в силу курс действует до начала действия следующего. Курс с датой позже текущего московского календарного дня отклоняется и заранее не показывается.
+Курс ЦБ и коэффициент 1,40 применяются к стоимости запроса ровно один раз. Их точное произведение не округляется вверх заранее; один раз округляется только итоговая денежная сумма. Пополнение RUB-кошелька — отдельное зачисление 1:1, этот расчёт для него не используется.
 
-Если курс ЦБ недоступен, каталог в USD продолжает работать, а страница явно сообщает, что оценка в рублях недоступна. Резервный или вымышленный курс не используется.
+В каталоге указаны дата действия курса ЦБ и время его проверки. Показывается только свежий, проверенный и уже вступивший в силу курс; отсутствующий, устаревший, будущий или вымышленный резервный курс не используется. Суммы в RUB объясняют тариф запросов, но не означают, что RUB-кошелёк поддерживает каждую модель или эндпоинт каталога.
 
-## Доступно сейчас: счёт в RUB для пополнения USD-баланса
+## Независимые кошельки
 
-[Пополнить USD-баланс по счёту →](https://app.aporto.tech/dashboard?lang=ru&topup=rub)
-
-Текущее пополнение в рублях зачисляет средства на USD-баланс аккаунта. Предварительный расчёт использует правило выше; в выставленном счёте зафиксированы курс и сумма в USD. Перед оплатой старого неоплаченного счёта попросите менеджера сверить его. Завершённые платежи сохраняют записанные бухгалтерские суммы и не пересчитываются при последующих изменениях курса ЦБ.
-
-Суммы в каталоге — справочная оценка. К оплате применяется сумма из платёжного расчёта или выставленного счёта.
-
-## Скоро: отдельный RUB-кошелёк
-
-**Готовится к запуску. RUB-кошелёк и привязанные к нему API-ключи, описанные в этом разделе, пока недоступны в рабочем кабинете и API.**
-
-В одном аккаунте Aporto будет два отдельных кошелька:
-
-| USD-кошелёк · Доступен сейчас | RUB-кошелёк · Скоро |
+| USD-кошелёк · Стандартный | RUB-кошелёк · По заявке |
 |---|---|
-| Останется кошельком по умолчанию и продолжит работать как сейчас | Менеджер подключит его аккаунту по запросу |
+| Работает со всеми опубликованными возможностями API | Менеджер подключает его аккаунту по запросу |
 | Хранит USD и использует привязанные к нему API-ключи | Хранит RUB и использует привязанные к нему API-ключи |
 | Имеет свой баланс и свои истории использования и списаний | Имеет свой баланс и свои истории использования и списаний |
 
-Ключи обоих кошельков будут работать через один адрес \`https://api.aporto.tech/v1\` и одинаковое тело запроса без параметра валюты. Кошелёк и валюту списания определит API-ключ. Запрос не будет автоматически списывать средства с другого кошелька, а Aporto не будет автоматически переводить средства между кошельками.
+[Открыть или запросить RUB-кошелёк →](https://app.aporto.tech/dashboard?wallet=RUB&lang=ru)
 
-### Пополнение и списания в RUB
+Ссылка открывает RUB-кошелёк, если он активен, либо экран заявки и её статуса. Сама ссылка не одобряет доступ: требуется решение менеджера.
 
-- Оплата **10 000 RUB** зачислит ровно **10 000 RUB** на RUB-кошелёк.
-- Для каждого завершённого запроса Aporto сначала рассчитает опубликованную стоимость в USD по фактическому измеренному расходу. Затем будет рассчитано одно списание в RUB:
+Ключи обоих кошельков работают через один адрес https://api.aporto.tech/v1 и одинаковое тело запроса без параметра валюты. API-ключ фиксирует кошелёк и валюту списания. Автоматической конвертации, перевода или резервного списания из другого кошелька нет.
 
-  **Списание в RUB = опубликованная стоимость фактического расхода в USD × действующий курс ЦБ РФ USD/RUB × 1,40**
+### Возможности RUB-ключа
 
-  Курс и коэффициент 1,40 применяются к стоимости запроса в USD один раз.
-  Снимок действующего курса фиксируется до отправки запроса вышестоящему провайдеру и используется для списания и возможного возврата. Завершённые списания и остатки кошельков не пересчитываются при последующих изменениях курса ЦБ РФ.
-- Если средств на RUB-кошельке недостаточно, списания с USD-кошелька не произойдёт.
-- USD-кошелёк, его API-ключи и порядок списаний останутся без изменений.
+RUB-ключ поддерживает текстовый POST /v1/chat/completions, включая обычные и потоковые ответы, с опубликованными токенными тарифами и тарификацией кеша. Набор доступных моделей может быть уже полного каталога. Изображения, аудио, видео, режим реального времени, фоновые задачи и серверные инструменты не поддерживаются RUB-кошельком и требуют USD-ключа.
 
-[Подать заявку на RUB-кошелёк →](https://aporto.tech/ru/contact)
+### Пополнение RUB-кошелька
+
+Пополнение проходит по банковскому счёту, оплату подтверждает менеджер; автоматической оплаты нет.
+
+- Оплата **10 000 RUB** зачисляет ровно **10 000 RUB** на RUB-кошелёк.
+- К сумме зачисления не применяются валютная конвертация или наценка.
+- До отправки поддерживаемого запроса Aporto фиксирует действующий курс ЦБ и опубликованный тариф. Этот снимок используется для списания и возможного возврата. Имеющийся баланс и завершённая история не переоцениваются при изменении курса или тарифа.
+- Если средств на RUB-кошельке недостаточно, списания с USD-кошелька не происходит.
+- USD-кошелёк, его API-ключи и порядок списаний не меняются.
+
+### Старые счета в RUB для USD-кошелька
+
+Совместимая ссылка [?topup=rub](https://app.aporto.tech/dashboard?lang=ru&topup=rub) по-прежнему пополняет USD-кошелёк по сохранённым условиям выставленного счёта. Она не выбирает и не пополняет независимый RUB-кошелёк. Старые счета и завершённые платежи сохраняют записанные бухгалтерские суммы.
 
 ## Использование
 
-Для ввода, вывода, кеша, изображений и других оплачиваемых единиц могут действовать разные ставки. Проверяйте строки цены и метку эндпоинта выбранной модели. Для завершённых запросов фактическим источником данных служит история использования аккаунта.`,
+Для ввода, вывода и кеша могут действовать разные ставки. Проверяйте строки цены и поддерживаемые возможности кошелька. Для завершённых запросов фактическим источником данных служит собственная история выбранного кошелька.`,
     },
 };
