@@ -1,4 +1,5 @@
 import type { Locale } from "./AIModelsPageClient";
+import styles from "@/components/MarkdownRenderer.module.css";
 
 const endpoints = (locale: Locale) => [
     {
@@ -43,53 +44,42 @@ const endpoints = (locale: Locale) => [
     },
 ];
 
-const codeStyle = {
-    margin: 0,
-    padding: '18px',
-    overflowX: 'auto' as const,
-    color: '#bbb',
-    background: '#0a0a0a',
-    border: '1px solid #2a2a2a',
-    borderRadius: '8px',
-    fontSize: '13px',
-};
-
 export default function EndpointsTab({ locale }: { locale: Locale }) {
     const copy = locale === "ru" ? {
         title: "Эндпоинты API",
         baseUrl: "Базовый URL",
         discovery: <>Используйте <code>GET /v1/models</code>, чтобы получить модели, доступные вашему ключу. Метка рядом с моделью на вкладке цен указывает, какой совместимый путь она поддерживает.</>,
-        reference: <>Расход, ошибки, лимиты и правила повторных запросов описаны в <a href="/ru/api-reference" style={{ color: '#00dc82' }}>справочнике API</a>.</>,
+        reference: <>Расход, ошибки, лимиты и правила повторных запросов описаны в <a href="/ru/api-reference">справочнике API</a>.</>,
     } : {
         title: "API endpoints",
         baseUrl: "Base URL",
         discovery: <>Use <code>GET /v1/models</code> for the models available to your key. The marker shown beside each model in the pricing tab determines which compatibility path it supports.</>,
-        reference: <>See <a href="/api-reference" style={{ color: '#00dc82' }}>API Reference</a> for usage, errors, rate limits, and retry guidance.</>,
+        reference: <>See <a href="/api-reference">API Reference</a> for usage, errors, rate limits, and retry guidance.</>,
     };
 
     return (
         <section aria-labelledby="endpoints-heading">
-            <h2 id="endpoints-heading" style={{ fontSize: '24px', color: '#fff', marginBottom: '12px' }}>{copy.title}</h2>
-            <p style={{ color: '#aaa', marginBottom: '12px' }}>
-                {copy.baseUrl}: <code style={{ color: '#00dc82' }}>https://api.aporto.tech</code>
+            <h2 id="endpoints-heading">{copy.title}</h2>
+            <p className={styles.endpointCopy}>
+                {copy.baseUrl}: <code>https://api.aporto.tech</code>
             </p>
-            <pre style={{ ...codeStyle, marginBottom: '20px' }}><code>{`Authorization: Bearer $APORTO_API_KEY
+            <pre><code>{`Authorization: Bearer $APORTO_API_KEY
 Content-Type: application/json`}</code></pre>
-            <p style={{ color: '#888', marginBottom: '32px' }}>{copy.discovery}</p>
+            <p className={styles.endpointDiscovery}>{copy.discovery}</p>
 
             {endpoints(locale).map((endpoint) => (
-                <article key={endpoint.path} style={{ marginBottom: '40px', paddingBottom: '40px', borderBottom: '1px solid #2a2a2a' }}>
-                    <h3 style={{ fontSize: '20px', color: '#fff', marginBottom: '8px' }}>{endpoint.name}</h3>
-                    <p style={{ marginBottom: '12px' }}>
-                        <strong style={{ color: '#00dc82' }}>POST</strong>{' '}
-                        <code style={{ color: '#e2e2e2' }}>{endpoint.path}</code>{' '}
-                        <span style={{ color: '#666' }}>({endpoint.marker})</span>
+                <article key={endpoint.path} className={styles.endpoint}>
+                    <h3>{endpoint.name}</h3>
+                    <p className={styles.endpointMeta}>
+                        <strong className={styles.method}>POST</strong>{' '}
+                        <code>{endpoint.path}</code>{' '}
+                        <span className={styles.endpointMarker}>({endpoint.marker})</span>
                     </p>
-                    <p style={{ color: '#777', fontSize: '14px', marginBottom: '16px' }}>{endpoint.streaming}</p>
-                    <pre style={codeStyle}><code>{endpoint.body}</code></pre>
+                    <p className={styles.endpointStreaming}>{endpoint.streaming}</p>
+                    <pre><code>{endpoint.body}</code></pre>
                 </article>
             ))}
-            <p style={{ color: '#888' }}>{copy.reference}</p>
+            <p className={styles.endpointDiscovery}>{copy.reference}</p>
         </section>
     );
 }

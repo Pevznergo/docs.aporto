@@ -3,7 +3,7 @@
 import React from "react";
 import styles from "./layout.module.css";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { localeFromPathname, withLocale } from "@/lib/docs-locale";
 
 interface SidebarProps {
@@ -13,7 +13,9 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const locale = localeFromPathname(pathname);
+    const currentPath = `${pathname}${searchParams.size ? `?${searchParams.toString()}` : ""}`;
 
     const sections = locale === "ru" ? [
         {
@@ -68,7 +70,8 @@ const Sidebar = ({ isOpen, onNavigate }: SidebarProps) => {
                             <Link
                                 key={item.path}
                                 href={withLocale(item.path, locale)}
-                                className={`${styles.navItem} ${!item.path.includes("?") && pathname === withLocale(item.path, locale) ? styles.activeNavItem : ""}`}
+                                aria-current={currentPath === withLocale(item.path, locale) ? "page" : undefined}
+                                className={`${styles.navItem} ${currentPath === withLocale(item.path, locale) ? styles.activeNavItem : ""}`}
                                 onClick={onNavigate}
                             >
                                 <span aria-hidden="true">{item.icon}</span>

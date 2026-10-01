@@ -3,20 +3,10 @@
 import { useState } from "react";
 import EndpointsTab from "./EndpointsTab";
 import ModelPricingTab from "./ModelPricingTab";
+import styles from "@/components/MarkdownRenderer.module.css";
 
 export type PageTab = "overview" | "endpoints" | "pricing";
 export type Locale = "en" | "ru";
-
-const codeStyle = {
-    margin: 0,
-    padding: '18px',
-    overflowX: 'auto' as const,
-    color: '#bbb',
-    background: '#0a0a0a',
-    border: '1px solid #2a2a2a',
-    borderRadius: '8px',
-    fontSize: '13px',
-};
 
 export default function AIModelsPageClient({ initialPageTab, locale }: { initialPageTab: PageTab; locale: Locale }) {
     const [activePageTab, setActivePageTab] = useState<PageTab>(initialPageTab);
@@ -52,11 +42,11 @@ export default function AIModelsPageClient({ initialPageTab, locale }: { initial
     }
 
     return (
-        <div lang={locale} style={{ maxWidth: '900px', margin: '0 auto', color: '#ccc', lineHeight: '1.6' }}>
-            <h1 style={{ fontSize: '42px', fontWeight: '800', marginBottom: '16px', color: '#fff' }}>{copy.title}</h1>
-            <p style={{ fontSize: '20px', marginBottom: '48px', color: '#888' }}>{copy.intro}</p>
+        <div lang={locale} className={`${styles.markdown} ${styles.modelDocs}`}>
+            <h1>{copy.title}</h1>
+            <p className={styles.modelIntro}>{copy.intro}</p>
 
-            <div role="tablist" aria-label={copy.tabList} style={{ display: 'flex', gap: '8px', marginBottom: '40px', borderBottom: '1px solid #333', overflowX: 'auto' }}>
+            <div role="tablist" aria-label={copy.tabList} className={styles.tabs}>
                 {([
                     ['overview', copy.tabs.overview],
                     ['endpoints', copy.tabs.endpoints],
@@ -67,16 +57,7 @@ export default function AIModelsPageClient({ initialPageTab, locale }: { initial
                         role="tab"
                         aria-selected={activePageTab === id}
                         onClick={() => selectPageTab(id)}
-                        style={{
-                            padding: '12px 16px',
-                            background: 'transparent',
-                            border: 'none',
-                            borderBottom: activePageTab === id ? '2px solid #00dc82' : '2px solid transparent',
-                            color: activePageTab === id ? '#00dc82' : '#888',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            whiteSpace: 'nowrap',
-                        }}
+                        className={styles.tab}
                     >
                         {label}
                     </button>
@@ -85,14 +66,14 @@ export default function AIModelsPageClient({ initialPageTab, locale }: { initial
 
             {activePageTab === 'pricing' ? <ModelPricingTab locale={locale} /> : activePageTab === 'endpoints' ? <EndpointsTab locale={locale} /> : (
                 <section aria-labelledby="models-overview-heading">
-                    <h2 id="models-overview-heading" style={{ fontSize: '24px', color: '#fff', marginBottom: '12px' }}>{copy.overviewTitle}</h2>
-                    <p style={{ color: '#aaa', marginBottom: '20px' }}>{copy.overview}</p>
-                    <pre style={{ ...codeStyle, marginBottom: '24px' }}><code>{`curl https://api.aporto.tech/v1/models \\
+                    <h2 id="models-overview-heading">{copy.overviewTitle}</h2>
+                    <p className={styles.overviewCopy}>{copy.overview}</p>
+                    <pre><code>{`curl https://api.aporto.tech/v1/models \\
   -H "Authorization: Bearer $APORTO_API_KEY"`}</code></pre>
-                    <p style={{ color: '#888', marginBottom: '28px' }}>{copy.next}</p>
-                    <p>
-                        <a href={`${prefix}/quick-start`} style={{ color: '#00dc82', marginRight: '24px' }}>{copy.quickStart}</a>
-                        <a href={`${prefix}/api-reference`} style={{ color: '#00dc82' }}>{copy.apiReference}</a>
+                    <p className={styles.overviewNext}>{copy.next}</p>
+                    <p className={styles.overviewLinks}>
+                        <a href={`${prefix}/quick-start`}>{copy.quickStart}</a>
+                        <a href={`${prefix}/api-reference`}>{copy.apiReference}</a>
                     </p>
                 </section>
             )}

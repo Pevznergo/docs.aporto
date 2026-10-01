@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
+import { Inter, Montserrat, Roboto } from "next/font/google";
+import { cookies, headers } from "next/headers";
 import "./globals.css";
 import DashboardLayout from "@/components/DashboardLayout";
+
+const inter = Inter({ subsets: ["latin", "cyrillic"], weight: ["500", "600", "700", "800"], variable: "--font-docs-inter" });
+const montserrat = Montserrat({ subsets: ["latin", "cyrillic"], weight: ["500", "600", "700"], variable: "--font-docs-montserrat" });
+const roboto = Roboto({ subsets: ["latin", "cyrillic"], weight: ["300", "400", "500"], variable: "--font-docs-roboto" });
+
+const themeBoot = `var t;try{var c=document.cookie.split('; ').find(function(v){return v.indexOf('aporto-theme=')===0});t=c&&c.slice(13)}catch(e){}try{if(t!=='light'&&t!=='dark')t=localStorage.getItem('aporto-theme')||localStorage.getItem('aporto-llm-theme')}catch(e){}if(t==='light'||t==='dark')document.documentElement.dataset.llmTheme=t`;
 
 async function requestLocale() {
   return (await headers()).get("x-docs-locale") === "ru" ? "ru" : "en";
@@ -22,10 +29,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await requestLocale();
+  const [locale, cookieStore] = await Promise.all([requestLocale(), cookies()]);
+  const theme = cookieStore.get("aporto-theme")?.value === "dark" ? "dark" : "light";
   return (
-    <html lang={locale}>
-      <body>
+    <html lang={locale} data-llm-theme={theme} suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: themeBoot }} /></head>
+      <body className={`${inter.variable} ${montserrat.variable} ${roboto.variable}`}>
         <DashboardLayout>{children}</DashboardLayout>
       </body>
     </html>
