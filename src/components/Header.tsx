@@ -5,6 +5,7 @@ import styles from "./layout.module.css";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { type DocsLocale, withLocale } from "@/lib/docs-locale";
+import ThemeToggle from "./ThemeToggle";
 
 interface HeaderProps {
     locale: DocsLocale;
@@ -55,6 +56,7 @@ const Header = ({ locale, pathname, onMenuClick }: HeaderProps) => {
                         </a>
                     ))}
                 </nav>
+                <ThemeToggle locale={locale} />
                 <nav className={`${styles.languageSwitch} ${styles.contactLinks}`} aria-label={locale === "ru" ? "Связаться с Aporto" : "Contact Aporto"}>
                     <a href="mailto:pevzner@aporto.tech" className={styles.languageLink}>Email</a>
                     <a href="https://t.me/apitoai_bot" className={styles.languageLink}>Telegram</a>

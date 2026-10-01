@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { FX_CACHE_MS, cacheSeconds, isCurrentQuote, rubUsagePerUsd, type FxQuote } from "@/lib/model-pricing";
 import type { Locale } from "./AIModelsPageClient";
+import styles from "@/components/MarkdownRenderer.module.css";
 
 type PricingModel = {
     model_name: string;
@@ -183,8 +184,8 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
             .sort((a, b) => a.model_name.localeCompare(b.model_name));
     }, [pricing, query, vendors]);
 
-    if (error) return <p role="alert" style={{ color: '#ff8a8a' }}>{error}</p>;
-    if (!pricing) return <p style={{ color: '#888' }}>{copy.loading}</p>;
+    if (error) return <p role="alert" className={`${styles.state} ${styles.errorState}`}>{error}</p>;
+    if (!pricing) return <p role="status" className={styles.state}>{copy.loading}</p>;
 
     // Re-check on every render; the expiry timer clears the quote before refresh.
     const currentFx = isCurrentQuote(pricing.fx) ? pricing.fx : null;
@@ -193,64 +194,64 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
 
     return (
         <section aria-labelledby="model-pricing-heading">
-            <h2 id="model-pricing-heading" style={{ fontSize: '24px', color: '#fff', marginBottom: '12px' }}>{copy.title}</h2>
-            <p style={{ color: '#888', marginBottom: showRubles ? '12px' : '24px' }}>
+            <h2 id="model-pricing-heading">{copy.title}</h2>
+            <p className={styles.pricingIntro}>
                 {copy.description(models.length)}
             </p>
             {showRubles && currentFx && (
                 <>
-                    <p style={{ color: '#888', marginBottom: '16px', fontSize: '14px' }}>{copy.fxNote(currentFx)}</p>
+                    <p className={styles.fxNote}>{copy.fxNote(currentFx)}</p>
                     <a
                         href="https://app.aporto.tech/dashboard?wallet=RUB&lang=ru"
-                        style={{ display: 'inline-block', marginBottom: '24px', padding: '10px 18px', background: '#6be195', color: '#04140b', borderRadius: '8px', fontWeight: 600, textDecoration: 'none' }}
+                        className={styles.primaryAction}
                     >
                         {copy.topUp}
                     </a>
                 </>
             )}
             {locale === "ru" && !currentFx && (
-                <p role="status" style={{ color: '#f0bd66', marginBottom: '24px', fontSize: '14px' }}>{copy.fxUnavailable}</p>
+                <p role="status" className={styles.warning}>{copy.fxUnavailable}</p>
             )}
-            <label style={{ display: 'block', marginBottom: '20px' }}>
-                <span style={{ display: 'block', color: '#aaa', marginBottom: '8px', fontSize: '14px' }}>{copy.search}</span>
+            <label className={styles.searchLabel}>
+                <span className={styles.searchTitle}>{copy.search}</span>
                 <input
                     type="search"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="openai/gpt, claude, gemini…"
-                    style={{ width: '100%', padding: '12px 14px', color: '#fff', background: '#111', border: '1px solid #333', borderRadius: '8px' }}
+                    className={styles.searchInput}
                 />
             </label>
-            <p style={{ color: '#666', fontSize: '13px', marginBottom: '12px' }}>
+            <p className={styles.modelMeta}>
                 {copy.showing(models.length, pricing.pricing_version)}
             </p>
-            <div style={{ overflowX: 'auto', marginBottom: '48px' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #333' }}>
-                    <thead style={{ background: '#1a1a1a' }}>
+            <div className={styles.tableWrap}>
+                <table>
+                    <thead>
                         <tr>
                             {copy.headings.map((heading) => (
-                                <th key={heading} style={{ padding: '12px', textAlign: 'left', border: '1px solid #333', color: '#fff', fontSize: '13px' }}>{heading}</th>
+                                <th key={heading}>{heading}</th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
                         {!models.length && (
                             <tr>
-                                <td colSpan={4} style={{ padding: '18px 12px', border: '1px solid #333', color: '#888' }}>{copy.empty}</td>
+                                <td colSpan={4}>{copy.empty}</td>
                             </tr>
                         )}
                         {models.map((model) => (
                             <tr key={model.model_name}>
-                                <td style={{ padding: '12px', border: '1px solid #333' }}><code style={{ color: '#e2e2e2' }}>{model.model_name}</code></td>
-                                <td style={{ padding: '12px', border: '1px solid #333' }}>{vendors.get(model.vendor_id) || model.model_name.split('/')[0]}</td>
-                                <td style={{ padding: '12px', border: '1px solid #333' }}>
+                                <td><code>{model.model_name}</code></td>
+                                <td>{vendors.get(model.vendor_id) || model.model_name.split('/')[0]}</td>
+                                <td>
                                     {priceLines(model, pricing.quota_per_unit, locale).map((line) => (
                                         <div key={`${line.token}:${line.minUsd}:${line.maxUsd}`}>
                                             {showRubles && currentFx ? (
                                                 <>
                                                     {line.token}{' '}
                                                     ≈ {line.minUsd === line.maxUsd ? rubles(line.minUsd, currentFx) : `${rubles(line.minUsd, currentFx)}–${rubles(line.maxUsd, currentFx)}`}{unit}{' '}
-                                                    <span style={{ color: '#666', fontSize: '12px' }}>
+                                                    <span className={styles.secondaryPrice}>
                                                         ({line.minUsd === line.maxUsd ? money(line.minUsd) : `${money(line.minUsd)}–${money(line.maxUsd)}`})
                                                     </span>
                                                 </>
@@ -260,12 +261,12 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
                                         </div>
                                     ))}
                                     {model.billing_mode === "tiered_expr" && (
-                                        <small style={{ display: 'block', color: '#777', marginTop: '6px' }}>
+                                        <small className={styles.tierNote}>
                                             {priceLines(model, pricing.quota_per_unit, locale).length ? copy.conditional : copy.conditionalOnly}
                                         </small>
                                     )}
                                 </td>
-                                <td style={{ padding: '12px', border: '1px solid #333', color: '#aaa' }}>{(model.supported_endpoint_types || []).join(', ') || '—'}</td>
+                                <td>{(model.supported_endpoint_types || []).join(', ') || '—'}</td>
                             </tr>
                         ))}
                     </tbody>

@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import nextConfig from "../next.config.ts";
 import { DOC_CONTENT } from "../src/lib/docs-content.ts";
 import { localeFromPathname, withLocale } from "../src/lib/docs-locale.ts";
+import { themeCookie } from "../src/lib/theme.ts";
 
 const pages = ["introduction", "quick-start", "api-reference", "billing"];
 for (const page of pages) {
@@ -65,6 +66,13 @@ assert.equal(localeFromPathname("/ru/quick-start"), "ru");
 assert.equal(withLocale("/capabilities/ai-models?tab=pricing", "ru"), "/ru/capabilities/ai-models?tab=pricing");
 assert.equal(withLocale("/ru/capabilities/ai-models", "en"), "/capabilities/ai-models");
 assert.equal(withLocale("/ru/capabilities/ai-models", "en", "?tab=endpoints#request"), "/capabilities/ai-models?tab=endpoints#request");
+
+const sharedThemeCookie = "aporto-theme=dark; Path=/; Max-Age=31536000; SameSite=Lax; Domain=.aporto.tech; Secure";
+assert.equal(themeCookie("dark", "aporto.tech", "https:"), sharedThemeCookie);
+assert.equal(themeCookie("dark", "docs.aporto.tech", "https:"), sharedThemeCookie);
+assert.doesNotMatch(themeCookie("light", "aporto.tech.example", "https:"), /Domain=/);
+assert.doesNotMatch(themeCookie("light", "evilaporto.tech", "https:"), /Domain=/);
+assert.equal(themeCookie("light", "127.0.0.1", "http:"), "aporto-theme=light; Path=/; Max-Age=31536000; SameSite=Lax");
 
 const redirects = await nextConfig.redirects();
 for (const redirect of redirects.filter(({ source }) => !source.startsWith("/ru/"))) {
