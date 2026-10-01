@@ -156,6 +156,11 @@
     color: #ffffff;
 }
 
+.languageLink:focus-visible {
+    outline: 2px solid #00dc82;
+    outline-offset: 2px;
+}
+
 .dashboardButton {
     background-color: #00dc82;
     color: #000;
@@ -231,9 +236,43 @@
     }
 
     .header {
-        height: 56px;
+        height: auto;
+        min-height: 56px;
+        align-items: flex-start;
         justify-content: space-between;
-        padding: 0 16px;
+        padding: 8px 16px;
+    }
+
+    .headerActions {
+        display: grid;
+        flex: 1;
+        grid-template-columns: auto auto;
+        justify-content: end;
+        gap: 8px;
+    }
+
+    .languageSwitch {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .dashboardButton {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-self: end;
+    }
+
+    .contactLinks {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+    }
+
+    .contactLinks .languageLink {
+        display: inline-flex;
+        min-height: 40px;
+        align-items: center;
+        padding: 8px 12px;
     }
 
     .menuButton {

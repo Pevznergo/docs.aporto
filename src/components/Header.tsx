@@ -55,6 +55,10 @@ const Header = ({ locale, pathname, onMenuClick }: HeaderProps) => {
                         </a>
                     ))}
                 </nav>
+                <nav className={`${styles.languageSwitch} ${styles.contactLinks}`} aria-label={locale === "ru" ? "Связаться с Aporto" : "Contact Aporto"}>
+                    <a href="mailto:pevzner@aporto.tech" className={styles.languageLink}>Email</a>
+                    <a href="https://t.me/apitoai_bot" className={styles.languageLink}>Telegram</a>
+                </nav>
                 <Link href={locale === "ru" ? "https://app.aporto.tech/?lang=ru" : "https://app.aporto.tech"} className={styles.dashboardButton}>
                     {locale === "ru" ? "Личный кабинет" : "Dashboard"}
                 </Link>

@@ -39,7 +39,11 @@ Keep API keys on your server and out of browser code, source control, and suppor
 | Model discovery | \`GET /v1/models\` |
 | Billing wallets | USD by default; RUB by manager request |
 
-Continue to [Quick Start](/quick-start), [API Reference](/api-reference), or [Billing](/billing).`,
+Continue to [Quick Start](/quick-start), [API Reference](/api-reference), or [Billing](/billing).
+
+## Contact
+
+Choose [Email: pevzner@aporto.tech](mailto:pevzner@aporto.tech) or [Telegram: @apitoai_bot](https://t.me/apitoai_bot). Email opens a draft and Telegram opens the bot; you still send the message yourself. Never include API keys or other secrets.`,
 
         "quick-start": `# Quick Start
 
@@ -209,6 +213,10 @@ The catalog shows the CBR effective date and the time the rate was checked. Only
 
 The link opens the RUB wallet when it is active, or its request/status view otherwise. It never approves access; manager approval is required.
 
+### Contact the manager
+
+The dashboard link above remains the RUB-wallet request/status flow. To ask the manager about activation or a bank invoice, use [Email: pevzner@aporto.tech](mailto:pevzner@aporto.tech) or [Telegram: @apitoai_bot](https://t.me/apitoai_bot). Email opens a draft and Telegram opens the bot; neither contact link submits or approves a wallet request.
+
 Both key types call the same https://api.aporto.tech/v1 endpoint with the same currency-neutral request body. The API key fixes the wallet and billing currency. There is no currency override, automatic conversion, transfer, or fallback charge from the other wallet.
 
 ### RUB support scope
@@ -270,7 +278,11 @@ https://api.aporto.tech/v1
 | Список моделей | \`GET /v1/models\` |
 | Кошельки для оплаты | USD по умолчанию; RUB по заявке менеджеру |
 
-Далее: [быстрый старт](/ru/quick-start), [справочник API](/ru/api-reference) и [баланс и оплата](/ru/billing).`,
+Далее: [быстрый старт](/ru/quick-start), [справочник API](/ru/api-reference) и [баланс и оплата](/ru/billing).
+
+## Контакты
+
+Выберите [Email: pevzner@aporto.tech](mailto:pevzner@aporto.tech) или [Telegram: @apitoai_bot](https://t.me/apitoai_bot). Email откроет черновик письма, Telegram — бота; сообщение отправляете вы. Не передавайте API-ключи и другие секреты.`,
 
         "quick-start": `# Быстрый старт
 
@@ -437,6 +449,10 @@ curl -N https://api.aporto.tech/v1/chat/completions \\
 [Открыть или запросить RUB-кошелёк →](https://app.aporto.tech/dashboard?wallet=RUB&lang=ru)
 
 Ссылка открывает RUB-кошелёк, если он активен, либо экран заявки и её статуса. Сама ссылка не одобряет доступ: требуется решение менеджера.
+
+### Связаться с менеджером
+
+Ссылка на личный кабинет выше остаётся экраном заявки на RUB-кошелёк и её статуса. По вопросам подключения или банковского счёта напишите менеджеру через [Email: pevzner@aporto.tech](mailto:pevzner@aporto.tech) или [Telegram: @apitoai_bot](https://t.me/apitoai_bot). Email открывает черновик письма, Telegram — бота; ни одна из контактных ссылок не отправляет и не одобряет заявку.
 
 Ключи обоих кошельков работают через один адрес https://api.aporto.tech/v1 и одинаковое тело запроса без параметра валюты. API-ключ фиксирует кошелёк и валюту списания. Автоматической конвертации, перевода или резервного списания из другого кошелька нет.
 

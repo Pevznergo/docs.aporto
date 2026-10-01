@@ -24,11 +24,27 @@ async function openPage(viewport) {
     return page;
 }
 
+async function checkContactLinks(scope, path) {
+    for (const [name, href] of [
+        [/^Email(?::|$)/, "mailto:pevzner@aporto.tech"],
+        [/^Telegram(?::|$)/, "https://t.me/apitoai_bot"],
+    ]) {
+        const link = scope.getByRole("link", { name });
+        assert.equal(await link.count(), 1, `${path} must expose one ${name.source} link`);
+        assert.equal(await link.getAttribute("href"), href, `${path} has the wrong ${name.source} link`);
+        assert.ok(await link.isVisible(), `${path} hides the ${name.source} link`);
+    }
+}
+
 async function checkDocument(page, locale, path, heading) {
     const response = await page.goto(`${base}${path}`, { waitUntil: "networkidle" });
     assert.ok(response?.ok(), `${path} returned ${response?.status()}`);
     assert.equal(await page.locator("html").getAttribute("lang"), locale, `${path} has the wrong html lang`);
     assert.equal((await page.locator("h1").first().textContent())?.trim(), heading, `${path} has the wrong heading`);
+    await checkContactLinks(page.locator("header"), `${path} header`);
+    if (path.endsWith("/introduction") || path.endsWith("/billing")) {
+        await checkContactLinks(page.locator("main > div"), `${path} content`);
+    }
     const width = await page.evaluate(() => ({ client: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
     assert.ok(width.scroll <= width.client + 1, `${path} overflows horizontally (${width.scroll} > ${width.client})`);
 }
@@ -118,4 +134,4 @@ try {
     await browser.close();
 }
 
-console.log("PASS: desktop/mobile locale navigation, tabs, language switch, screenshots, and overflow");
+console.log("PASS: desktop/mobile locale navigation, contact links, tabs, language switch, screenshots, and overflow");
