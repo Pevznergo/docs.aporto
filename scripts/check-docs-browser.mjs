@@ -51,11 +51,10 @@ async function openPage(viewport) {
     return page;
 }
 
-async function routePricing(page, status = 200) {
+async function routePricing(page, fail = false) {
     await page.route("**/api/model-pricing", (route) => route.fulfill({
-        status,
         contentType: "application/json",
-        body: status === 200 ? pricingBody : JSON.stringify({ success: false }),
+        body: fail ? JSON.stringify({ success: false }) : pricingBody,
     }));
 }
 
@@ -237,7 +236,7 @@ try {
     await mobile.screenshot({ path: `${output}/pricing-en-dark-mobile.png`, fullPage: true });
 
     const errorPage = await openPage({ width: 390, height: 844 });
-    await routePricing(errorPage, 503);
+    await routePricing(errorPage, true);
     await errorPage.goto(`${base}/capabilities/ai-models?tab=pricing`, { waitUntil: "networkidle" });
     assert.ok(await errorPage.locator('main p[role="alert"]').isVisible(), "pricing error state must be visible");
     await errorPage.screenshot({ path: `${output}/pricing-en-error-mobile.png` });
