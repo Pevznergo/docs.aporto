@@ -92,10 +92,7 @@ export default function ModelPricingTab({ locale }: { locale: Locale }) {
         showing: (count: number, version: string) => `Показано моделей: ${count} · Версия цен: ${version}`,
         headings: ["Модель", "Провайдер", "Цена", "Эндпоинты"],
         fxNote: (fx: FxQuote) =>
-            `Действующий курс ЦБ РФ на ${new Date(`${fx.cbrDate}T00:00:00Z`).toLocaleDateString("ru-RU", { timeZone: "UTC" })}: 1 USD = ${fx.cbrRate.toLocaleString("ru-RU", { maximumFractionDigits: 4 })} ₽. ` +
-            `Расчёт RUB-запроса: USD-тариф × курс ЦБ × ${fx.multiplier.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} без промежуточного округления; ` +
-            `≈ ${rubUsagePerUsd(fx.cbrRate).toLocaleString("ru-RU", { maximumFractionDigits: 6 })} ₽ за $1 тарифа. Итоговая денежная сумма округляется один раз. ` +
-            `Проверено ${new Date(fx.checkedAt).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })} МСК. Ставка фиксируется до запроса; пополнение RUB-кошелька зачисляется 1:1 и её не использует.`,
+            `Цены в рублях указаны по курсу ЦБ РФ на ${new Date(`${fx.cbrDate}T00:00:00Z`).toLocaleDateString("ru-RU", { timeZone: "UTC" })} и пересчитываются ежедневно по курсу ЦБ РФ.`,
         fxUnavailable: "Свежий проверенный курс ЦБ РФ не получен. USD-тарифы ниже остаются актуальными; RUB-запросы выполняются только со свежей ставкой.",
         conditional: "Диапазон опубликованных ставок; итог зависит от условий тарифа.",
         conditionalOnly: "Условный тариф; точная ставка зависит от параметров запроса.",

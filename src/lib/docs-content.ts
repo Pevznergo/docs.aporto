@@ -193,13 +193,13 @@ The catalog reads the gateway's current \`default\` group tariffs and quota unit
 
 [Open current RUB request tariffs →](/capabilities/ai-models?tab=pricing&lang=ru)
 
-For supported RUB-wallet requests, each live USD tariff is calculated in RUB by this rule:
+For supported RUB-wallet requests, the catalog shows ruble prices for the CBR USD/RUB rate date. Ruble prices are recalculated daily by the CBR rate.
 
-**RUB debit = published Aporto USD tariff for actual usage × effective CBR USD/RUB rate × 1.40**
+**RUB debit = published Aporto ruble price for actual usage**
 
-The CBR rate and the 1.40 multiplier are applied exactly once to the request charge. Their exact product is not rounded up first; only the final money amount is rounded once. Funding the RUB wallet is a separate 1:1 credit and does not use this calculation.
+The ruble price in effect when a request starts is fixed for that request. Intermediate amounts are not rounded; only the final money amount is rounded once, at charge time. Funding the RUB wallet is a separate 1:1 credit and does not use this calculation.
 
-The catalog shows the CBR effective date and the time the rate was checked. Only a fresh, verified, already-effective rate is shown; a missing, stale, future-dated, or invented fallback rate is not used. RUB amounts explain request tariffs and do not mean that every catalog model or endpoint supports the RUB wallet.
+The catalog shows the CBR rate date. Only a fresh, verified, already-effective rate is used; a missing, stale, future-dated, or invented fallback rate is not used. RUB amounts explain request tariffs and do not mean that every catalog model or endpoint supports the RUB wallet.
 
 ## Independent wallets
 
@@ -430,13 +430,13 @@ curl -N https://api.aporto.tech/v1/chat/completions \\
 
 ## Тарифы запросов в RUB
 
-Для поддерживаемых запросов RUB-кошелька каждый актуальный USD-тариф рассчитывается в рублях по правилу:
+Для поддерживаемых запросов RUB-кошелька каталог показывает цены в рублях по курсу ЦБ РФ USD/RUB на дату курса. Цены в рублях пересчитываются ежедневно по курсу ЦБ РФ.
 
-**Списание в RUB = опубликованный тариф Aporto в USD за фактическое использование × действующий курс ЦБ РФ USD/RUB × 1,40**
+**Списание в RUB = опубликованная цена Aporto в рублях за фактическое использование**
 
-Курс ЦБ и коэффициент 1,40 применяются к стоимости запроса ровно один раз. Их точное произведение не округляется вверх заранее; один раз округляется только итоговая денежная сумма. Пополнение RUB-кошелька — отдельное зачисление 1:1, этот расчёт для него не используется.
+Цена в рублях, действующая на момент начала запроса, фиксируется для этого запроса. Промежуточные суммы не округляются; один раз, при списании, округляется только итоговая денежная сумма. Пополнение RUB-кошелька — отдельное зачисление 1:1, этот расчёт для него не используется.
 
-В каталоге указаны дата действия курса ЦБ и время его проверки. Показывается только свежий, проверенный и уже вступивший в силу курс; отсутствующий, устаревший, будущий или вымышленный резервный курс не используется. Суммы в RUB объясняют тариф запросов, но не означают, что RUB-кошелёк поддерживает каждую модель или эндпоинт каталога.
+В каталоге указана дата курса ЦБ. Используется только свежий, проверенный и уже вступивший в силу курс; отсутствующий, устаревший, будущий или вымышленный резервный курс не используется. Суммы в RUB объясняют тариф запросов, но не означают, что RUB-кошелёк поддерживает каждую модель или эндпоинт каталога.
 
 ## Независимые кошельки
 

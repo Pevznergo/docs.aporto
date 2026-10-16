@@ -1,4 +1,4 @@
-export const RUB_MULTIPLIER = 1.4;
+export const RUB_MULTIPLIER = 1.8;
 export const FX_CACHE_MS = 15 * 60 * 1000;
 
 export type FxQuote = {

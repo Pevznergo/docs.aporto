@@ -11,10 +11,10 @@ const xml = (date = "30.09.2026", value = "83,5588") =>
   `<ValCurs Date="${date}"><Valute><CharCode>USD</CharCode><Nominal>1</Nominal><Value>${value}</Value></Valute></ValCurs>`;
 
 const quote = parseCbrUsd(xml(), "2026-09-30", "2026-09-30T20:59:50.000Z");
-assert.equal(RUB_MULTIPLIER, 1.4);
+assert.equal(RUB_MULTIPLIER, 1.8);
 assert.equal(quote.effectiveDate, "2026-09-30");
-assert.equal(quote.rubPerUsd, 116.9824, "legacy invoice quote remains rounded up for payload compatibility");
-assert.ok(Math.abs(rubUsagePerUsd(quote.cbrRate) - 116.98232) < 1e-12);
+assert.equal(quote.rubPerUsd, 150.4059, "legacy invoice quote remains rounded up for payload compatibility");
+assert.ok(Math.abs(rubUsagePerUsd(quote.cbrRate) - 150.40584) < 1e-12);
 assert.notEqual(rubUsagePerUsd(quote.cbrRate), quote.rubPerUsd, "usage must not use the rounded invoice quote");
 assert.equal(isCurrentQuote(quote, new Date("2026-09-30T20:59:59.000Z")), true);
 assert.equal(isCurrentQuote(quote, new Date("2026-09-30T21:00:00.000Z")), false);

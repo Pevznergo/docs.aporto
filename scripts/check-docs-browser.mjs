@@ -32,8 +32,8 @@ const pricingBody = JSON.stringify({
         effectiveDate: requestedDate,
         requestedDate,
         checkedAt: new Date().toISOString(),
-        multiplier: 1.4,
-        rubPerUsd: Math.ceil(cbrRate * 1.4 * 10000) / 10000,
+        multiplier: 1.8,
+        rubPerUsd: Math.ceil(cbrRate * 1.8 * 10000) / 10000,
     },
 });
 
@@ -163,7 +163,7 @@ try {
     await assertTheme(desktop, "dark");
     assert.equal(await desktop.getByRole("link", { name: "Модели и цены", exact: true }).getAttribute("aria-current"), "page");
     await desktop.getByRole("searchbox", { name: "Поиск моделей" }).waitFor({ state: "visible" });
-    assert.ok(await desktop.getByText(/Расчёт RUB-запроса:/).isVisible(), "RU pricing must retain the detailed CBR calculation");
+    assert.ok(await desktop.getByText(/пересчитываются ежедневно по курсу ЦБ РФ/).isVisible(), "RU pricing must show the CBR rate date and daily recalculation");
     await desktop.screenshot({ path: `${output}/pricing-ru-dark-desktop.png`, fullPage: true });
     await switchTheme(desktop, "light");
     await checkDocument(desktop, "en", "/capabilities/ai-models?tab=pricing", "Models & Pricing");

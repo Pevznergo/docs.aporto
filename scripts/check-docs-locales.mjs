@@ -18,7 +18,7 @@ for (const page of pages) {
 
 const activeCopy = JSON.stringify(DOC_CONTENT);
 assert.doesNotMatch(activeCopy, /@aporto\/core|client\.services\.|MCP router/i);
-assert.match(DOC_CONTENT.ru.billing, /курс ЦБ РФ USD\/RUB × 1,40/);
+assert.match(DOC_CONTENT.ru.billing, /пересчитываются ежедневно по курсу ЦБ РФ/);
 assert.match(DOC_CONTENT.ru.billing, /свежий, проверенный и уже вступивший в силу курс/);
 assert.match(DOC_CONTENT.ru["api-reference"], /повторное списание/);
 
@@ -28,12 +28,15 @@ assert.match(englishBilling, /One Aporto login[\s\S]+USD is the default[\s\S]+ma
 assert.match(russianBilling, /В одном аккаунте Aporto[\s\S]+USD-кошелёк используется по умолчанию[\s\S]+RUB-кошелёк подключает менеджер по заявке/);
 assert.match(englishBilling, /10,000 RUB\*\* credits exactly \*\*10,000 RUB/);
 assert.match(russianBilling, /10 000 RUB\*\* зачисляет ровно \*\*10 000 RUB/);
-assert.match(englishBilling, /published Aporto USD tariff for actual usage × effective CBR USD\/RUB rate × 1\.40/);
-assert.match(russianBilling, /опубликованный тариф Aporto в USD за фактическое использование × действующий курс ЦБ РФ USD\/RUB × 1,40/);
-assert.match(englishBilling, /applied exactly once[\s\S]+separate 1:1 credit/);
-assert.match(russianBilling, /применяются к стоимости запроса ровно один раз[\s\S]+отдельное зачисление 1:1/);
-assert.match(englishBilling, /exact product is not rounded up first[\s\S]+final money amount is rounded once/);
-assert.match(russianBilling, /точное произведение не округляется вверх заранее[\s\S]+итоговая денежная сумма/);
+assert.match(englishBilling, /RUB debit = published Aporto ruble price for actual usage/);
+assert.match(russianBilling, /Списание в RUB = опубликованная цена Aporto в рублях за фактическое использование/);
+for (const billing of [englishBilling, russianBilling]) {
+    assert.doesNotMatch(billing, /× *1[,.]\d|multiplier|коэффициент/i, "billing must not reveal the RUB coefficient or formula");
+}
+assert.match(englishBilling, /fixed for that request[\s\S]+separate 1:1 credit/);
+assert.match(russianBilling, /фиксируется для этого запроса[\s\S]+отдельное зачисление 1:1/);
+assert.match(englishBilling, /Intermediate amounts are not rounded[\s\S]+final money amount is rounded once, at charge time/);
+assert.match(russianBilling, /Промежуточные суммы не округляются[\s\S]+при списании, округляется только итоговая денежная сумма/);
 assert.match(englishBilling, /same https:\/\/api\.aporto\.tech\/v1 endpoint[\s\S]+API key fixes the wallet and billing currency[\s\S]+no currency override/);
 assert.match(russianBilling, /один адрес https:\/\/api\.aporto\.tech\/v1[\s\S]+API-ключ фиксирует кошелёк и валюту списания[\s\S]+Автоматической конвертации/);
 assert.match(englishBilling, /text POST \/v1\/chat\/completions[\s\S]+non-streaming and streaming[\s\S]+cache usage/);
@@ -53,7 +56,8 @@ assert.doesNotMatch(russianBilling, /Скоро|Готовится к запус
 
 const pricingSource = await readFile(new URL("../src/app/capabilities/ai-models/ModelPricingTab.tsx", import.meta.url), "utf8");
 assert.match(pricingSource, /dashboard\?wallet=RUB&lang=ru/);
-assert.match(pricingSource, /пополнение RUB-кошелька зачисляется 1:1/);
+assert.match(pricingSource, /пересчитываются ежедневно по курсу ЦБ РФ/);
+assert.doesNotMatch(pricingSource, /fx\.multiplier|Расчёт RUB-запроса/);
 assert.match(pricingSource, /rubUsagePerUsd\(fx\.cbrRate\)/);
 assert.doesNotMatch(pricingSource, /value \* fx\.rubPerUsd/);
 assert.doesNotMatch(pricingSource, /dashboard\?lang=ru&topup=rub|Баланс ведётся в USD/);
