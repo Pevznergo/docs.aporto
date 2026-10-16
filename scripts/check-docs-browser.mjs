@@ -32,8 +32,8 @@ const pricingBody = JSON.stringify({
         effectiveDate: requestedDate,
         requestedDate,
         checkedAt: new Date().toISOString(),
-        multiplier: 1.8,
-        rubPerUsd: Math.ceil(cbrRate * 1.8 * 10000) / 10000,
+        multiplier: 1.5,
+        rubPerUsd: Math.ceil(cbrRate * 1.5 * 10000) / 10000,
     },
 });
 
